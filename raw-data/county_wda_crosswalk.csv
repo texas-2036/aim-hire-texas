@@ -1,0 +1,255 @@
+wda,wda_number,county,fips_county
+East Texas,8,Anderson,48001
+Permian Basin,11,Andrews,48003
+Deep East Texas,17,Angelina,48005
+Coastal Bend,22,Aransas,48007
+North Texas,3,Archer,48009
+Panhandle,1,Armstrong,48011
+Alamo,20,Atascosa,48013
+Gulf Coast,28,Austin,48015
+South Plains,2,Bailey,48017
+Alamo,20,Bandera,48019
+Greater Austin,15,Bastrop,48021
+North Texas,3,Baylor,48023
+Coastal Bend,22,Bee,48025
+Central Texas,26,Bell,48027
+Alamo,20,Bexar,48029
+Greater Austin,15,Blanco,48031
+Permian Basin,11,Borden,48033
+The Heart of Texas,13,Bosque,48035
+Northeast Texas,7,Bowie,48037
+Gulf Coast,28,Brazoria,48039
+Brazos Valley,16,Brazos,48041
+Borderplex,10,Brewster,48043
+Panhandle,1,Briscoe,48045
+Coastal Bend,22,Brooks,48047
+West Central Texas,9,Brown,48049
+Brazos Valley,16,Burleson,48051
+Greater Austin,15,Burnet,48053
+Greater Austin,15,Caldwell,48055
+Golden Crescent,19,Calhoun,48057
+West Central Texas,9,Callahan,48059
+Rio Grande Valley,23,Cameron,48061
+East Texas,8,Camp,48063
+Panhandle,1,Carson,48065
+Northeast Texas,7,Cass,48067
+Panhandle,1,Castro,48069
+Gulf Coast,28,Chambers,48071
+East Texas,8,Cherokee,48073
+Panhandle,1,Childress,48075
+North Texas,3,Clay,48077
+South Plains,2,Cochran,48079
+Concho Valley,12,Coke,48081
+West Central Texas,9,Coleman,48083
+DFW,4,Collin,48085
+Panhandle,1,Collingsworth,48087
+Gulf Coast,28,Colorado,48089
+Alamo,20,Comal,48091
+West Central Texas,9,Comanche,48093
+Concho Valley,12,Concho,48095
+Texoma,25,Cooke,48097
+Central Texas,26,Coryell,48099
+North Texas,3,Cottle,48101
+Permian Basin,11,Crane,48103
+Concho Valley,12,Crockett,48105
+South Plains,2,Crosby,48107
+Borderplex,10,Culberson,48109
+Panhandle,1,Dallam,48111
+DFW,4,Dallas,48113
+Permian Basin,11,Dawson,48115
+Panhandle,1,Deaf Smith,48117
+Northeast Texas,7,Delta,48119
+DFW,4,Denton,48121
+Golden Crescent,19,De Witt,48123
+South Plains,2,Dickens,48125
+Middle Rio Grande,27,Dimmit,48127
+Panhandle,1,Donley,48129
+Coastal Bend,22,Duval,48131
+West Central Texas,9,Eastland,48133
+Permian Basin,11,Ector,48135
+Middle Rio Grande,27,Edwards,48137
+Borderplex,10,El Paso,48141
+DFW,4,Ellis,48139
+DFW,4,Erath,48143
+The Heart of Texas,13,Falls,48145
+Texoma,25,Fannin,48147
+Greater Austin,15,Fayette,48149
+West Central Texas,9,Fisher,48151
+South Plains,2,Floyd,48153
+North Texas,3,Foard,48155
+Gulf Coast,28,Fort Bend,48157
+Northeast Texas,7,Franklin,48159
+The Heart of Texas,13,Freestone,48161
+Alamo,20,Frio,48163
+Permian Basin,11,Gaines,48165
+Gulf Coast,28,Galveston,48167
+South Plains,2,Garza,48169
+Alamo,20,Gillespie,48171
+Permian Basin,11,Glasscock,48173
+Golden Crescent,19,Goliad,48175
+Golden Crescent,19,Gonzales,48177
+Panhandle,1,Gray,48179
+Texoma,25,Grayson,48181
+East Texas,8,Gregg,48183
+Brazos Valley,16,Grimes,48185
+Alamo,20,Guadalupe,48187
+South Plains,2,Hale,48189
+Panhandle,1,Hall,48191
+Central Texas,26,Hamilton,48193
+Panhandle,1,Hansford,48195
+North Texas,3,Hardeman,48197
+Southeast Texas,18,Hardin,48199
+Gulf Coast,28,Harris,48201
+East Texas,8,Harrison,48203
+Panhandle,1,Hartley,48205
+West Central Texas,9,Haskell,48207
+Greater Austin,15,Hays,48209
+Panhandle,1,Hemphill,48211
+East Texas,8,Henderson,48213
+Rio Grande Valley,23,Hidalgo,48215
+The Heart of Texas,13,Hill,48217
+South Plains,2,Hockley,48219
+DFW,4,Hood,48221
+Northeast Texas,7,Hopkins,48223
+Deep East Texas,17,Houston,48225
+Permian Basin,11,Howard,48227
+Borderplex,10,Hudspeth,48229
+DFW,4,Hunt,48231
+Panhandle,1,Hutchinson,48233
+Concho Valley,12,Irion,48235
+North Texas,3,Jack,48237
+Golden Crescent,19,Jackson,48239
+Deep East Texas,17,Jasper,48241
+Borderplex,10,Jeff Davis,48243
+Southeast Texas,18,Jefferson,48245
+South Texas,21,Jim Hogg,48247
+Coastal Bend,22,Jim Wells,48249
+DFW,4,Johnson,48251
+West Central Texas,9,Jones,48253
+Alamo,20,Karnes,48255
+DFW,4,Kaufman,48257
+Alamo,20,Kendall,48259
+Coastal Bend,22,Kenedy,48261
+West Central Texas,9,Kent,48263
+Alamo,20,Kerr,48265
+Concho Valley,12,Kimble,48267
+South Plains,2,King,48269
+Middle Rio Grande,27,Kinney,48271
+Coastal Bend,22,Kleberg,48273
+West Central Texas,9,Knox,48275
+Middle Rio Grande,27,La Salle,48283
+Northeast Texas,7,Lamar,48277
+South Plains,2,Lamb,48279
+Central Texas,26,Lampasas,48281
+Golden Crescent,19,Lavaca,48285
+Greater Austin,15,Lee,48287
+Brazos Valley,16,Leon,48289
+Gulf Coast,28,Liberty,48291
+The Heart of Texas,13,Limestone,48293
+Panhandle,1,Lipscomb,48295
+Coastal Bend,22,Live Oak,48297
+Greater Austin,15,Llano,48299
+Permian Basin,11,Loving,48301
+South Plains,2,Lubbock,48303
+South Plains,2,Lynn,48305
+Brazos Valley,16,Madison,48313
+East Texas,8,Marion,48315
+Permian Basin,11,Martin,48317
+Concho Valley,12,Mason,48319
+Gulf Coast,28,Matagorda,48321
+Middle Rio Grande,27,Maverick,48323
+Concho Valley,12,McCulloch,48307
+The Heart of Texas,13,McLennan,48309
+Alamo,20,McMullen,48311
+Alamo,20,Medina,48325
+Concho Valley,12,Menard,48327
+Permian Basin,11,Midland,48329
+Central Texas,26,Milam,48331
+Central Texas,26,Mills,48333
+West Central Texas,9,Mitchell,48335
+North Texas,3,Montague,48337
+Gulf Coast,28,Montgomery,48339
+Panhandle,1,Moore,48341
+Northeast Texas,7,Morris,48343
+South Plains,2,Motley,48345
+Deep East Texas,17,Nacogdoches,48347
+DFW,4,Navarro,48349
+Deep East Texas,17,Newton,48351
+West Central Texas,9,Nolan,48353
+Coastal Bend,22,Nueces,48355
+Panhandle,1,Ochiltree,48357
+Panhandle,1,Oldham,48359
+Southeast Texas,18,Orange,48361
+DFW,4,Palo Pinto,48363
+East Texas,8,Panola,48365
+DFW,4,Parker,48367
+Panhandle,1,Parmer,48369
+Permian Basin,11,Pecos,48371
+Deep East Texas,17,Polk,48373
+Panhandle,1,Potter,48375
+Borderplex,10,Presidio,48377
+East Texas,8,Rains,48379
+Panhandle,1,Randall,48381
+Concho Valley,12,Reagan,48383
+Middle Rio Grande,27,Real,48385
+Northeast Texas,7,Red River,48387
+Permian Basin,11,Reeves,48389
+Coastal Bend,22,Refugio,48391
+Panhandle,1,Roberts,48393
+Brazos Valley,16,Robertson,48395
+DFW,4,Rockwall,48397
+West Central Texas,9,Runnels,48399
+East Texas,8,Rusk,48401
+Deep East Texas,17,Sabine,48403
+Deep East Texas,17,San Augustine,48405
+Deep East Texas,17,San Jacinto,48407
+Coastal Bend,22,San Patricio,48409
+Central Texas,26,San Saba,48411
+Concho Valley,12,Schleicher,48413
+West Central Texas,9,Scurry,48415
+West Central Texas,9,Shackelford,48417
+Deep East Texas,17,Shelby,48419
+Panhandle,1,Sherman,48421
+East Texas,8,Smith,48423
+DFW,4,Somervell,48425
+Rio Grande Valley,23,Starr,48427
+West Central Texas,9,Stephens,48429
+Concho Valley,12,Sterling,48431
+West Central Texas,9,Stonewall,48433
+Concho Valley,12,Sutton,48435
+Panhandle,1,Swisher,48437
+DFW,4,Tarrant,48439
+West Central Texas,9,Taylor,48441
+Permian Basin,11,Terrell,48443
+South Plains,2,Terry,48445
+West Central Texas,9,Throckmorton,48447
+Northeast Texas,7,Titus,48449
+Concho Valley,12,Tom Green,48451
+Greater Austin,15,Travis,48453
+Deep East Texas,17,Trinity,48455
+Deep East Texas,17,Tyler,48457
+East Texas,8,Upshur,48459
+Permian Basin,11,Upton,48461
+Middle Rio Grande,27,Uvalde,48463
+Middle Rio Grande,27,Val Verde,48465
+East Texas,8,Van Zandt,48467
+Golden Crescent,19,Victoria,48469
+Gulf Coast,28,Walker,48471
+Gulf Coast,28,Waller,48473
+Permian Basin,11,Ward,48475
+Brazos Valley,16,Washington,48477
+South Texas,21,Webb,48479
+Gulf Coast,28,Wharton,48481
+Panhandle,1,Wheeler,48483
+North Texas,3,Wichita,48485
+North Texas,3,Wilbarger,48487
+Rio Grande Valley,23,Willacy,48489
+Greater Austin,15,Williamson,48491
+Alamo,20,Wilson,48493
+Permian Basin,11,Winkler,48495
+DFW,4,Wise,48497
+East Texas,8,Wood,48499
+South Plains,2,Yoakum,48501
+North Texas,3,Young,48503
+South Texas,21,Zapata,48505
+Middle Rio Grande,27,Zavala,48507
