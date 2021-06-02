@@ -90,6 +90,9 @@ employment_edu <- tidycensus::get_acs(
   right_join(earnings_edu) %>% 
   mutate(county = gsub(" County, Texas", "", name)) %>% 
   mutate(education = factor(education, levels = c("nohs", "hs", "somecollege", "college", "postgrad"), ordered = T)) %>% 
+  # make the county population and income only appear once so we can just add when we aggregate counties to wdas
+  mutate(county_population = case_when(education == "nohs" ~ county_population),
+         county_medincome = case_when(education == "nohs" ~ county_medincome)) %>% 
   select(geoid, county, 
          county_population, county_medincome, 
          education, number_people, number_in_laborforce, 
@@ -104,9 +107,11 @@ ggplot(employment_edu, aes(x = education, y = pct_in_laborforce)) + geom_boxplot
 ###-- AGGREGATE TO WORK FORCE BOARD ---------------------------------------
 crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv"))
 
-edu_wda <- left_join(employment_edu, crosswalk) %>% 
+edu_wda <- left_join(employment_edu, crosswalk) #%>% 
   group_by(wda_number) %>% 
   summarize(wda = wda[1],
             fips_county = fips_county[1],
-            )
+            wda_population = sum(county_population, na.rm = T),
+            # taking the mean of county medians... is this the best way? correct weight?
+            wda_medianincome = weighted.mean(county_medincome, county_population, na.rm = T))
 View(edu_wda)
