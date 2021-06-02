@@ -112,7 +112,6 @@ edu_wda <- left_join(employment_edu, crosswalk) %>%
   filter(education != "postgrad") %>% 
   group_by(wda_number, education) %>% 
   summarize(wda = wda[1],
-            fips_county = fips_county[1],
             wda_population = sum(county_population, na.rm = T),
             # taking the mean of county medians... is this the best way? correct weight?
             wda_medianincome = weighted.mean(county_medincome, county_population, na.rm = T),
@@ -129,7 +128,9 @@ edu_wda <- left_join(employment_edu, crosswalk) %>%
   mutate(wda_population = case_when(wda_population != 0 ~ wda_population),
          wda_medianincome = case_when(!is.nan(wda_medianincome) ~ wda_medianincome)) %>% 
   fill(wda_population) %>% 
-  fill(wda_medianincome)
+  fill(wda_medianincome) %>% 
+  select(wda_number, wda, education, everything())
+saveRDS(edu_wda, here::here("clean-data", "wda_edu_employment.rds"))
 View(edu_wda)
 
 ggplot(edu_wda, aes(x = education, y = median_income, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
