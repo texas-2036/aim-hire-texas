@@ -24,8 +24,8 @@ earnings_edu <- tidycensus::get_acs(
                               variable == "B20004_004" ~ "somecollege",
                               variable == "B20004_005" ~ "college",
                               variable == "B20004_006" ~ "postgrad")) %>% 
-  select(geoid, name, education = variable, median_income = estimate) %>% 
-  pivot_wider(id_cols = geoid:name, names_from = education, values_from = median_income) %>% 
+  select(fips_county = geoid, name, education = variable, median_income = estimate) %>% 
+  pivot_wider(id_cols = fips_county:name, names_from = education, values_from = median_income) %>% 
   rename(county_medincome = all) %>% 
   pivot_longer(cols = nohs:postgrad, names_to = "education", values_to = "median_income")
 
@@ -69,13 +69,13 @@ employment_edu <- tidycensus::get_acs(
                               variable == "B23006_027" ~ "college__lf_c_emp",
                               variable == "B23006_028" ~ "college__lf_c_unemp",
                               variable == "B23006_029" ~ "college__notlf")) %>% 
-  select(geoid, name, variable, estimate) %>% 
+  select(fips_county = geoid, name, variable, estimate) %>% 
   # pivot wide and long first to separate out population - total county population
-  pivot_wider(id_cols = geoid:name, names_from = variable, values_from = estimate) %>% 
+  pivot_wider(id_cols = fips_county:name, names_from = variable, values_from = estimate) %>% 
   pivot_longer(cols = nohs__total:college__notlf, names_to = "variable", values_to = "estimate") %>% 
   # parse education level - education level will be a column, everything else wide
   separate(variable, into = c("education", "employment"), sep = "__") %>% 
-  pivot_wider(id_cols = geoid:education, names_from = employment, values_from = estimate) %>%
+  pivot_wider(id_cols = fips_county:education, names_from = employment, values_from = estimate) %>%
   # calculate proportions - be careful with denominator
   # not sure if denominator should be labor force or total in age group- doing both for now
   mutate(pct_in_laborforce = round(100 * lf / total, 1),
@@ -93,7 +93,7 @@ employment_edu <- tidycensus::get_acs(
   # make the county population and income only appear once so we can just add when we aggregate counties to wdas
   mutate(county_population = case_when(education == "nohs" ~ county_population),
          county_medincome = case_when(education == "nohs" ~ county_medincome)) %>% 
-  select(geoid, county, 
+  select(fips_county, county, 
          county_population, county_medincome, 
          education, number_people, number_in_laborforce, 
          median_income, everything()) %>% 
@@ -105,13 +105,33 @@ ggplot(employment_edu, aes(x = education, y = pct_total_employed)) + geom_boxplo
 ggplot(employment_edu, aes(x = education, y = pct_in_laborforce)) + geom_boxplot() + theme_bw()
 
 ###-- AGGREGATE TO WORK FORCE BOARD ---------------------------------------
-crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv"))
+crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv")) %>% 
+  mutate(fips_county = as.character(fips_county))
 
-edu_wda <- left_join(employment_edu, crosswalk) #%>% 
-  group_by(wda_number) %>% 
+edu_wda <- left_join(employment_edu, crosswalk) %>% 
+  filter(education != "postgrad") %>% 
+  group_by(wda_number, education) %>% 
   summarize(wda = wda[1],
             fips_county = fips_county[1],
             wda_population = sum(county_population, na.rm = T),
             # taking the mean of county medians... is this the best way? correct weight?
-            wda_medianincome = weighted.mean(county_medincome, county_population, na.rm = T))
+            wda_medianincome = weighted.mean(county_medincome, county_population, na.rm = T),
+            wda_number_people = sum(number_people, na.rm = T),
+            wda_number_in_laborforce = sum(number_in_laborforce, na.rm = T),
+            median_income = weighted.mean(median_income, number_in_laborforce, na.rm = T),
+            pct_in_laborforce = weighted.mean(pct_in_laborforce, number_in_laborforce, na.rm = T),
+            pct_in_laborforce_employed = weighted.mean(pct_in_laborforce_employed, number_in_laborforce, na.rm = T),
+            pct_total_employed = weighted.mean(pct_total_employed, number_people, na.rm = T),
+            pct_in_laborforce_unemployed = weighted.mean(pct_in_laborforce_unemployed, number_in_laborforce, na.rm = T),
+            pct_total_unemployed = weighted.mean(pct_total_unemployed, number_people, na.rm = T)
+            ) %>% 
+  ungroup() %>% 
+  mutate(wda_population = case_when(wda_population != 0 ~ wda_population),
+         wda_medianincome = case_when(!is.nan(wda_medianincome) ~ wda_medianincome)) %>% 
+  fill(wda_population) %>% 
+  fill(wda_medianincome)
 View(edu_wda)
+
+ggplot(edu_wda, aes(x = education, y = median_income, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
+ggplot(edu_wda, aes(x = education, y = pct_total_employed, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
+ggplot(edu_wda, aes(x = education, y = pct_in_laborforce, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
