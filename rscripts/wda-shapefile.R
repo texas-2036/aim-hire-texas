@@ -2,6 +2,8 @@ library(tidyverse)
 library(tigris)
 library(here)
 library(sf)
+library(leaflet)
+library(highcharter)
 
 options(tigris_use_cache = TRUE, tigris_class = "sf")
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
@@ -13,15 +15,42 @@ counties <- tigris::counties(state = "Texas") %>%
 
 wda_sf <- left_join(counties, crosswalk) %>% 
   group_by(wda) %>% 
-  summarize(wda_number = wda_number[1])
+  summarize(wda_number = wda_number[1]) %>% 
+  # https://docs.google.com/presentation/d/1Op61zVEh0M9EfREZEu0GQi8pMvI_i6wvDfN_z09Ckng/edit#slide=id.p
+  mutate(color_category = case_when(wda_number %in% c(2, 25, 8, 12, 28, 22) ~ 1,
+                              wda_number %in% c(1, 11, 4, 16, 19, 23) ~ 2,
+                              wda_number %in% c(9, 7, 13, 15, 27, 18) ~ 3,
+                              wda_number %in% c(10, 3, 26, 20, 21, 17) ~ 4))
 
 saveRDS(wda_sf, here::here("clean-data", "wda_shapefile.rds"))
 
+factpal <- colorFactor(palette = c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3"), wda_sf$color_category)
 leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
-  setView(-96.3, 31.3, zoom = 7) %>%
+  setView(-99.9, 31.97, zoom = 5) %>%
+  addPolygons(stroke = F,
+              fill = T,
+              fillOpacity = 0.8,
+              fillColor = ~factpal(color_category),
+              data = wda_sf) %>%
   addPolygons(color = "black",
               stroke = T,
               weight = 1,
               fill = F,
+              data = counties) %>%
+  addPolygons(stroke = T, 
+              weight = 2,
+              color = "black",
+              opacity = 1,
+              fill = T,
+              fillOpacity = 0,
+              label = wda_sf$wda,
               data = wda_sf)
+
+
+hcmap("countries/us/us-tx-all", showInLegend = F) %>%
+  hc_title(text = "Texas") %>% 
+  hc_subtitle(text = "You can use the same functions to modify your map!") %>% 
+  hc_add_series(
+    data = wda_sf
+  )
