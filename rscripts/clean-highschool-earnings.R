@@ -80,10 +80,10 @@ employment_edu <- tidycensus::get_acs(
   # not sure if denominator should be labor force or total in age group- doing both for now
   mutate(pct_in_laborforce = round(100 * lf / total, 1),
          # pooling those in armed forces and employed civilians
-         pct_in_laborforce_employed = round(100 * (lf_af + lf_c_emp) / lf, 1),
-         pct_total_employed = round(100 * (lf_af + lf_c_emp) / total, 1),
-         pct_in_laborforce_unemployed = round(100 * lf_c_unemp / lf, 2),
-         pct_total_unemployed = round(100 * lf_c_unemp / total, 2)) %>%
+         pct_employed = round(100 * (lf_af + lf_c_emp) / lf, 1),
+         #pct_total_employed = round(100 * (lf_af + lf_c_emp) / total, 1),
+         pct_unemployed = round(100 * lf_c_unemp / lf, 2)) %>% 
+         #pct_total_unemployed = round(100 * lf_c_unemp / total, 2)) %>%
   rename(number_people = total, number_in_laborforce = lf) %>% 
   select(-c(lf_af:notlf)) %>% 
   # join w earnings - right join since earnings has one more edu level we want to keep
@@ -119,10 +119,10 @@ edu_wda <- left_join(employment_edu, crosswalk) %>%
             wda_number_in_laborforce = sum(number_in_laborforce, na.rm = T),
             median_income = weighted.mean(median_income, number_in_laborforce, na.rm = T),
             pct_in_laborforce = weighted.mean(pct_in_laborforce, number_in_laborforce, na.rm = T),
-            pct_in_laborforce_employed = weighted.mean(pct_in_laborforce_employed, number_in_laborforce, na.rm = T),
-            pct_total_employed = weighted.mean(pct_total_employed, number_people, na.rm = T),
-            pct_in_laborforce_unemployed = weighted.mean(pct_in_laborforce_unemployed, number_in_laborforce, na.rm = T),
-            pct_total_unemployed = weighted.mean(pct_total_unemployed, number_people, na.rm = T)
+            pct_employed = weighted.mean(pct_employed, number_in_laborforce, na.rm = T),
+            #pct_total_employed = weighted.mean(pct_total_employed, number_people, na.rm = T),
+            pct_unemployed = weighted.mean(pct_unemployed, number_in_laborforce, na.rm = T),
+            #pct_total_unemployed = weighted.mean(pct_total_unemployed, number_people, na.rm = T)
             ) %>% 
   ungroup() %>% 
   mutate(wda_population = case_when(wda_population != 0 ~ wda_population),
