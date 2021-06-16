@@ -37,3 +37,8 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+raw-data/twc-lmi-occ-ind/
+raw-data/faethm-jobs-2035/
+raw-data/TWC WDA Projection Summary/
+raw-data/pseo/
