@@ -10,12 +10,20 @@ library(jastyle)
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
+# "#2a366c" dark blue
+# "#f26852" red
+# "#5f6fc1" light blue
+# "#3ead92" green
+
+# c("#2a366c", "#f26852", "#5f6fc1", "#3ead92")
+
 ###--- Load data -------------------------
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
 demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
+lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 load(here::here("clean-data", "pseo-data.RData"))
 
 counties <- tigris::counties(state = "Texas") %>% 
@@ -23,8 +31,8 @@ counties <- tigris::counties(state = "Texas") %>%
   st_transform(crs = wgs84)
 
 ###--- Landing page map ------------------
-pal <- colorFactor(palette = c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3"), wda_sf$color_category)
-leaflet() %>% #options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
+pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
+leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
   setView(-99.9018, 30.9686, zoom = 5) %>% 
   addPolygons(stroke = F,
               fill = T,
@@ -44,7 +52,7 @@ leaflet() %>% #options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoo
               fillOpacity = 0,
               label = wda_sf$wda,
               data = wda_sf) %>% 
-  setMapWidgetStyle(list(background= "white")) #%>% 
+  setMapWidgetStyle(list(background= "white")) %>% 
   htmlwidgets::onRender("function(el, x) { 
                map = this
                map.dragging.disable();
@@ -135,4 +143,24 @@ pseo_inst_df %>%
 edu %>% 
   filter(wda == "Gulf Coast") %>% 
   hchart(type = "line", hcaes(x = education, y = median_income)) %>% 
-  hc_title(text = "Income by educ")
+  hc_xAxis(title = list(text = "Education Level")) %>% 
+  hc_yAxis(title = list(text = "Median Income")) %>% 
+  hc_title(text = "Median income by education")
+
+edu %>% 
+  filter(wda == "Gulf Coast") %>% 
+  hchart(type = "line", hcaes(x = education, y = pct_employed)) %>% 
+  hc_xAxis(title = list(text = "Education Level")) %>% 
+  hc_yAxis(title = list(text = "Employment Rate")) %>% 
+  hc_title(text = "Employment rate by education")
+
+###--- Living wage --------------------------------------
+lw1 <- lw %>% 
+  filter(wda == "Gulf Coast") %>% 
+  mutate(no_of_employed = as.numeric(na_if(no_of_employed, "N/A"))) %>% 
+  filter(soc_code != "00-0000") %>% 
+  group_by(wage_band) %>% 
+  summarize(no_of_employed = sum(no_of_employed, na.rm = T)) %>% 
+  hchart("pie", hcaes(wage_band, no_of_employed)) %>% 
+  hc_title(text = "Number of workers employed in each wage bracket")
+lw1
