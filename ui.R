@@ -4,6 +4,7 @@ source("read-data.R")
 shinyUI(
     tagList(
         useShinyjs(),
+        scroller::use_scroller(),
         tags$head(
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
             tags$link(rel="shortcut icon", href="favicon.png"),
@@ -38,10 +39,13 @@ shinyUI(
                                     h1(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("wda_map", height = 150),
                                     p(htmlOutput("wda_counties", align = "center")),
-                                    p(strong("Jump to section:\n"), 
-                                             "Living wage households\n
-                                             Trends in in-demand jobs\n
-                                      Attractive jobs"),
+                                    p(strong("Jump to section:")), 
+                                    a("Living wage households", type = "link", href = "##header1"), 
+                                    a("Trends in working age adults", type = "link", href = "##header2"), 
+                                    a("Trends in in-demand jobs", type = "link", href = "##header3"), 
+                                    a("Attractive jobs", type = "link", href = "##header4"), 
+                                    a("Living wage jobs", type = "link", href = "##header5"),
+                                    a("Employment by education", type = "link", href = "##header6"),
                                     selectizeInput(inputId = "select_wda",
                                                    label = "Choose a different WDA: ",
                                                    choices = unique(crosswalk$wda),
@@ -52,40 +56,22 @@ shinyUI(
                          
                      ## 1. living wage households --------
                      br(),
-                     h2("Living wage households", align = "center"),
+                     h2(htmlOutput("header1"), align = "center", height = 4),
                      ## 2. trends in working age adults --------
                      br(),
-                     h2("Trends in working age adults", align = "center"),
+                     h2(htmlOutput("header2"), align = "center", height = 4),
                      ## 3. trends in in-demand jobs --------
                      br(),
-                     h2("Trends in in-demand jobs", align = "center"),
+                     h2(htmlOutput("header3"), align = "center", height = 4),
                      ## 4. attractive jobs --------
                      br(),
-                     h2("Attractive jobs", align = "center"),
+                     h2(htmlOutput("header4"), align = "center", height = 4),
                      ## 5. living wage jobs --------
                      br(),
-                     h2("Living wage jobs", align = "center"),
+                     h2(htmlOutput("header5"), align = "center", height = 4),
                      ## 6. employment by education --------
                      br(),
-                     h2("Employment by education", align = "center"),
-                     ## 1. living wage households --------
-                     br(),
-                     h2("Living wage households", align = "center"),
-                     ## 2. trends in working age adults --------
-                     br(),
-                     h2("Trends in working age adults", align = "center"),
-                     ## 3. trends in in-demand jobs --------
-                     br(),
-                     h2("Trends in in-demand jobs", align = "center"),
-                     ## 4. attractive jobs --------
-                     br(),
-                     h2("Attractive jobs", align = "center"),
-                     ## 5. living wage jobs --------
-                     br(),
-                     h2("Living wage jobs", align = "center"),
-                     ## 6. employment by education --------
-                     br(),
-                     h2("Employment by education", align = "center")
+                     h2(htmlOutput("header6"), align = "center", height = 4),
                      )),
                      ) # closes wda page
             ) # close navbarPage

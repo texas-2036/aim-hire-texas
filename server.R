@@ -11,7 +11,7 @@ shinyServer(function(input, output, session) {
     })
     
     selected_wda_centroid <- reactive({
-        centroid <- wda_centroids %>% 
+        centroid <- centroids %>% 
             filter(wda == input$select_wda) %>% 
             select(lat, lon)
         return(centroid)
@@ -27,6 +27,7 @@ shinyServer(function(input, output, session) {
     ## * Content -----
     ## map --------
     output$home_map <- renderLeaflet({
+        pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
         leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 6, maxZoom = 6)) %>%
             setView(-99.9018, 30.9686, zoom = 6) %>% 
             addPolygons(stroke = F,
@@ -77,14 +78,39 @@ shinyServer(function(input, output, session) {
         text <- HTML(paste0(input$select_wda), " WDA")
         return(text)
         })
-    observe(print(as.numeric(selected_wda_centroid()$lat)))
-    output$wda_map <- renderLeaflet(
+    output$header1 <- renderUI({
+        text <- HTML(paste0("Living wage households"))
+        return(text)
+    })
+    output$header2 <- renderUI({
+        text <- HTML(paste0("Trends in working age adults"))
+        return(text)
+    })
+    output$header3 <- renderUI({
+        text <- HTML(paste0("Trends in in-demand jobs"))
+        return(text)
+    })
+    output$header4 <- renderUI({
+        text <- HTML(paste0("Attractive jobs"))
+        return(text)
+    })
+    output$header4 <- renderUI({
+        text <- HTML(paste0("Living wage jobs"))
+        return(text)
+    })
+    output$header6 <- renderUI({
+        text <- HTML(paste0("Employment by education"))
+        return(text)
+    })
+
+    output$wda_map <- renderLeaflet({
+        
         leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 6, maxZoom = 6)) %>%
             setView(as.numeric(selected_wda_centroid()$lat), as.numeric(selected_wda_centroid()$lon), zoom = 6) %>% 
             addPolygons(stroke = F,
                         fill = T,
                         fillOpacity = 01,
-                        fillColor = ~pal(color_category),
+                        fillColor = "#f26852",
                         group = "wdas",
                         data = selected_wda_sf()) %>%
             addPolygons(color = "black",
@@ -99,13 +125,13 @@ shinyServer(function(input, output, session) {
                map.dragging.disable();
                }")
         
-    )
+    })
     
     output$wda_counties <- renderUI({
         counties <- selected_wdacounties_sf() %>% 
             pull(county)
         text <- HTML(paste0(strong("Counties in ", input$select_wda, ":")),
-                            paste(counties, sep = ", "))
+                            counties)
     })
     ## * Content -----
     ## 1. living wage households --------

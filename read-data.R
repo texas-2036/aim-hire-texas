@@ -10,6 +10,7 @@ library(shiny)
 library(sever)
 library(shinyjs)
 library(rmapshaper)
+library(scroller)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
