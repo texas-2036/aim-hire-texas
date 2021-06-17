@@ -26,9 +26,10 @@ edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 load(here::here("clean-data", "pseo-data.RData"))
 
-counties <- tigris::counties(state = "Texas") %>% 
+counties <- tigris::counties(state = "48") %>% 
   dplyr::select(county = NAME, geometry) %>% 
-  st_transform(crs = wgs84)
+  st_transform(crs = wgs84) %>% 
+  ms_simplify(0.05)
 
 ###--- Landing page map ------------------
 pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)

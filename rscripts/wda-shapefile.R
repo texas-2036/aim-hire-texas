@@ -4,15 +4,17 @@ library(here)
 library(sf)
 library(leaflet)
 library(leaflet.extras)
+library(rmapshaper)
 
 options(tigris_use_cache = TRUE, tigris_class = "sf")
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
 crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv"))
 
-counties <- tigris::counties(state = "Texas") %>% 
+counties <- tigris::counties(state = "48") %>% 
   dplyr::select(county = NAME, geometry) %>% 
-  st_transform(crs = wgs84)
+  st_transform(crs = wgs84) %>% 
+  ms_simplify(0.05)
 
 wda_sf <- left_join(counties, crosswalk) %>% 
   group_by(wda) %>% 
@@ -26,6 +28,7 @@ wda_sf <- left_join(counties, crosswalk) %>%
                               wda_number %in% c(10, 3, 26, 20, 21, 17) ~ 4))
 
 saveRDS(wda_sf, here::here("clean-data", "wda_shapefile.rds"))
+saveRDS(counties, here::here("clean-data", "county_shapefile.rds")) 
 
 pal <- colorFactor(palette = c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3"), wda_sf$color_category)
 leaflet() %>% #options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
