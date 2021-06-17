@@ -14,7 +14,8 @@ crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv"))
 counties <- tigris::counties(state = "48") %>% 
   dplyr::select(county = NAME, geometry) %>% 
   st_transform(crs = wgs84) %>% 
-  ms_simplify(0.05)
+  ms_simplify(0.05) %>% 
+  left_join(crosswalk)
 
 wda_sf <- left_join(counties, crosswalk) %>% 
   group_by(wda) %>% 
@@ -27,8 +28,14 @@ wda_sf <- left_join(counties, crosswalk) %>%
                               wda_number %in% c(9, 7, 13, 15, 27, 18) ~ 3,
                               wda_number %in% c(10, 3, 26, 20, 21, 17) ~ 4))
 
+wda_centroids <- st_centroid(wda_sf) %>% 
+  mutate(lat = sf::st_coordinates(.)[,1],
+         lon = sf::st_coordinates(.)[,2]) %>% 
+  st_drop_geometry()
+
 saveRDS(wda_sf, here::here("clean-data", "wda_shapefile.rds"))
 saveRDS(counties, here::here("clean-data", "county_shapefile.rds")) 
+saveRDS(wda_centroids, here::here("clean-data", "wda_centroids.rds"))
 
 pal <- colorFactor(palette = c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3"), wda_sf$color_category)
 leaflet() %>% #options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%

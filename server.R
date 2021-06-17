@@ -3,6 +3,25 @@
 shinyServer(function(input, output, session) {
     
     sever(html = disconnected, bg_color = "#3A4A9F", opacity = .92)
+    ###--- REACTIVES -------------------------------
+    selected_wda_sf <- reactive({
+        sf <- wda_sf %>% 
+            filter(wda == input$select_wda)
+        return(sf)
+    })
+    
+    selected_wda_centroid <- reactive({
+        centroid <- wda_centroids %>% 
+            filter(wda == input$select_wda) %>% 
+            select(lat, lon)
+        return(centroid)
+    })
+    
+    selected_wdacounties_sf <- reactive({
+        sf <- counties %>% 
+            filter(wda == input$select_wda)
+        return(sf)
+    })
     
     ###--- LANDING PAGE ----------------------------
     ## * Content -----
@@ -47,13 +66,47 @@ shinyServer(function(input, output, session) {
     observeEvent(input$home_map_shape_click$id, {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "select a wda",
-                             choices = unique(wda_sf$wda),
+                             label = "Choose a different WDA: ",
+                             choices = unique(crosswalk$wda),
                              selected = input$home_map_shape_click$id)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "WDA")
     })
     
     ###--- WDA PAGE ----------------------------
+    output$wda_name <- renderUI({
+        text <- HTML(paste0(input$select_wda), " WDA")
+        return(text)
+        })
+    observe(print(as.numeric(selected_wda_centroid()$lat)))
+    output$wda_map <- renderLeaflet(
+        leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 6, maxZoom = 6)) %>%
+            setView(as.numeric(selected_wda_centroid()$lat), as.numeric(selected_wda_centroid()$lon), zoom = 6) %>% 
+            addPolygons(stroke = F,
+                        fill = T,
+                        fillOpacity = 01,
+                        fillColor = ~pal(color_category),
+                        group = "wdas",
+                        data = selected_wda_sf()) %>%
+            addPolygons(color = "black",
+                        stroke = T,
+                        weight = 1,
+                        fill = F,
+                        group = "counties",
+                        data = selected_wdacounties_sf()) %>% 
+            setMapWidgetStyle(list(background= "transparent")) %>% 
+            htmlwidgets::onRender("function(el, x) { 
+               map = this
+               map.dragging.disable();
+               }")
+        
+    )
+    
+    output$wda_counties <- renderUI({
+        counties <- selected_wdacounties_sf() %>% 
+            pull(county)
+        text <- HTML(paste0(strong("Counties in ", input$select_wda, ":")),
+                            paste(counties, sep = ", "))
+    })
     ## * Content -----
     ## 1. living wage households --------
     ## 2. trends in working age adults --------
