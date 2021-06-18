@@ -33,19 +33,30 @@ shinyUI(
             ###--- WDA PAGE ---------------------------
             tabPanel(title = "WDA",
                      fluidRow(
+                         ## * Well panel -----------
                          column(4,
-                                
                                 wellPanel(
                                     h1(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("wda_map", height = 150),
                                     p(htmlOutput("wda_counties", align = "center")),
+                                    tags$hr(),
                                     p(strong("Jump to section:")), 
-                                    a("Living wage households", type = "link", href = "##header1"), 
-                                    a("Trends in working age adults", type = "link", href = "##header2"), 
-                                    a("Trends in in-demand jobs", type = "link", href = "##header3"), 
-                                    a("Attractive jobs", type = "link", href = "##header4"), 
-                                    a("Living wage jobs", type = "link", href = "##header5"),
-                                    a("Employment by education", type = "link", href = "##header6"),
+                                    
+                                    column(11, offset = 1,
+                                    strong(a("Living wage households", type = "link", href = "##header_lwh")), 
+                                    br(),
+                                    strong(a("Trends in working age adults", type = "link", href = "##header_waa")),
+                                    br(),
+                                    strong(a("Trends in in-demand jobs", type = "link", href = "##header_idj")), 
+                                    br(),
+                                    strong(a("Attractive jobs", type = "link", href = "##header_aj")), 
+                                    br(),
+                                    strong(a("Living wage jobs", type = "link", href = "##header_lwj")),
+                                    br(),
+                                    strong(a("Employment by education", type = "link", href = "##header_edu")),
+                                    tags$hr()
+                                    ),
+                                    
                                     selectizeInput(inputId = "select_wda",
                                                    label = "Choose a different WDA: ",
                                                    choices = unique(crosswalk$wda),
@@ -53,26 +64,39 @@ shinyUI(
                                     width = "100%")), 
             
                          column(8,
-                         
-                     ## 1. living wage households --------
-                     br(),
-                     h2(htmlOutput("header1"), align = "center", height = 4),
-                     ## 2. trends in working age adults --------
-                     br(),
-                     h2(htmlOutput("header2"), align = "center", height = 4),
-                     ## 3. trends in in-demand jobs --------
-                     br(),
-                     h2(htmlOutput("header3"), align = "center", height = 4),
-                     ## 4. attractive jobs --------
-                     br(),
-                     h2(htmlOutput("header4"), align = "center", height = 4),
-                     ## 5. living wage jobs --------
-                     br(),
-                     h2(htmlOutput("header5"), align = "center", height = 4),
-                     ## 6. employment by education --------
-                     br(),
-                     h2(htmlOutput("header6"), align = "center", height = 4),
-                     )),
+                                
+                                ## * Main panel -----------
+                                ## 1. living wage households --------
+                                br(),
+                                h2(htmlOutput("header_lwh"), align = "center", height = 4),
+                                ## 2. trends in working age adults --------
+                                br(),
+                                tags$hr(),
+                                h2(htmlOutput("header_waa"), align = "center", height = 4),
+                                checkboxInput(inputId = "waa_plot_race_select",
+                                              label = "Show data by race-ethnicity?",
+                                              value = F),
+                                checkboxInput(inputId = "waa_plot_gender_select",
+                                              label = "Show data by gender?",
+                                              value = F),
+                                highchartOutput("waa_plot"),
+                                ## 3. trends in in-demand jobs --------
+                                br(),
+                                tags$hr(),
+                                h2(htmlOutput("header_idj"), align = "center", height = 4),
+                                ## 4. attractive jobs --------
+                                br(),
+                                tags$hr(),
+                                h2(htmlOutput("header_aj"), align = "center", height = 4),
+                                ## 5. living wage jobs --------
+                                br(),
+                                tags$hr(),
+                                h2(htmlOutput("header_lwj"), align = "center", height = 4),
+                                ## 6. employment by education --------
+                                br(),
+                                tags$hr(),
+                                h2(htmlOutput("header_edu"), align = "center", height = 4)
+                                ))
                      ) # closes wda page
             ) # close navbarPage
         ) # close tagList

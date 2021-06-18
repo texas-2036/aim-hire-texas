@@ -66,6 +66,10 @@ waa %>%
   hc_yAxis(title = list(text = "Number of working age adults")) %>% 
   hc_title(text = "Projected Number of Working Age Adults Through 2036")
 
+df <- waa %>% 
+  filter(wda == "Alamo") %>% 
+  pivot_longer(total:nh_other_female)
+
 waa %>% 
   filter(wda == "Gulf Coast") %>% 
   select(year, nh_white_total, nh_black_total, hispanic_total, nh_asian_total, nh_other_total) %>% 
