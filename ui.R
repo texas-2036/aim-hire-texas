@@ -73,12 +73,17 @@ shinyUI(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_waa"), align = "center", height = 4),
+                                fluidRow(
+                                column(width = 4, offset = 2, align = "center",
+                                       
                                 checkboxInput(inputId = "waa_plot_race_select",
                                               label = "Show data by race-ethnicity?",
-                                              value = F),
+                                              value = F)),
+                                column(width = 4, align = "center",
                                 checkboxInput(inputId = "waa_plot_gender_select",
                                               label = "Show data by gender?",
-                                              value = F),
+                                              value = F))
+                                ),
                                 highchartOutput("waa_plot"),
                                 ## 3. trends in in-demand jobs --------
                                 br(),

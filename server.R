@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
             df <- filter(df, name %in% c("nh_white_total", "nh_black_total", "hispanic_total", "nh_asian_total", "nh_other_total"))
         }
         else if (input$waa_plot_gender_select == T & input$waa_plot_race_select == T) {
-            df <- filter(df, !name %in% c("nh_white_total", "nh_black_total", "hispanic_total", "nh_asian_total", "nh_other_total"))
+            df <- filter(df, !name %in% c("nh_white_total", "nh_black_total", "hispanic_total", "nh_asian_total", "nh_other_total", "total", "total_female", "total_male"))
         }
         return(df)
         })
@@ -168,11 +168,11 @@ shinyServer(function(input, output, session) {
         filter_waa() %>% 
             hchart(type = "line",hcaes(x = year, y = value, group = name)) %>% 
             hc_yAxis(title = list(text = "Number of working age adults")) %>% 
-            hc_title(text = "Projected Number of Working Age Adults Through 2036")
+            hc_title(text = "Projected Number of Working Age Adults Through 2036") %>% 
+            hc_add_theme(ja_hc_theme())
     })
     ## 3. trends in in-demand jobs --------
     ## 4. attractive jobs --------
     ## 5. living wage jobs --------
     ## 6. employment by education --------
-    ## * Content -----
 })
