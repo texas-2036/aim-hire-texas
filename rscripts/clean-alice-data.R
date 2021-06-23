@@ -33,7 +33,7 @@ alice_demographics <- alice_upwork %>%
   summarise(
     across(poverty:above_alice, sum, na.rm=T)
   )
-# 
+
 #   gather(type, est, poverty:above_alice) %>% 
 #   group_by(county_name, category) %>% 
 #   mutate(
