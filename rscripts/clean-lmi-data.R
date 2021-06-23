@@ -2,6 +2,10 @@ library(tidyverse)
 library(here)
 library(janitor)
 
+#From here: https://www.twc.texas.gov/files/policy_letters/attachments/wd-24-20-att-3.pdf
+oes_crosswalk <- readxl::read_excel(here::here("raw-data/oes_2019_hybrid_structure.xlsx"), skip=5) %>% 
+  clean_names()
+
 wda_crosswalk <- read_csv(here::here("raw-data", "county_wda_crosswalk.csv")) %>% 
   mutate(
     wda28_number = case_when(
@@ -65,7 +69,36 @@ wda28_jobs_2028 <- do.call(rbind, pull_job_2028) %>%
     x2019_mean_annual_wage = as.numeric(str_remove(x2019_mean_annual_wage, "-"))
   ) %>% 
   dplyr::select(names(tx)) %>% 
-  rbind(., tx)
+  rbind(., tx) %>% 
+  #OES crosswalk
+  left_join(., oes_crosswalk, by=c("occ_code" = "x2010_soc_code")) %>% 
+  dplyr::select(occ_summary_level:wda_number, oes_2019_estimates_code, oes_2019_estimates_title, x2010_soc_title) %>% 
+  mutate(
+    oes_2019_estimates_title = case_when(
+      occ_code == "51-2098" ~ "Miscellaneous Assemblers and Fabricators",
+      occ_code == "51-2028" ~ "Electrical, Electronic, and Electromechanical Assemblers, Except Coil Winders, Tapers, and Finishers",
+      occ_code == "53-1048" ~ "First-Line Supervisors of Transportation and Material Moving Workers, Except Aircraft Cargo Handling Supervisors",
+      occ_code == "21-1018" ~ "Substance Abuse, Behavioral Disorder, and Mental Health Counselors",
+      occ_code == "25-3098" ~ "Substitute Teachers, Short-Term",
+      occ_code == "25-3097" ~ "Tutors and Teachers and Instructors, All Other",
+      TRUE ~ oes_2019_estimates_title
+    ),
+    
+    oes_2019_estimates_code = case_when(
+      occ_code == "51-2098" ~ "51-2090",
+      occ_code == "51-2028" ~ "51-2028", #Stays the same
+      occ_code == "53-1048" ~ "53-1047",
+      occ_code == "21-1018" ~ "21-1018", # Stays the same
+      occ_code == "25-3098" ~ "25-3031",
+      occ_code == "25-3097" ~ "25-3097", #Stays the same
+      TRUE ~ oes_2019_estimates_code
+    )
+  ) 
+
+#missing <- filter(wda28_jobs_2028, is.na(oes_2019_estimates_code))
+#tabyl(missing, occupational_title) #Very few jobs are missing... awesome!
+#tabyl(missing, occupational_title, occ_code) #Very few jobs are missing... awesome!
+
 
 
 #Projections ------------
@@ -85,35 +118,25 @@ wda_jobs_projection <- wda28_jobs_2028 %>%
     annual_average_employment_2036 = emp_2036
   ) %>% 
   #Summarize by WDA
-  group_by(wda, wda_number, occ_code, occupational_title) %>% 
+  group_by(wda, wda_number, oes_2019_estimates_code, oes_2019_estimates_title) %>% 
   summarise(
-    across(c(x2019_mean_hourly_wage, x2019_mean_annual_wage),
-           weighted.mean, wt=annual_average_employment_2018, na.rm=T),
+    # across(c(x2019_mean_hourly_wage, x2019_mean_annual_wage),
+    #        weighted.mean, wt=annual_average_employment_2018, na.rm=T),
     
     across(c(annual_average_employment_2018,
              annual_average_employment_2028,
              annual_average_employment_2036), sum, na.rm=T)
-  ) %>% 
-    mutate(
-      x2019_mean_hourly_wage = ifelse(is.nan(x2019_mean_hourly_wage), NA, x2019_mean_hourly_wage),
-      x2019_mean_annual_wage = ifelse(is.nan(x2019_mean_annual_wage), NA, x2019_mean_annual_wage),
-      annual_average_employment_2036 = round(annual_average_employment_2036)
-    ) %>% 
-  ##Living wage bands; based on MEAN not MEDIAN -----
-  mutate(
-    wage_band = case_when(
-      x2019_mean_annual_wage>65000 ~ "High Wage",
-      x2019_mean_annual_wage>45000 & x2019_mean_annual_wage<=65000 ~ "Mid-High Wage",
-      x2019_mean_annual_wage>=25000 & x2019_mean_annual_wage<=45000 ~ "Mid-Low Wage",
-      x2019_mean_annual_wage<25000 ~ "Low Wage"
-    ),
-    wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   )
 
+#Created by clean-living-wage-bands.R
+wages <- readRDS(file=here::here("clean-data", "twc_living_wage_bands.rds"))
 
 
+df <- left_join(wda_jobs_projection, wages, by=c("wda", "wda_number", "oes_2019_estimates_code"="soc_code",
+                                                 "oes_2019_estimates_title"="occupation_title"))
 
-saveRDS(wda_jobs_projection, here::here("clean-data", "lmi-wda-jobs-wages-projections.rds"))
+
+saveRDS(df, here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
 
 

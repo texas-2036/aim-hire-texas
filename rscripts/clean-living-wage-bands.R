@@ -32,38 +32,39 @@ wda28_crosswalk <- wda_crosswalk %>%
 
 #This now exists in clean-lmi-data.R
 # #Living wages by occupation ---------
-# twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.xlsx")) %>% 
-#   clean_names() %>% 
-#   mutate(
-#     no_of_employed = ifelse(no_of_employed=="N/A", NA, as.numeric(no_of_employed)),
-#     median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
-#   ) %>% 
-#   filter(!is.na(median_wage) & soc_code != "00-0000") %>% 
-#   dplyr::select(wda28_name = area, soc_code, occupation_title, no_of_employed, median_wage) %>% 
-#   left_join(., wda28_crosswalk) %>% 
-#   mutate(
-#     wda = ifelse(is.na(wda), "Texas", wda)
-#   ) %>% 
-#   group_by(wda, wda_number, soc_code, occupation_title) %>% 
-#   summarise(
-#     median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
-#     no_of_employed = sum(no_of_employed, na.rm=T)  
-#   ) %>% 
-#   mutate(
-#     wage_band = case_when(
-#       median_wage>65000 ~ "High Wage",
-#       median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
-#       median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
-#       median_wage<25000 ~ "Low Wage"
-#     ),
-#     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
-#   )
-# 
-# 
-# saveRDS(twc_2019, file=here::here("clean-data", "twc_living_wage_bands.rds"))
+twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.xlsx")) %>%
+  clean_names() %>%
+  mutate(
+    no_of_employed = ifelse(no_of_employed=="N/A", NA, as.numeric(no_of_employed)),
+    median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
+  ) %>%
+  filter(!is.na(median_wage) & soc_code != "00-0000") %>%
+  dplyr::select(wda28_name = area, soc_code, occupation_title, no_of_employed, median_wage) %>%
+  left_join(., wda28_crosswalk) %>%
+  mutate(
+    wda = ifelse(is.na(wda), "Texas", wda)
+  ) %>%
+  group_by(wda, wda_number, soc_code, occupation_title) %>%
+  summarise(
+    median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
+    no_of_employed = sum(no_of_employed, na.rm=T)
+  ) %>%
+  mutate(
+    wage_band = case_when(
+      median_wage>65000 ~ "High Wage",
+      median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
+      median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
+      median_wage<25000 ~ "Low Wage"
+    ),
+    wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
+  )
+
+
+saveRDS(twc_2019, file=here::here("clean-data", "twc_living_wage_bands.rds"))
 
 
 #By industry-occupation ------------
+
 texas <- readxl::read_excel(here::here("raw-data/twc-lmi-occ-ind/Wages Report.xlsx"))
 
 pull_data <- lapply(1:26, function(x){
