@@ -11,7 +11,8 @@ shinyUI(
             tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
             tags$script(HTML("$('body').addClass('fixed');")),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
-            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")),
+            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")
+            ),
             tags$style(HTML("
 
                             ")), # close tags$style
@@ -36,8 +37,10 @@ shinyUI(
                          ## * Well panel -----------
                          column(4,
                                 wellPanel(
-                                    h1(htmlOutput("wda_name"), align = "center", height = 4), 
-                                    leafletOutput("wda_map", height = 150),
+                                    style = "overflow-y: auto; position:fixed; width:375px; top:0; bottom:0",
+                                    tags$hr(),
+                                    h2(htmlOutput("wda_name"), align = "center", height = 4), 
+                                    leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
                                     tags$hr(),
                                     p(strong("Jump to section:")), 
@@ -67,46 +70,65 @@ shinyUI(
                                 
                                 ## * Main panel -----------
                                 ## 1. living wage households --------
+                                fluidRow(
                                 br(),
                                 h2(htmlOutput("header_lwh"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "1_living_wage_households.md")),
+                                includeMarkdown(here::here("text", "1_living_wage_households.md"))
+                                ),
                                 ## 2. trends in working age adults --------
+                                fluidRow(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_waa"), align = "center", height = 4),
                                 includeMarkdown(here::here("text", "2_working_age_adults.md")),
                                 fluidRow(
-                                column(width = 4, offset = 2, align = "center",
+                                column(width = 4, align = "center",
                                        
                                 checkboxInput(inputId = "waa_plot_race_select",
                                               label = "Show data by race-ethnicity?",
                                               value = F)),
-                                column(width = 4, align = "center",
+                                column(width = 4, align = "left",
                                 checkboxInput(inputId = "waa_plot_gender_select",
                                               label = "Show data by gender?",
                                               value = F))
                                 ),
-                                highchartOutput("waa_plot"),
+                                column(8,
+                                highchartOutput("waa_plot")
+                                ),
+                                column(4,
+                                       h3(htmlOutput("waa_vb", aligh = "center")),
+                                       h5("Working age adults (2036)"),
+                                       highchartOutput("waa_plot_pie")
+                                       )
+                                ),
                                 ## 3. trends in in-demand jobs --------
+                                fluidRow(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_idj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "3_indemand_jobs.md")),
+                                includeMarkdown(here::here("text", "3_indemand_jobs.md"))
+                                ),
                                 ## 4. attractive jobs --------
+                                fluidRow(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_aj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "4_attractive_jobs.md")),
+                                includeMarkdown(here::here("text", "4_attractive_jobs.md"))
+                                ),
                                 ## 5. living wage jobs --------
-                                br(),
+                                fluidRow(
+                                    br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_lwj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
+                                includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
+                                ),
                                 ## 6. employment by education --------
+                                fluidRow(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_edu"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "6_employment_by_education.md")),
+                                includeMarkdown(here::here("text", "6_employment_by_education.md"))
+                                )
                                 ))
                      ) # closes wda page
             ) # close navbarPage

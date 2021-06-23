@@ -11,6 +11,9 @@ library(sever)
 library(shinyjs)
 library(rmapshaper)
 library(scroller)
+library(shinydashboard)
+library(texas2036)
+
 
 
 options(tigris_use_cache = TRUE)
@@ -26,8 +29,8 @@ wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0
 # ###--- Load data -------------------------
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 counties <- readRDS(here::here("clean-data", "county_shapefile.rds"))
-crosswalk <- read.csv(here::here("raw-data", "county_wda_crosswalk.csv"))
-centroids <- readRDS(here::here("clean-data", "wda_centroids.rds"))
+crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))
+# centroids <- readRDS(here::here("clean-data", "wda_centroids.rds"))
 # lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
 # demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))

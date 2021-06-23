@@ -77,7 +77,17 @@ waa %>%
   hchart(type = "line", hcaes(x = year, y = value, group = name)) %>% 
   hc_yAxis(title = list(text = "Number of working age adults")) %>% 
   hc_title(text = "Projected Number of Working Age Adults Through 2036, by Race-Ethnicity")
-
+waa %>% 
+  filter(wda == "Gulf Coast" & year == 2036) %>% 
+  select(wda, nh_white_total, nh_black_total, hispanic_total, nh_asian_total, nh_other_total) %>% 
+  pivot_longer(nh_white_total:nh_other_total) %>% 
+  hchart("pie", hcaes(name, value)) %>% 
+  hc_plotOptions(
+    series = list(showInLegend = TRUE,
+                  dataLabels = F)
+    
+  ) %>% 
+  hc_title(text = "Projected demographic breakdown of workforce")
 ###--- In demand jobs -------------------------
 demand %>% 
   filter(faethm_wda_name == "Alamo") %>% 
