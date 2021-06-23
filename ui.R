@@ -69,10 +69,12 @@ shinyUI(
                                 ## 1. living wage households --------
                                 br(),
                                 h2(htmlOutput("header_lwh"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "1_living_wage_households.md")),
                                 ## 2. trends in working age adults --------
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_waa"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "2_working_age_adults.md")),
                                 fluidRow(
                                 column(width = 4, offset = 2, align = "center",
                                        
@@ -89,18 +91,22 @@ shinyUI(
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_idj"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                 ## 4. attractive jobs --------
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_aj"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "4_attractive_jobs.md")),
                                 ## 5. living wage jobs --------
                                 br(),
                                 tags$hr(),
                                 h2(htmlOutput("header_lwj"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
                                 ## 6. employment by education --------
                                 br(),
                                 tags$hr(),
-                                h2(htmlOutput("header_edu"), align = "center", height = 4)
+                                h2(htmlOutput("header_edu"), align = "center", height = 4),
+                                includeMarkdown(here::here("text", "6_employment_by_education.md")),
                                 ))
                      ) # closes wda page
             ) # close navbarPage
