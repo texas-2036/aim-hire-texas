@@ -22,6 +22,7 @@ wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
 demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))
+aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 load(here::here("clean-data", "pseo-data.RData"))
@@ -97,6 +98,21 @@ demand %>%
   hc_title(text = "Jobs that will be the most in-demand in 2036") %>% 
   hc_xAxis(title = "") 
 
+###--- Attractive jobs --------------------------------
+aj %>% 
+  filter(wfb == "Alamo") %>% 
+  hchart("scatter", hcaes(quality_index, demand_index, group = quality_and_demand_quadrant)) %>% 
+  hc_xAxis(title = list(text = "Quality Index")) %>% 
+  hc_yAxis(title = list(text = "Demand Index"),
+           plotLines = list(list(
+             value = 0,
+             color = 'black',
+             width = 3,
+             zIndex = 4,
+             label = list(text = "mean",
+                          style = list( color = 'black', fontWeight = 'bold'   )
+             ))))
+  
 ###--- Living wage jobs -------------------------------
 ###--- Employment by education, post high school ------
 

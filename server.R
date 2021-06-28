@@ -261,6 +261,45 @@ shinyServer(function(input, output, session) {
     
     ## 3. trends in in-demand jobs --------
     ## 4. attractive jobs --------
+    ## Reactives 
+    filter_aj <- reactive({
+            df <- aj %>% 
+                filter(wfb == input$select_wda) %>% 
+                filter(!is.na(demand_index))
+    })
+    
+    ## Plots
+    # line chart
+    output$aj_plot <- renderHighchart({
+        filter_aj() %>% 
+            hchart(type = "scatter", hcaes(x = quality_index, y = demand_index, 
+                                           group = quality_and_demand_quadrant,
+                                           size = share_of_local_jobs_percent)) %>% 
+            hc_yAxis(title = list(text = "Demand Index"),
+                     plotLines = list(list(
+                         value = 0,
+                         color = 'black',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "demand threshold",
+                                      style = list( color = 'black', fontWeight = 'bold'   )
+                         )))) %>% 
+            hc_xAxis(title = list(text = "Quality Index"),
+                     plotLines = list(list(
+                         value = 0,
+                         color = 'black',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "quality threshold",
+                                      style = list( color = 'black', fontWeight = 'bold'   )
+                         )))) %>% 
+            hc_title(text = "Quality and Demand Indices") %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return ('Occupation: ' + this.point.occupation + ' <br> Quality Index: ' + this.x + ' <br> Demand Index: ' + this.y)}")) %>%
+            
+            hc_add_theme(tx2036_hc_light())
+    })
+    
     ## 5. living wage jobs --------
     ## 6. employment by education --------
 })
