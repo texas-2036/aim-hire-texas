@@ -73,6 +73,14 @@ shinyServer(function(input, output, session) {
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "WDA")
     })
     
+    observeEvent(input$mini_map_shape_click$id, {
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = unique(crosswalk$wda),
+                             selected = input$mini_map_shape_click$id)
+    })
+    
     ###--- WDA PAGE ----------------------------
     ## * Well panel --------
     
@@ -104,22 +112,29 @@ shinyServer(function(input, output, session) {
                         color = "black",
                         opacity = 1,
                         fill = T,
-                        fillOpacity = 0,
-                        data = wda_sf) %>%
-            addPolygons(stroke = T,
+                        fillColor = ~pal(color_category),
+                        fillOpacity = 1,
+                        data = selected_wdacounties_sf()) %>% 
+            addPolygons(stroke = T, 
                         weight = 1,
                         color = "black",
                         opacity = 1,
                         fill = T,
-                        fillColor = ~pal(color_category),
-                        fillOpacity = 1,
-                        data = selected_wdacounties_sf()) %>% 
+                        fillOpacity = 0,
+                        label = ~wda,
+                        group = "highlight",
+                        layerId = ~wda,
+                        highlightOptions = highlightOptions(color="white",
+                                                            opacity=1, weight=3, bringToFront=T),
+                        data = wda_sf) %>%
             addPolygons(stroke = T,
                         weight = 3,
                         color = "black",
                         opacity = 1,
                         fill = F,
-                        data = selected_wda_sf()) %>% 
+                        data = selected_wda_sf(),
+                        layerId = ~wda) %>% 
+
             setMapWidgetStyle(list(background= "transparent")) %>% 
             htmlwidgets::onRender("function(el, x) { 
                map = this
