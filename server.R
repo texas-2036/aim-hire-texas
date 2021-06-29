@@ -272,19 +272,10 @@ shinyServer(function(input, output, session) {
     # line chart
     output$aj_plot <- renderHighchart({
         filter_aj() %>% 
-            hchart(type = "scatter", hcaes(x = quality_index, y = demand_index, 
+            hchart(type = "scatter", hcaes(y = quality_index, x = demand_index, 
                                            group = quality_and_demand_quadrant,
                                            size = share_of_local_jobs_percent)) %>% 
-            hc_yAxis(title = list(text = "Demand Index"),
-                     plotLines = list(list(
-                         value = 0,
-                         color = 'black',
-                         width = 3,
-                         zIndex = 4,
-                         label = list(text = "demand threshold",
-                                      style = list( color = 'black', fontWeight = 'bold'   )
-                         )))) %>% 
-            hc_xAxis(title = list(text = "Quality Index"),
+            hc_yAxis(title = list(text = "Quality Index"),
                      plotLines = list(list(
                          value = 0,
                          color = 'black',
@@ -293,11 +284,44 @@ shinyServer(function(input, output, session) {
                          label = list(text = "quality threshold",
                                       style = list( color = 'black', fontWeight = 'bold'   )
                          )))) %>% 
+            hc_xAxis(title = list(text = "Demand Index"),
+                     plotLines = list(list(
+                         value = 0,
+                         color = 'black',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "demand threshold",
+                                      style = list( color = 'black', fontWeight = 'bold'   )
+                         )))) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
+            hc_subtitle(text = "Quality and demand are determined by x and y sources. The size of the bubble indicates the share of local jobs") %>% 
             hc_tooltip(formatter = JS("function(){
-                                return ('Occupation: ' + this.point.occupation + ' <br> Quality Index: ' + this.x + ' <br> Demand Index: ' + this.y)}")) %>%
+                                return (this.point.occupation + 
+                                      ' <br> Quality Index: ' + this.y + 
+                                      ' <br> Demand Index: ' + this.x +
+                                      ' <br> Share of local jobs: ' + this.point.share_of_local_jobs_percent + '%')}")) %>%
             
             hc_add_theme(tx2036_hc_light())
+    })
+    
+    aj_table_data <- reactive ({
+        aj %>% 
+            filter(wfb == input$select_wda) %>% 
+            select("Occupation" = occupation, 
+                   Quality = quality_index, 
+                   Demand = demand_index,
+                   `Share of Local Jobs` = share_of_local_jobs_percent) %>%
+            arrange(desc(Quality + Demand))
+    })
+    # output$aj_table <- DT::renderDataTable(
+    #     DT::datatable(aj_table_data(), rownames = F)
+    # )
+    
+    # A fancy option
+    output$aj_table <- renderUI({
+
+ 
+
     })
     
     ## 5. living wage jobs --------

@@ -13,7 +13,9 @@ library(rmapshaper)
 library(scroller)
 library(shinydashboard)
 library(texas2036)
-
+library(gt)
+library(glue)
+library(paletteer)
 
 
 options(tigris_use_cache = TRUE)
@@ -25,6 +27,9 @@ wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0
 # "#3ead92" green
 
 # c("#2a366c", "#f26852", "#5f6fc1", "#3ead92")
+
+#actual tx2036 colors
+# c("#002D74", "#F26852", "#2A7DE1", "#00A9C5", "#3A4A9F")
 
 # ###--- Load data -------------------------
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
