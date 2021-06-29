@@ -286,6 +286,7 @@ shinyServer(function(input, output, session) {
                          label = list(text = "demand threshold",
                                       style = list( color = 'black', fontWeight = 'bold'   )
                          )))) %>% 
+            hc_colors(c("#3ead92", "#5f6fc1", "#2a366c", "#f26852")) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
             hc_subtitle(text = "Quality and demand are determined by x and y sources. The size of the bubble indicates the share of local jobs") %>% 
             hc_tooltip(formatter = JS("function(){
@@ -300,6 +301,9 @@ shinyServer(function(input, output, session) {
     aj_table_data <- reactive ({
         aj %>% 
             filter(wfb == input$select_wda) %>% 
+            mutate(quality_index = round(quality_index, 1),
+                   demand_index = round(demand_index, 1),
+                   share_of_local_jobs_percent = round(share_of_local_jobs_percent, 1)) %>% 
             select("Occupation" = occupation, 
                    Quality = quality_index, 
                    Demand = demand_index,
@@ -316,16 +320,18 @@ shinyServer(function(input, output, session) {
                 #dplyr::select(-variable) %>%
                 # for aca enrollment, negative is bad, so red. positive is good, so green
                 mutate(`Quality` = ifelse(`Quality` < 0.0,
-                                                color_tile("pink", "transparent")(`Quality`*c(`Quality`<0)),
-                                                color_tile("transparent", "#71CA97")(`Quality`*c(`Quality`>0))),
+                                                color_tile("#f26852", "transparent")(`Quality`*c(`Quality`<0)),
+                                                color_tile("transparent", "#3ead92")(`Quality`*c(`Quality`>0))),
                        `Demand` = ifelse(`Demand` < 0.0,
-                                           color_tile("pink", "transparent")(`Demand`*c(`Demand`<0)),
-                                           color_tile("transparent", "#71CA97")(`Demand`*c(`Demand`>0))),
-                       `Share of Local Jobs` = ifelse(`Share of Local Jobs` < 0.0,
-                                           color_tile("pink", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
-                                           color_tile("transparent", "#71CA97")(`Share of Local Jobs`*c(`Share of Local Jobs`>0)))) %>%
+                                           color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
+                                           color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
+                       `Share of Local Jobs` = #ifelse(`Share of Local Jobs` < 0.0,
+                                           #color_tile("#f26852", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
+                                           color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
                 kable("html", escape = F, table.attr = "style='width:100%;'") %>%
-                kable_styling("hover", full_width = T) #%>%
+                kable_styling("hover", full_width = T) %>%
+            kable_styling(bootstrap_options = c('striped', 'condensed')) %>%
+            scroll_box(width = "100%", height = "400px")
                 #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
         
         return(table)
