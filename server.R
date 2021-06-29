@@ -329,8 +329,8 @@ shinyServer(function(input, output, session) {
                                            #color_tile("#f26852", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
                                            color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
                 kable("html", escape = F, table.attr = "style='width:100%;'") %>%
-                kable_styling("hover", full_width = T) %>%
-            kable_styling(bootstrap_options = c('striped', 'condensed')) %>%
+                #kable_styling("hover", full_width = T) %>%
+            kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
             scroll_box(width = "100%", height = "400px")
                 #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
         
