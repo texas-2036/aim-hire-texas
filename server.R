@@ -10,13 +10,6 @@ shinyServer(function(input, output, session) {
         return(sf)
     })
     
-    # selected_wda_centroid <- reactive({
-    #     centroid <- centroids %>% 
-    #         filter(wda == input$select_wda) %>% 
-    #         select(lat, lon)
-    #     return(centroid)
-    # })
-    
     selected_wdacounties_sf <- reactive({
         sf <- counties %>% 
             filter(wda == input$select_wda)
@@ -73,6 +66,14 @@ shinyServer(function(input, output, session) {
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
     
+    observeEvent(input$mini_map_shape_click$id, {
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = unique(crosswalk$wda),
+                             selected = input$mini_map_shape_click$id)
+    })
+    
     ###--- WDA PAGE ----------------------------
     ## * Well panel --------
     
@@ -104,22 +105,29 @@ shinyServer(function(input, output, session) {
                         color = "black",
                         opacity = 1,
                         fill = T,
-                        fillOpacity = 0,
-                        data = wda_sf) %>%
-            addPolygons(stroke = T,
+                        fillColor = ~pal(color_category),
+                        fillOpacity = 1,
+                        data = selected_wdacounties_sf()) %>% 
+            addPolygons(stroke = T, 
                         weight = 1,
                         color = "black",
                         opacity = 1,
                         fill = T,
-                        fillColor = ~pal(color_category),
-                        fillOpacity = 1,
-                        data = selected_wdacounties_sf()) %>% 
+                        fillOpacity = 0,
+                        label = ~wda,
+                        group = "highlight",
+                        layerId = ~wda,
+                        highlightOptions = highlightOptions(color="white",
+                                                            opacity=1, weight=3, bringToFront=T),
+                        data = wda_sf) %>%
             addPolygons(stroke = T,
                         weight = 3,
                         color = "black",
                         opacity = 1,
                         fill = F,
-                        data = selected_wda_sf()) %>% 
+                        data = selected_wda_sf(),
+                        layerId = ~wda) %>% 
+
             setMapWidgetStyle(list(background= "transparent")) %>% 
             htmlwidgets::onRender("function(el, x) { 
                map = this
@@ -246,6 +254,84 @@ shinyServer(function(input, output, session) {
     
     ## 3. trends in in-demand jobs --------
     ## 4. attractive jobs --------
+    ## Reactives 
+    filter_aj <- reactive({
+            df <- aj %>% 
+                filter(wfb == input$select_wda) %>% 
+                filter(!is.na(demand_index))
+    })
+    
+    ## Plots
+    # line chart
+    output$aj_plot <- renderHighchart({
+        filter_aj() %>% 
+            hchart(type = "scatter", hcaes(y = quality_index, x = demand_index, 
+                                           group = quality_and_demand_quadrant,
+                                           size = share_of_local_jobs_percent)) %>% 
+            hc_yAxis(title = list(text = "Quality Index"),
+                     plotLines = list(list(
+                         value = 0,
+                         color = 'black',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "quality threshold",
+                                      style = list( color = 'black', fontWeight = 'bold'   )
+                         )))) %>% 
+            hc_xAxis(title = list(text = "Demand Index"),
+                     plotLines = list(list(
+                         value = 0,
+                         color = 'black',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "demand threshold",
+                                      style = list( color = 'black', fontWeight = 'bold'   )
+                         )))) %>% 
+            hc_title(text = "Quality and Demand Indices") %>% 
+            hc_subtitle(text = "Quality and demand are determined by x and y sources. The size of the bubble indicates the share of local jobs") %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.occupation + 
+                                      ' <br> Quality Index: ' + this.y + 
+                                      ' <br> Demand Index: ' + this.x +
+                                      ' <br> Share of local jobs: ' + this.point.share_of_local_jobs_percent + '%')}")) %>%
+            
+            hc_add_theme(tx2036_hc_light())
+    })
+    
+    aj_table_data <- reactive ({
+        aj %>% 
+            filter(wfb == input$select_wda) %>% 
+            select("Occupation" = occupation, 
+                   Quality = quality_index, 
+                   Demand = demand_index,
+                   `Share of Local Jobs` = share_of_local_jobs_percent) %>%
+            arrange(desc(Quality + Demand))
+    })
+    # output$aj_table <- DT::renderDataTable(
+    #     DT::datatable(aj_table_data(), rownames = F)
+    # )
+    # 
+    output$aj_table <- function() {
+        
+        table <- aj_table_data() %>%
+                #dplyr::select(-variable) %>%
+                # for aca enrollment, negative is bad, so red. positive is good, so green
+                mutate(`Quality` = ifelse(`Quality` < 0.0,
+                                                color_tile("pink", "transparent")(`Quality`*c(`Quality`<0)),
+                                                color_tile("transparent", "#71CA97")(`Quality`*c(`Quality`>0))),
+                       `Demand` = ifelse(`Demand` < 0.0,
+                                           color_tile("pink", "transparent")(`Demand`*c(`Demand`<0)),
+                                           color_tile("transparent", "#71CA97")(`Demand`*c(`Demand`>0))),
+                       `Share of Local Jobs` = ifelse(`Share of Local Jobs` < 0.0,
+                                           color_tile("pink", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
+                                           color_tile("transparent", "#71CA97")(`Share of Local Jobs`*c(`Share of Local Jobs`>0)))) %>%
+                kable("html", escape = F, table.attr = "style='width:100%;'") %>%
+                kable_styling("hover", full_width = T) #%>%
+                #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
+        
+        return(table)
+    }
+    
+    
     ## 5. living wage jobs --------
     ## 6. employment by education --------
 })
