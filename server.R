@@ -63,7 +63,7 @@ shinyServer(function(input, output, session) {
                              label = "Choose a different WDA: ",
                              choices = unique(crosswalk$wda),
                              selected = input$home_map_shape_click$id)
-        updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "WDA")
+        updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
     
     observeEvent(input$mini_map_shape_click$id, {
@@ -79,7 +79,7 @@ shinyServer(function(input, output, session) {
     
     # print wda name
     output$wda_name <- renderUI({
-        text <- HTML(paste0(input$select_wda), " WDA")
+        text <- HTML(paste0(input$select_wda), "WDA")
         return(text)
         })
     
