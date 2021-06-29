@@ -4,7 +4,7 @@ source("read-data.R")
 shinyUI(
     tagList(
         useShinyjs(),
-        # scroller::use_scroller(),
+        scroller::use_scroller(),
         tags$head(
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
             tags$link(rel="shortcut icon", href="favicon.png"),

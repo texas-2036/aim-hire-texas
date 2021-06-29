@@ -582,47 +582,12 @@ letter-spacing: 3px;
 .main-panel > .row {
     background-color: #3A4A9F;
     color: #fff;
-    padding: 30px 25px;
+    padding: 30px 40px;
 }
 
 .main-panel > .row.dark-bg {
     background-color: #201F50;
 }
-
-/* FLIPPED COLORS */
-
-/* .h2, h2 {
-    color: #3A4A9F;
- }
-
-.main-panel > .row {
-    background-color: #fff;
-    padding: 30px 25px;
-    color: #090823;
-}
-
-.main-panel > .row.dark-bg {
-    background-color: #F3F6F8;
-}
-
-.main-panel > .row.dark-bg > h2 {
-    color: #201F50;
-}
-
-.well {
-    background-color: #201F50;
-    color: #fff;
-}
-
-.well-panel a {
-    color: #F26852;
-}
-
-.well > h2 {
-    color: #fff;
-} */
-
-/* END FLIPPED COLORS */
 
 
 .well-panel {
@@ -646,3 +611,37 @@ letter-spacing: 3px;
     width: 30%;
     height: 100vh;
 }
+
+/* FLIPPED COLORS */
+
+/* .h2, h2 {
+    color: #3A4A9F;
+ }
+
+.main-panel > .row {
+    background-color: #fff;
+    color: #090823;
+}
+
+.main-panel > .row.dark-bg {
+    background-color: #F3F6F8;
+}
+
+.main-panel > .row.dark-bg > h2 {
+    color: #201F50;
+}
+
+.well-panel {
+    background-color: #201F50;
+    color: #fff;
+}
+
+.well-panel a {
+    color: #F26852;
+}
+
+.well > h2 {
+    color: #fff;
+} */
+
+/* END FLIPPED COLORS */
