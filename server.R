@@ -313,16 +313,14 @@ shinyServer(function(input, output, session) {
                    `Share of Local Jobs` = share_of_local_jobs_percent) %>%
             arrange(desc(Quality + Demand))
     })
-    # output$aj_table <- DT::renderDataTable(
-    #     DT::datatable(aj_table_data(), rownames = F)
-    # )
+    output$aj_table <- DT::renderDataTable(
+        DT::datatable(aj_table_data(), rownames = F)
+    )
     
-    # A fancy option
-    output$aj_table <- renderUI({
-
- 
-
-    })
+    # # A fancy option
+    # output$aj_table <- renderUI({
+    # 
+    # })
     
     ## 5. living wage jobs --------
     ## 6. employment by education --------

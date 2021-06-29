@@ -118,8 +118,8 @@ shinyUI(
                                 highchartOutput("aj_plot", height = 500),
                                 #), 
                                 #column(5,
-                                       #DT::dataTableOutput("aj_table")
-                                gt::gt_output("aj_table")
+                                DT::dataTableOutput("aj_table")
+                               
                                        #)
                                 ),
                                 ## 5. living wage jobs --------
