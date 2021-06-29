@@ -13,8 +13,8 @@ library(rmapshaper)
 library(scroller)
 library(shinydashboard)
 library(texas2036)
-library(gt)
-library(glue)
+library(kableExtra)
+library(formattable)
 library(paletteer)
 
 

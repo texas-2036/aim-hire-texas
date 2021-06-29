@@ -10,13 +10,6 @@ shinyServer(function(input, output, session) {
         return(sf)
     })
     
-    # selected_wda_centroid <- reactive({
-    #     centroid <- centroids %>% 
-    #         filter(wda == input$select_wda) %>% 
-    #         select(lat, lon)
-    #     return(centroid)
-    # })
-    
     selected_wdacounties_sf <- reactive({
         sf <- counties %>% 
             filter(wda == input$select_wda)
@@ -313,14 +306,31 @@ shinyServer(function(input, output, session) {
                    `Share of Local Jobs` = share_of_local_jobs_percent) %>%
             arrange(desc(Quality + Demand))
     })
-    output$aj_table <- DT::renderDataTable(
-        DT::datatable(aj_table_data(), rownames = F)
-    )
-    
-    # # A fancy option
-    # output$aj_table <- renderUI({
+    # output$aj_table <- DT::renderDataTable(
+    #     DT::datatable(aj_table_data(), rownames = F)
+    # )
     # 
-    # })
+    output$aj_table <- function() {
+        
+        table <- aj_table_data() %>%
+                #dplyr::select(-variable) %>%
+                # for aca enrollment, negative is bad, so red. positive is good, so green
+                mutate(`Quality` = ifelse(`Quality` < 0.0,
+                                                color_tile("pink", "transparent")(`Quality`*c(`Quality`<0)),
+                                                color_tile("transparent", "#71CA97")(`Quality`*c(`Quality`>0))),
+                       `Demand` = ifelse(`Demand` < 0.0,
+                                           color_tile("pink", "transparent")(`Demand`*c(`Demand`<0)),
+                                           color_tile("transparent", "#71CA97")(`Demand`*c(`Demand`>0))),
+                       `Share of Local Jobs` = ifelse(`Share of Local Jobs` < 0.0,
+                                           color_tile("pink", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
+                                           color_tile("transparent", "#71CA97")(`Share of Local Jobs`*c(`Share of Local Jobs`>0)))) %>%
+                kable("html", escape = F, table.attr = "style='width:100%;'") %>%
+                kable_styling("hover", full_width = T) #%>%
+                #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
+        
+        return(table)
+    }
+    
     
     ## 5. living wage jobs --------
     ## 6. employment by education --------

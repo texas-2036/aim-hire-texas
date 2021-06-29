@@ -118,7 +118,7 @@ shinyUI(
                                 highchartOutput("aj_plot", height = 500),
                                 #), 
                                 #column(5,
-                                DT::dataTableOutput("aj_table")
+                                tableOutput("aj_table")
                                
                                        #)
                                 ),
