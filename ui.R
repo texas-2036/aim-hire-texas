@@ -10,6 +10,7 @@ shinyUI(
             tags$link(rel="shortcut icon", href="favicon.png"),
             tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
             tags$script(HTML("$('body').addClass('fixed');")),
+            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap"),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")
             ),
@@ -20,25 +21,25 @@ shinyUI(
             id = "tab_being_displayed",
             selected = "Home",
             collapsible = T,
-            title = "Aim Hire Texas",
+            position = c("fixed-top"),
+            title = a(img(src="AHT-FINAL-LOGO.png", class="aht-logo", height = 70, width = 78), type="link", href="/"),
             
             ###--- LANDING PAGE ----------------------------
             tabPanel(title = "Home",
                      fluidRow(
-                         h1("Aim Hire Texas", align = "center"),
-                         h4("Click a Workforce Development Area to learn more", align = "center"),
+                         h4("Click a Workforce Development Area to learn more", align = "center", style="padding-top: 120px;"),
                          leafletOutput("home_map", height = 700)
                          )
                      ), # closes home page
             
             ###--- WDA PAGE ---------------------------
-            tabPanel(title = "WDA",
-                     fluidRow(
+            tabPanel(title = "Workforce Development Areas",
+                     div(class="wda-wrapper",
                          ## * Well panel -----------
-                         column(4,
+                         div(class="well-placeholder"),
+                         div(
                                 wellPanel(
-                                    style = "overflow-y: auto; position:fixed; width:375px; top:0; bottom:0",
-                                    tags$hr(),
+                                    class='well-panel',
                                     h2(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
@@ -46,17 +47,17 @@ shinyUI(
                                     p(strong("Jump to section:")), 
                                     
                                     column(11, offset = 1,
-                                    strong(a("Living wage households", type = "link", href = "##header_lwh")), 
+                                    strong(a("Living wage households", type = "link", href = "#header_lwh")), 
                                     br(),
-                                    strong(a("Trends in working age adults", type = "link", href = "##header_waa")),
+                                    strong(a("Trends in working age adults", type = "link", href = "#header_waa")),
                                     br(),
-                                    strong(a("Trends in in-demand jobs", type = "link", href = "##header_idj")), 
+                                    strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
                                     br(),
-                                    strong(a("Attractive jobs", type = "link", href = "##header_aj")), 
+                                    strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
-                                    strong(a("Living wage jobs", type = "link", href = "##header_lwj")),
+                                    strong(a("Living wage jobs", type = "link", href = "#header_lwj")),
                                     br(),
-                                    strong(a("Employment by education", type = "link", href = "##header_edu")),
+                                    strong(a("Employment by education", type = "link", href = "#header_edu")),
                                     tags$hr()
                                     ),
                                     
@@ -66,31 +67,34 @@ shinyUI(
                                                    selected = "Alamo"),
                                     width = "100%")), 
             
-                         column(8,
+                         div(
+                                class='main-panel',
                                 
                                 ## * Main panel -----------
                                 ## 1. living wage households --------
                                 fluidRow(
                                 br(),
-                                h2(htmlOutput("header_lwh"), align = "center", height = 4),
+                                h2(htmlOutput("header_lwh"), align = "center", height = 4, style="padding-top: 100px;"),
                                 includeMarkdown(here::here("text", "1_living_wage_households.md"))
                                 ),
                                 ## 2. trends in working age adults --------
                                 fluidRow(
-                                br(),
-                                tags$hr(),
-                                h2(htmlOutput("header_waa"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "2_working_age_adults.md")),
+                                    class="dark-bg",
+                                    br(),
+                                    h2(htmlOutput("header_waa"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "2_working_age_adults.md")
+                                ),
                                 fluidRow(
-                                column(width = 4, align = "center",
-                                       
-                                checkboxInput(inputId = "waa_plot_race_select",
-                                              label = "Show data by race-ethnicity?",
-                                              value = F)),
-                                column(width = 4, align = "left",
-                                checkboxInput(inputId = "waa_plot_gender_select",
-                                              label = "Show data by gender?",
-                                              value = F))
+                                    class="dark-bg",
+                                    column(width = 4, align = "center",
+                                    checkboxInput(inputId = "waa_plot_race_select",
+                                                label = "Show data by race-ethnicity?",
+                                                value = F)),
+                                    column(width = 4, align = "left",
+                                    checkboxInput(inputId = "waa_plot_gender_select",
+                                                label = "Show data by gender?",
+                                              value = F)
+                                    )
                                 ),
                                 column(8,
                                 highchartOutput("waa_plot")
@@ -103,40 +107,37 @@ shinyUI(
                                 ),
                                 ## 3. trends in in-demand jobs --------
                                 fluidRow(
-                                br(),
-                                tags$hr(),
-                                h2(htmlOutput("header_idj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "3_indemand_jobs.md"))
+                                    br(),
+                                    h2(htmlOutput("header_idj"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "3_indemand_jobs.md"))
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
-                                br(),
-                                tags$hr(),
-                                h2(htmlOutput("header_aj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "4_attractive_jobs.md")),
-                                #column(7,
-                                highchartOutput("aj_plot", height = 500),
-                                #), 
-                                #column(5,
-                                tableOutput("aj_table")
-                               
-                                       #)
+                                    class="dark-bg",
+                                    br(),
+                                    h2(htmlOutput("header_aj"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "4_attractive_jobs.md")),
+                                    #column(7,
+                                    highchartOutput("aj_plot", height = 500),
+                                    #), 
+                                    #column(5,
+                                    tableOutput("aj_table")
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
                                     br(),
-                                tags$hr(),
-                                h2(htmlOutput("header_lwj"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
+                                    h2(htmlOutput("header_lwj"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
                                 ),
                                 ## 6. employment by education --------
                                 fluidRow(
-                                br(),
-                                tags$hr(),
-                                h2(htmlOutput("header_edu"), align = "center", height = 4),
-                                includeMarkdown(here::here("text", "6_employment_by_education.md"))
+                                    class="dark-bg",
+                                    br(),
+                                    h2(htmlOutput("header_edu"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "6_employment_by_education.md"))
+                                    )
                                 )
-                                ))
+                            )
                      ) # closes wda page
             ) # close navbarPage
         ) # close tagList
