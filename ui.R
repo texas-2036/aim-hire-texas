@@ -116,7 +116,12 @@ shinyUI(
                                     class="dark-bg",
                                     br(),
                                     h2(htmlOutput("header_aj"), align = "center", height = 4),
-                                    includeMarkdown(here::here("text", "4_attractive_jobs.md"))
+                                    includeMarkdown(here::here("text", "4_attractive_jobs.md")),
+                                    #column(7,
+                                    highchartOutput("aj_plot", height = 500),
+                                    #), 
+                                    #column(5,
+                                    tableOutput("aj_table")
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
