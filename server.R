@@ -331,6 +331,8 @@ shinyServer(function(input, output, session) {
                 kable("html", escape = F, table.attr = "style='width:100%;'") %>%
                 #kable_styling("hover", full_width = T) %>%
             kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
+            row_spec(0, color = "white", background = "black") %>% 
+            row_spec(1:nrow(aj_table_data()), color = "black", background = "white") %>% 
             scroll_box(width = "100%", height = "400px")
                 #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
         
