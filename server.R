@@ -83,58 +83,58 @@ shinyServer(function(input, output, session) {
         return(text)
         })
     
-    # mini map
-    output$mini_map <- renderLeaflet({
-        pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
-        leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
-            setView(-99.9018, 30.9686, zoom = 6) %>% 
-            addPolygons(stroke = F,
-                        fill = T,
-                        fillOpacity = 0.5,
-                        fillColor = ~pal(color_category),
-                        group = "wdas",
-                        data = wda_sf) %>%
-            addPolygons(color = "black",
-                        stroke = T,
-                        weight = 1,
-                        fill = F,
-                        group = "counties",
-                        data = counties) %>%
-            addPolygons(stroke = T,
-                        weight = 1,
-                        color = "black",
-                        opacity = 1,
-                        fill = T,
-                        fillColor = ~pal(color_category),
-                        fillOpacity = 1,
-                        data = selected_wdacounties_sf()) %>% 
-            addPolygons(stroke = T, 
-                        weight = 1,
-                        color = "black",
-                        opacity = 1,
-                        fill = T,
-                        fillOpacity = 0,
-                        label = ~wda,
-                        group = "highlight",
-                        layerId = ~wda,
-                        highlightOptions = highlightOptions(color="white",
-                                                            opacity=1, weight=3, bringToFront=T),
-                        data = wda_sf) %>%
-            addPolygons(stroke = T,
-                        weight = 3,
-                        color = "black",
-                        opacity = 1,
-                        fill = F,
-                        data = selected_wda_sf(),
-                        layerId = ~wda) %>% 
-
-            setMapWidgetStyle(list(background= "transparent")) %>% 
-            htmlwidgets::onRender("function(el, x) { 
-               map = this
-               map.dragging.disable();
-               }")
-
-    })
+    # # mini map
+    # output$mini_map <- renderLeaflet({
+    #     pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
+    #     leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
+    #         setView(-99.9018, 30.9686, zoom = 6) %>% 
+    #         addPolygons(stroke = F,
+    #                     fill = T,
+    #                     fillOpacity = 0.5,
+    #                     fillColor = ~pal(color_category),
+    #                     group = "wdas",
+    #                     data = wda_sf) %>%
+    #         addPolygons(color = "black",
+    #                     stroke = T,
+    #                     weight = 1,
+    #                     fill = F,
+    #                     group = "counties",
+    #                     data = counties) %>%
+    #         addPolygons(stroke = T,
+    #                     weight = 1,
+    #                     color = "black",
+    #                     opacity = 1,
+    #                     fill = T,
+    #                     fillColor = ~pal(color_category),
+    #                     fillOpacity = 1,
+    #                     data = selected_wdacounties_sf()) %>% 
+    #         addPolygons(stroke = T, 
+    #                     weight = 1,
+    #                     color = "black",
+    #                     opacity = 1,
+    #                     fill = T,
+    #                     fillOpacity = 0,
+    #                     label = ~wda,
+    #                     group = "highlight",
+    #                     layerId = ~wda,
+    #                     highlightOptions = highlightOptions(color="white",
+    #                                                         opacity=1, weight=3, bringToFront=T),
+    #                     data = wda_sf) %>%
+    #         addPolygons(stroke = T,
+    #                     weight = 3,
+    #                     color = "black",
+    #                     opacity = 1,
+    #                     fill = F,
+    #                     data = selected_wda_sf(),
+    #                     layerId = ~wda) %>% 
+    # 
+    #         setMapWidgetStyle(list(background= "transparent")) %>% 
+    #         htmlwidgets::onRender("function(el, x) { 
+    #            map = this
+    #            map.dragging.disable();
+    #            }")
+    # 
+    # })
     
     # list of counties
     output$wda_counties <- renderUI({
@@ -212,8 +212,6 @@ shinyServer(function(input, output, session) {
             filter(wda == input$select_wda & year == 2036) 
         return(df)
     })
-    
-    observe(print(input$waa_plot_race_select))
     
     ## Plots
     # line chart
@@ -301,6 +299,9 @@ shinyServer(function(input, output, session) {
             mutate(quality_index = round(quality_index, 1),
                    demand_index = round(demand_index, 1),
                    share_of_local_jobs_percent = round(share_of_local_jobs_percent, 1)) %>% 
+            filter(!is.na(quality_index)) %>% 
+            filter(!is.na(demand_index)) %>% 
+            filter(!is.na(share_of_local_jobs_percent)) %>% 
             select("Occupation" = occupation, 
                    Quality = quality_index, 
                    Demand = demand_index,
@@ -308,24 +309,49 @@ shinyServer(function(input, output, session) {
             arrange(desc(Quality + Demand))
     })
 
-    output$aj_table <- function() {
+    output$aj_table <- renderReactable({
+        options(reactable.theme = reactableTheme(
+            color = "black",
+            backgroundColor = "#FFFFFF", 
+            borderColor = "#5f6fc1",
+            stripedColor = "#f8f8ff"
+        ))
         
-        table <- aj_table_data() %>%
-            mutate(`Quality` = ifelse(`Quality` < 0.0,
-                                      color_tile("#f26852", "transparent")(`Quality`*c(`Quality`<0)),
-                                      color_tile("transparent", "#3ead92")(`Quality`*c(`Quality`>0))),
-                   `Demand` = ifelse(`Demand` < 0.0,
-                                     color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
-                                     color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
-                   `Share of Local Jobs` = color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
-            kable("html", escape = F, table.attr = "style='width:100%;'") %>%
-            kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
-            row_spec(0, color = "white", background = "#5f6fc1") %>% 
-            row_spec(1:nrow(aj_table_data()), color = "black", background = "white") %>% 
-            scroll_box(width = "100%", height = "500px")
+        orange_pal <- function(x) rgb(colorRamp(c("#f26852", "white", "#3ead92"))(x), maxColorValue = 255)
+        
+        table <- reactable(aj_table_data(), 
+                           defaultColDef = colDef(
+                               align = "center"),
+                           filterable = TRUE,
+                           showPageSizeOptions = F,
+                           striped = TRUE,
+                           highlight = TRUE,
+                           
+                           columns = list(
+                               `Quality` = colDef(style = function(value) {
+                                   normalized <- (value - min(aj_table_data()$Quality)) / (max(aj_table_data()$Quality) - min(aj_table_data()$Quality))
+                                   color <- orange_pal(normalized)
+                                   list(background = color)
+                                   })
+                               ))
+        
+        
+        # table <- aj_table_data() %>%
+        #     mutate(`Quality` = ifelse(`Quality` < 0.0,
+        #                               color_tile("#f26852", "transparent")(`Quality`*c(`Quality`<0)),
+        #                               color_tile("transparent", "#3ead92")(`Quality`*c(`Quality`>0))),
+        #            `Demand` = ifelse(`Demand` < 0.0,
+        #                              color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
+        #                              color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
+        #            `Share of Local Jobs` = color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
+        #     kable("html", escape = F, table.attr = "style='width:100%;'") %>%
+        #     kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
+        #     row_spec(0, color = "white", background = "#5f6fc1") %>% 
+        #     row_spec(1:nrow(aj_table_data()), color = "black", background = "white") %>% 
+        #     scroll_box(width = "100%", height = "500px")
         
         return(table)
-    }
+    })
     
     
     ## 5. living wage jobs --------

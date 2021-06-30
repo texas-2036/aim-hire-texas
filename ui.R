@@ -41,7 +41,7 @@ shinyUI(
                                 wellPanel(
                                     class='well-panel',
                                     h2(htmlOutput("wda_name"), align = "center", height = 4), 
-                                    leafletOutput("mini_map", height = 310),
+                                    #leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
                                     tags$hr(),
                                     p(strong("Jump to section:")), 
@@ -130,7 +130,7 @@ shinyUI(
 
                                     fluidRow(
                                     column(11,
-                                    tableOutput("aj_table")
+                                    reactableOutput("aj_table")
                                     )
                                     )
                                 ),
