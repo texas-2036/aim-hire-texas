@@ -213,7 +213,7 @@ shinyServer(function(input, output, session) {
         return(df)
     })
     
-    observe(print(filter_waa()))
+    observe(print(input$waa_plot_race_select))
     
     ## Plots
     # line chart
@@ -229,18 +229,15 @@ shinyServer(function(input, output, session) {
     output$waa_plot_pie <- renderHighchart({
         filter_waa() %>% 
             filter(year == 2036) %>% 
-            #select(wda, "white" = nh_white_total, "black" = nh_black_total, "hispanic" = hispanic_total, "asian" = nh_asian_total, "other" = nh_other_total) %>% 
-            #pivot_longer(white:other) %>%
             hchart("pie", hcaes(name, value)) %>% 
-            hc_plotOptions(
-                series = list(showInLegend = F,
-                              dataLabels = F)
-                
-            ) %>% 
-            hc_add_theme(tx2036_hc_light())
-    })
-    
-    
+            hc_plotOptions(series = list(showInLegend = F, dataLabels = F)) %>% 
+            hc_add_theme(
+                hc_theme_merge(
+                    tx2036_hc_light(),
+                    hc_theme_null(chart = list(backgroundColor = "transparent"))
+                )
+            )
+        })
     
     ## Value boxes
     output$waa_vb <- renderUI({
@@ -307,34 +304,25 @@ shinyServer(function(input, output, session) {
             select("Occupation" = occupation, 
                    Quality = quality_index, 
                    Demand = demand_index,
-                   `Share of Local Jobs` = share_of_local_jobs_percent) %>%
+                   `% of Local Jobs` = share_of_local_jobs_percent) %>%
             arrange(desc(Quality + Demand))
     })
-    # output$aj_table <- DT::renderDataTable(
-    #     DT::datatable(aj_table_data(), rownames = F)
-    # )
-    # 
+
     output$aj_table <- function() {
         
         table <- aj_table_data() %>%
-                #dplyr::select(-variable) %>%
-                # for aca enrollment, negative is bad, so red. positive is good, so green
-                mutate(`Quality` = ifelse(`Quality` < 0.0,
-                                                color_tile("#f26852", "transparent")(`Quality`*c(`Quality`<0)),
-                                                color_tile("transparent", "#3ead92")(`Quality`*c(`Quality`>0))),
-                       `Demand` = ifelse(`Demand` < 0.0,
-                                           color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
-                                           color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
-                       `Share of Local Jobs` = #ifelse(`Share of Local Jobs` < 0.0,
-                                           #color_tile("#f26852", "transparent")(`Share of Local Jobs`*c(`Share of Local Jobs`<0)),
-                                           color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
-                kable("html", escape = F, table.attr = "style='width:100%;'") %>%
-                #kable_styling("hover", full_width = T) %>%
+            mutate(`Quality` = ifelse(`Quality` < 0.0,
+                                      color_tile("#f26852", "transparent")(`Quality`*c(`Quality`<0)),
+                                      color_tile("transparent", "#3ead92")(`Quality`*c(`Quality`>0))),
+                   `Demand` = ifelse(`Demand` < 0.0,
+                                     color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
+                                     color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
+                   `% of Local Jobs` = color_tile("transparent", "#3ead92")(`% of Local Jobs`*c(`% of Local Jobs`>0))) %>%
+            kable("html", escape = F, table.attr = "style='width:100%;'") %>%
             kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
-            row_spec(0, color = "white", background = "black") %>% 
+            row_spec(0, color = "white", background = "#5f6fc1") %>% 
             row_spec(1:nrow(aj_table_data()), color = "black", background = "white") %>% 
-            scroll_box(width = "100%", height = "400px")
-                #add_header_above(c("", "Federal Poverty Level Percentile" = 5)) 
+            scroll_box(width = "100%", height = "500px")
         
         return(table)
     }

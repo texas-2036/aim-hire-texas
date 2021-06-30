@@ -102,7 +102,10 @@ shinyUI(
                                 column(4,
                                        h3(htmlOutput("waa_vb", aligh = "center")),
                                        h5("Working age adults (2036)"),
-                                       highchartOutput("waa_plot_pie")
+                                       # only show the pie chart if one of the demographic breakdowns is selected
+                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
+                                                        highchartOutput("waa_plot_pie")
+                                                        #)
                                        )
                                 ),
                                 ## 3. trends in in-demand jobs --------
@@ -117,11 +120,22 @@ shinyUI(
                                     br(),
                                     h2(htmlOutput("header_aj"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "4_attractive_jobs.md")),
-                                    #column(7,
+                                    fluidRow(
+                                    column(7,
                                     highchartOutput("aj_plot", height = 500),
-                                    #), 
-                                    #column(5,
-                                    tableOutput("aj_table")
+                                    ),
+                                    column(5,
+                                           tableOutput("aj_table")
+                                           )), 
+                                    
+                                    # br(),
+                                    # br(),
+                                    # 
+                                    # fluidRow(
+                                    # column(11,
+                                    # tableOutput("aj_table")
+                                    # )
+                                    # )
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
