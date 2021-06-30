@@ -39,7 +39,7 @@ crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
 aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
 # demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))
-# edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
+edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 # lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 # load(here::here("clean-data", "pseo-data.RData"))
 

@@ -304,7 +304,7 @@ shinyServer(function(input, output, session) {
             select("Occupation" = occupation, 
                    Quality = quality_index, 
                    Demand = demand_index,
-                   `% of Local Jobs` = share_of_local_jobs_percent) %>%
+                   `Share of Local Jobs` = share_of_local_jobs_percent) %>%
             arrange(desc(Quality + Demand))
     })
 
@@ -317,7 +317,7 @@ shinyServer(function(input, output, session) {
                    `Demand` = ifelse(`Demand` < 0.0,
                                      color_tile("#f26852", "transparent")(`Demand`*c(`Demand`<0)),
                                      color_tile("transparent", "#3ead92")(`Demand`*c(`Demand`>0))),
-                   `% of Local Jobs` = color_tile("transparent", "#3ead92")(`% of Local Jobs`*c(`% of Local Jobs`>0))) %>%
+                   `Share of Local Jobs` = color_tile("transparent", "#3ead92")(`Share of Local Jobs`*c(`Share of Local Jobs`>0))) %>%
             kable("html", escape = F, table.attr = "style='width:100%;'") %>%
             kable_styling(full_width = T, bootstrap_options = c('striped', "hover", 'condensed', "responsive")) %>%
             row_spec(0, color = "white", background = "#5f6fc1") %>% 
@@ -330,4 +330,37 @@ shinyServer(function(input, output, session) {
     
     ## 5. living wage jobs --------
     ## 6. employment by education --------
+    ## Reactives 
+    filter_edu <- reactive({
+        df <- edu %>% 
+            filter(wda == input$select_wda) %>% 
+            mutate(education = case_when(education == "nohs" ~ "No high school diploma",
+                                         education == "hs" ~ "High school diploma",
+                                         education == "somecollege" ~ "Some college or associate's degree",
+                                         education == "college" ~ "Bachelor's degree"))
+    })
+    
+    ## Plots
+    # income
+    output$edu_plot_income <- renderHighchart({
+        filter_edu() %>% 
+            hchart(type = "bar", hcaes(x = education, y = median_income)) %>% 
+            hc_colors("#f26852") %>% 
+            hc_xAxis(title = list(text = "")) %>%
+            hc_yAxis(title = list(text = "Median Income")) %>%
+            hc_title(text = "Median income by education") %>%
+            hc_add_theme(tx2036_hc_light())
+    })
+    
+    output$edu_plot_rate <- renderHighchart({
+        filter_edu() %>%
+            hchart(type = "bar", hcaes(x = education, y = pct_employed)) %>%
+            hc_colors("#f26852") %>%
+            hc_xAxis(title = list(text = "")) %>%
+            hc_yAxis(title = list(text = "Employment Rate"),
+                     max = 100) %>%
+            hc_title(text = "Employment rate by education") %>%
+            hc_add_theme(tx2036_hc_light())
+    })
+    
 })

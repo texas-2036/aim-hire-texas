@@ -121,21 +121,18 @@ shinyUI(
                                     h2(htmlOutput("header_aj"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "4_attractive_jobs.md")),
                                     fluidRow(
-                                    column(7,
+                                    column(11,
                                     highchartOutput("aj_plot", height = 500),
-                                    ),
-                                    column(5,
-                                           tableOutput("aj_table")
-                                           )), 
+                                    )), 
                                     
-                                    # br(),
-                                    # br(),
-                                    # 
-                                    # fluidRow(
-                                    # column(11,
-                                    # tableOutput("aj_table")
-                                    # )
-                                    # )
+                                    br(),
+                                    br(),
+
+                                    fluidRow(
+                                    column(11,
+                                    tableOutput("aj_table")
+                                    )
+                                    )
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
@@ -148,7 +145,13 @@ shinyUI(
                                     class="dark-bg",
                                     br(),
                                     h2(htmlOutput("header_edu"), align = "center", height = 4),
-                                    includeMarkdown(here::here("text", "6_employment_by_education.md"))
+                                    includeMarkdown(here::here("text", "6_employment_by_education.md")),
+                                    fluidRow(
+                                        column(6,
+                                               highchartOutput("edu_plot_income", height = 500)),
+                                        column(6,
+                                               highchartOutput("edu_plot_rate", height = 500))
+                                    )
                                     )
                                 )
                             )
