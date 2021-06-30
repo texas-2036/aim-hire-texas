@@ -45,5 +45,5 @@ alice_demographics <- alice_upwork %>%
 #   spread(category_type_measure, value)
 
 
-
+save(alice_hh_counts, alice_demographics, file="clean-data/alice_living_wage_hh.RData")
 
