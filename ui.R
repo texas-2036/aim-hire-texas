@@ -148,8 +148,12 @@ shinyUI(
                                     includeMarkdown(here::here("text", "6_employment_by_education.md")),
                                     fluidRow(
                                         column(6,
+                                               h3(htmlOutput("edu_vb_income", aligh = "center")),
+                                               h5("Median income of high school graduates"),
                                                highchartOutput("edu_plot_income", height = 500)),
                                         column(6,
+                                               h3(htmlOutput("edu_vb_rate", aligh = "center")),
+                                               h5("of high school graduates employed"),
                                                highchartOutput("edu_plot_rate", height = 500))
                                     )
                                     )

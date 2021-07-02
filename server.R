@@ -241,8 +241,6 @@ shinyServer(function(input, output, session) {
     output$waa_vb <- renderUI({
         text <- HTML(paste0(strong(formatC(signif(filter_waa_vb()$total, 3), format = "d", big.mark = ",")),
                      br()))
-        # valueBox(value = formatC(signif(filter_waa_vb()$total, 3), format = "d", big.mark = ","),
-        #          subtitle = "Working age adults (2036)")
     })
     
     
@@ -317,7 +315,8 @@ shinyServer(function(input, output, session) {
             stripedColor = "#f8f8ff"
         ))
         
-        orange_pal <- function(x) rgb(colorRamp(c("#f26852", "white", "#3ead92"))(x), maxColorValue = 255)
+        redgreen_pal <- function(x) rgb(colorRamp(c("#f26852", "white", "#3ead92"))(x), maxColorValue = 255)
+        green_pal <- function(x) rgb(colorRamp(c("white", "#3ead92"))(x), maxColorValue = 255)
         
         table <- reactable(aj_table_data(), 
                            defaultColDef = colDef(
@@ -330,9 +329,19 @@ shinyServer(function(input, output, session) {
                            columns = list(
                                `Quality` = colDef(style = function(value) {
                                    normalized <- (value - min(aj_table_data()$Quality)) / (max(aj_table_data()$Quality) - min(aj_table_data()$Quality))
-                                   color <- orange_pal(normalized)
+                                   color <- redgreen_pal(normalized)
                                    list(background = color)
-                                   })
+                                   }),
+                               `Demand` = colDef(style = function(value) {
+                                   normalized <- (value - min(aj_table_data()$Demand)) / (max(aj_table_data()$Demand) - min(aj_table_data()$Demand))
+                                   color <- redgreen_pal(normalized)
+                                   list(background = color)
+                               }),
+                               `Share of Local Jobs` = colDef(style = function(value) {
+                                   normalized <- (value - min(aj_table_data()$`Share of Local Jobs`)) / (max(aj_table_data()$`Share of Local Jobs`) - min(aj_table_data()$`Share of Local Jobs`))
+                                   color <- green_pal(normalized)
+                                   list(background = color)
+                               })
                                ))
         
         
@@ -387,6 +396,22 @@ shinyServer(function(input, output, session) {
                      max = 100) %>%
             hc_title(text = "Employment rate by education") %>%
             hc_add_theme(tx2036_hc_light())
+    })
+    
+    ## Value boxes
+    output$edu_vb_income <- renderUI({
+        value <- filter_edu() %>% 
+            filter(education == "High school diploma")
+        text <- HTML(paste0( "$", strong(formatC(signif(value$median_income, 3), format = "d", big.mark = ",")),
+                            br()))
+    })
+    
+    output$edu_vb_rate <- renderUI({
+        
+        value <- filter_edu() %>% 
+            filter(education == "High school diploma")
+        text <- HTML(paste0(round(value$pct_employed), "%"),
+                            br())
     })
     
 })
