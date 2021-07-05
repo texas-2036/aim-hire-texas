@@ -41,7 +41,7 @@ shinyUI(
                                 wellPanel(
                                     class='well-panel',
                                     h2(htmlOutput("wda_name"), align = "center", height = 4), 
-                                    #leafletOutput("mini_map", height = 310),
+                                    leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
                                     tags$hr(),
                                     p(strong("Jump to section:")), 
@@ -103,9 +103,9 @@ shinyUI(
                                        h3(htmlOutput("waa_vb", aligh = "center")),
                                        h5("Working age adults (2036)"),
                                        # only show the pie chart if one of the demographic breakdowns is selected
-                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
+                                       conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
                                                         highchartOutput("waa_plot_pie")
-                                                        #)
+                                                        )
                                        )
                                 ),
                                 ## 3. trends in in-demand jobs --------

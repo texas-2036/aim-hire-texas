@@ -83,58 +83,61 @@ shinyServer(function(input, output, session) {
         return(text)
         })
     
-    # # mini map
-    # output$mini_map <- renderLeaflet({
-    #     pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
-    #     leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
-    #         setView(-99.9018, 30.9686, zoom = 6) %>% 
-    #         addPolygons(stroke = F,
-    #                     fill = T,
-    #                     fillOpacity = 0.5,
-    #                     fillColor = ~pal(color_category),
-    #                     group = "wdas",
-    #                     data = wda_sf) %>%
-    #         addPolygons(color = "black",
-    #                     stroke = T,
-    #                     weight = 1,
-    #                     fill = F,
-    #                     group = "counties",
-    #                     data = counties) %>%
-    #         addPolygons(stroke = T,
-    #                     weight = 1,
-    #                     color = "black",
-    #                     opacity = 1,
-    #                     fill = T,
-    #                     fillColor = ~pal(color_category),
-    #                     fillOpacity = 1,
-    #                     data = selected_wdacounties_sf()) %>% 
-    #         addPolygons(stroke = T, 
-    #                     weight = 1,
-    #                     color = "black",
-    #                     opacity = 1,
-    #                     fill = T,
-    #                     fillOpacity = 0,
-    #                     label = ~wda,
-    #                     group = "highlight",
-    #                     layerId = ~wda,
-    #                     highlightOptions = highlightOptions(color="white",
-    #                                                         opacity=1, weight=3, bringToFront=T),
-    #                     data = wda_sf) %>%
-    #         addPolygons(stroke = T,
-    #                     weight = 3,
-    #                     color = "black",
-    #                     opacity = 1,
-    #                     fill = F,
-    #                     data = selected_wda_sf(),
-    #                     layerId = ~wda) %>% 
-    # 
-    #         setMapWidgetStyle(list(background= "transparent")) %>% 
-    #         htmlwidgets::onRender("function(el, x) { 
-    #            map = this
-    #            map.dragging.disable();
-    #            }")
-    # 
-    # })
+    # mini map
+    output$mini_map <- renderLeaflet({
+        pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
+        leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
+            setView(-99.9018, 30.9686, zoom = 6) %>%
+            addPolygons(stroke = F,
+                        fill = T,
+                        fillOpacity = 0.5,
+                        fillColor = ~pal(color_category),
+                        group = "wdas",
+                        data = wda_sf) %>%
+            # taking off some layers to speed load time
+            # addPolygons(color = "black",
+            #             stroke = T,
+            #             weight = 1,
+            #             fill = F,
+            #             group = "counties",
+            #             data = counties) %>%
+            # addPolygons(stroke = T,
+            #             weight = 1,
+            #             color = "black",
+            #             opacity = 1,
+            #             fill = T,
+            #             fillColor = ~pal(color_category),
+            #             fillOpacity = 1,
+            #             data = selected_wdacounties_sf()) %>%
+            addPolygons(stroke = T,
+                        weight = 1,
+                        color = "black",
+                        opacity = 1,
+                        fill = T,
+                        fillOpacity = 0,
+                        label = ~wda,
+                        group = "highlight",
+                        layerId = ~wda,
+                        highlightOptions = highlightOptions(color="white",
+                                                            opacity=1, weight=3, bringToFront=T),
+                        data = wda_sf) %>%
+            addPolygons(stroke = T,
+                        weight = 3,
+                        color = "black",
+                        opacity = 1,
+                        fill = T,
+                        fillColor = ~pal(color_category),
+                        fillOpacity = 1,
+                        data = selected_wda_sf(),
+                        layerId = ~wda) %>%
+
+            setMapWidgetStyle(list(background= "transparent")) %>%
+            htmlwidgets::onRender("function(el, x) {
+               map = this
+               map.dragging.disable();
+               }")
+
+    })
     
     # list of counties
     output$wda_counties <- renderUI({
@@ -281,7 +284,8 @@ shinyServer(function(input, output, session) {
                          )))) %>% 
             hc_colors(c("#3ead92", "#5f6fc1", "#2a366c", "#f26852")) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
-            hc_subtitle(text = "Quality and demand are determined by x and y sources. The size of the bubble indicates the share of local jobs") %>% 
+            hc_subtitle(text = "Point size is proportional to the number of workers in the occupation in the selected workforce development area. Thresholds show the Quality Index and Demand Index of the average occupation.") %>% 
+            hc_caption(text = "Source: Brookings analysis of TWC data on wages and employment projections by workforce development area; EMSI occupational employment data; Burning Glass data on job postings and online resumes.") %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.occupation + 
                                       ' <br> Quality Index: ' + this.y + 
@@ -321,19 +325,20 @@ shinyServer(function(input, output, session) {
         table <- reactable(aj_table_data(), 
                            defaultColDef = colDef(
                                align = "center"),
-                           filterable = TRUE,
+                           filterable = T,
                            showPageSizeOptions = F,
-                           striped = TRUE,
-                           highlight = TRUE,
+                           striped = F,
+                           highlight = T,
                            
                            columns = list(
                                `Quality` = colDef(style = function(value) {
-                                   normalized <- (value - min(aj_table_data()$Quality)) / (max(aj_table_data()$Quality) - min(aj_table_data()$Quality))
+                                   # to normalize, do (value - min) / (max - min) : reduces to this
+                                   normalized <- ((value + 5) / 10)
                                    color <- redgreen_pal(normalized)
                                    list(background = color)
                                    }),
                                `Demand` = colDef(style = function(value) {
-                                   normalized <- (value - min(aj_table_data()$Demand)) / (max(aj_table_data()$Demand) - min(aj_table_data()$Demand))
+                                   normalized <- ((value + 5) / 10)
                                    color <- redgreen_pal(normalized)
                                    list(background = color)
                                }),
@@ -379,23 +384,29 @@ shinyServer(function(input, output, session) {
     # income
     output$edu_plot_income <- renderHighchart({
         filter_edu() %>% 
+            mutate(median_income = round(median_income)) %>% 
             hchart(type = "bar", hcaes(x = education, y = median_income)) %>% 
             hc_colors("#f26852") %>% 
             hc_xAxis(title = list(text = "")) %>%
             hc_yAxis(title = list(text = "Median Income")) %>%
             hc_title(text = "Median income by education") %>%
-            hc_add_theme(tx2036_hc_light())
+            hc_add_theme(tx2036_hc_light()) %>% 
+            hc_tooltip(formatter = JS("function(){
+                            return ('$' + this.y)}"))
     })
     
     output$edu_plot_rate <- renderHighchart({
         filter_edu() %>%
+            mutate(pct_employed = round(pct_employed)) %>% 
             hchart(type = "bar", hcaes(x = education, y = pct_employed)) %>%
             hc_colors("#f26852") %>%
             hc_xAxis(title = list(text = "")) %>%
             hc_yAxis(title = list(text = "Employment Rate"),
                      max = 100) %>%
             hc_title(text = "Employment rate by education") %>%
-            hc_add_theme(tx2036_hc_light())
+            hc_add_theme(tx2036_hc_light()) %>% 
+            hc_tooltip(formatter = JS("function(){
+                            return (this.y + '%')}"))
     })
     
     ## Value boxes
@@ -410,8 +421,8 @@ shinyServer(function(input, output, session) {
         
         value <- filter_edu() %>% 
             filter(education == "High school diploma")
-        text <- HTML(paste0(round(value$pct_employed), "%"),
-                            br())
+        text <- HTML(paste0(round(value$pct_employed), "%",
+                            br()))
     })
     
 })
