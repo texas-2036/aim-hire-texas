@@ -18,6 +18,7 @@ wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0
 # c("#2a366c", "#f26852", "#5f6fc1", "#3ead92")
 
 ###--- Load data -------------------------
+load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
@@ -195,3 +196,25 @@ lw1 <- lw %>%
   hchart("pie", hcaes(wage_band, no_of_employed)) %>% 
   hc_title(text = "Number of workers employed in each wage bracket")
 lw1
+
+###--- living wage households --------------------------
+a <- alice_hh_counts %>% 
+  filter(wda == "Alamo") %>%
+  ggplot(aes(x = year, y = alice_household)) + 
+  geom_line()
+a
+  pivot_longer(poverty_household:above_alice_household) %>% 
+  hchart("pie", hcaes(name, value)) %>% 
+  hc_plotOptions(series = list(showInLegend = F, dataLabels = F))
+  
+alice_hh_counts %>%
+  filter(wda == "Alamo") %>% 
+    hchart(type = "line", hcaes(x = year, y = alice_household)) %>% 
+    hc_yAxis(title = list(text = "Number of living wage households")) %>% 
+    hc_title(text = "Change in the number of living wage households") %>% 
+    hc_add_theme(tx2036_hc)
+alice_hh_counts %>% 
+  hchart(type = "line", hcaes(x = year, y = alice_household)) %>% 
+  hc_yAxis(title = list(text = "Number of living wage households")) %>% 
+  hc_title(text = "Change in the number of living wage households") %>% 
+  hc_add_theme(tx2036_hc)

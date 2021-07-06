@@ -177,6 +177,49 @@ shinyServer(function(input, output, session) {
 
     ## * Content -----
     ## 1. living wage households --------
+    # reactives
+    filter_lwh <- reactive({
+        df <- alice_hh_counts %>% 
+            filter(wda == input$select_wda) 
+    })
+    
+    filter_lwh_details <- reactive({
+        df <- alice_demographics %>% 
+            filter(wda == input$select_wda)
+    })
+    
+    ## Value boxes
+    output$lwh_vb <- renderUI({
+        df <- filter_lwh() %>% 
+            filter(year == 2018)
+        text <- HTML(paste0(strong(formatC(signif(df$alice_household, 3), format = "d", big.mark = ",")),
+                            br()))
+    })
+    
+    # plots
+    output$lwh_plot <- renderHighchart({
+        filter_lwh() %>% 
+            hchart(type = "line", hcaes(x = year, y = alice_household), lineWidth = 2) %>% 
+            hc_colors( "#f26852") %>% 
+            hc_yAxis(title = list(text = "Number of living wage households")) %>% 
+            hc_title(text = "Change in the number of living wage households") %>% 
+            hc_add_theme(tx2036_hc)
+    })
+    
+    output$lwh_plot_pie <- renderHighchart({
+        filter_lwh_details() %>% 
+            hchart("pie", hcaes(category, alice)) %>% 
+            hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
+            hc_colors(c("#3ead92", "#f26852", "#5f6fc1")) %>% 
+            hc_add_theme(
+                hc_theme_merge(
+                    tx2036_hc,
+                    hc_theme_null(chart = list(backgroundColor = "transparent"))
+                )
+            )
+    })
+    
+    
     ## 2. trends in working age adults --------
     # reactives
     filter_waa <- reactive({
@@ -223,7 +266,7 @@ shinyServer(function(input, output, session) {
             hchart(type = "line", hcaes(x = year, y = value, group = name)) %>% 
             hc_yAxis(title = list(text = "Number of working age adults")) %>% 
             hc_title(text = "Projected Number of Working Age Adults Through 2036") %>% 
-            hc_add_theme(tx2036_hc_light())
+            hc_add_theme(tx2036_hc)
     })
     
     # demographics pie
@@ -234,7 +277,7 @@ shinyServer(function(input, output, session) {
             hc_plotOptions(series = list(showInLegend = F, dataLabels = F)) %>% 
             hc_add_theme(
                 hc_theme_merge(
-                    tx2036_hc_light(),
+                    tx2036_hc,
                     hc_theme_null(chart = list(backgroundColor = "transparent"))
                 )
             )
@@ -267,32 +310,33 @@ shinyServer(function(input, output, session) {
             hc_yAxis(title = list(text = "Quality Index"),
                      plotLines = list(list(
                          value = 0,
-                         color = 'black',
+                         color = 'white',
                          width = 3,
                          zIndex = 4,
                          label = list(text = "quality threshold",
-                                      style = list( color = 'black', fontWeight = 'bold'   )
+                                      style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
+                                                   fontSize='12px')
                          )))) %>% 
             hc_xAxis(title = list(text = "Demand Index"),
                      plotLines = list(list(
                          value = 0,
-                         color = 'black',
+                         color = 'white',
                          width = 3,
                          zIndex = 4,
                          label = list(text = "demand threshold",
-                                      style = list( color = 'black', fontWeight = 'bold'   )
+                                      style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
+                                                   fontSize='12px')
                          )))) %>% 
             hc_colors(c("#3ead92", "#5f6fc1", "#2a366c", "#f26852")) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
             hc_subtitle(text = "Point size is proportional to the number of workers in the occupation in the selected workforce development area. Thresholds show the Quality Index and Demand Index of the average occupation.") %>% 
-            hc_caption(text = "Source: Brookings analysis of TWC data on wages and employment projections by workforce development area; EMSI occupational employment data; Burning Glass data on job postings and online resumes.") %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.occupation + 
                                       ' <br> Quality Index: ' + this.y + 
                                       ' <br> Demand Index: ' + this.x +
                                       ' <br> Share of local jobs: ' + this.point.share_of_local_jobs_percent + '%')}")) %>%
             
-            hc_add_theme(tx2036_hc_light())
+        hc_add_theme(tx2036_hc)
     })
     
     aj_table_data <- reactive ({
@@ -390,7 +434,7 @@ shinyServer(function(input, output, session) {
             hc_xAxis(title = list(text = "")) %>%
             hc_yAxis(title = list(text = "Median Income")) %>%
             hc_title(text = "Median income by education") %>%
-            hc_add_theme(tx2036_hc_light()) %>% 
+            hc_add_theme(tx2036_hc) %>% 
             hc_tooltip(formatter = JS("function(){
                             return ('$' + this.y)}"))
     })
@@ -404,7 +448,7 @@ shinyServer(function(input, output, session) {
             hc_yAxis(title = list(text = "Employment Rate"),
                      max = 100) %>%
             hc_title(text = "Employment rate by education") %>%
-            hc_add_theme(tx2036_hc_light()) %>% 
+            hc_add_theme(tx2036_hc) %>% 
             hc_tooltip(formatter = JS("function(){
                             return (this.y + '%')}"))
     })

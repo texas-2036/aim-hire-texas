@@ -31,7 +31,50 @@ wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0
 #actual tx2036 colors
 # c("#002D74", "#F26852", "#2A7DE1", "#00A9C5", "#3A4A9F")
 
-# ###--- Load data -------------------------
+###--- Highcharts theme ------------------
+
+tx2036_hc <- hc_theme_merge(
+  hc_theme_smpl(),
+  hc_theme(chart = list(backgroundColor = "transparent", 
+                        style = list(fontFamily = "Montserrat", fontSize = "28px", 
+                                     color="#fff",fontWeight="500", textTransform="uppercase")),
+           title = list(style = list(fontFamily = "Montserrat", 
+                                     fontWeight = "bold",
+                                     color="white"),
+                        align = "left"), 
+           subtitle = list(style = list(fontFamily = "Montserrat", 
+                                        color="#fff",
+                                        textTransform="initial",
+                                        fontWeight="400",
+                                        fontSize = "14px"),
+                           align = "left"), 
+           legend = list(align = "right", 
+                         style = list(fontFamily = "Montserrat", color="white"),
+                         itemStyle = list(fontFamily = 'Montserrat', color = 'white'),
+                         itemHoverStyle = list(color = 'gray'),   
+                         verticalAlign = "top"),
+           credits = list(style = list(color = "#fff")),
+           xAxis = list(labels =list(style = list(fontFamily = "Montserrat", color="#fff")), 
+                        title = list(style = list(color = "#fff", fontSize = "12px", 
+                                                  color="#fff",fontWeight="500")),
+                        gridLineWidth = 0,
+                        gridLineColor = "#F3F3F3", 
+                        lineColor = 'rgba(255,255,255,0.7)', 
+                        minorGridLineColor = 'rgba(243,243,243,0.7)', 
+                        tickColor = "#F3F3F3", 
+                        tickWidth = 1), 
+           yAxis = list(labels =list(style = list(fontFamily = "Montserrat", color="#fff")), 
+                        title = list(style = list(color = "#fff", fontSize = "12px", 
+                                                  color="#fff",fontWeight="500")), 
+                        gridLineWidth = .5,
+                        gridLineColor = 'rgba(243,243,243,0.15)', 
+                        lineColor = 'rgba(255,255,255,0.15)', 
+                        minorGridLineColor = 'rgba(243,243,243,0.15)', 
+                        tickColor = "#F3F3F3", 
+                        tickWidth = 2)))
+
+###--- Load data -------------------------
+load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 counties <- readRDS(here::here("clean-data", "county_shapefile.rds"))
 crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))
