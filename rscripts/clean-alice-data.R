@@ -13,11 +13,11 @@ alice_upwork <- read_csv(here::here("raw-data", "alice-data-upwork.csv"))
 #Single families, married w/ kids, older adults
 
 alice_hh_counts<- alice_download %>% 
-  filter(year==2018) %>% 
+  #filter(year==2018) %>% 
   mutate(geo_id2 = as.numeric(geo_id2)) %>% 
-  dplyr::select(fips_county = geo_id2, county, household, poverty_household, alice_household, above_alice_household) %>%
+  dplyr::select(year, fips_county = geo_id2, county, household, poverty_household, alice_household, above_alice_household) %>%
   left_join(., wda_crosswalk, by="fips_county") %>% 
-  group_by(wda, wda_number) %>% 
+  group_by(year, wda, wda_number) %>% 
   summarise(
     across(household:above_alice_household, sum, na.rm=T)
   ) %>% 
