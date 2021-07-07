@@ -94,21 +94,6 @@ shinyServer(function(input, output, session) {
                         fillColor = ~pal(color_category),
                         group = "wdas",
                         data = wda_sf) %>%
-            # taking off some layers to speed load time
-            # addPolygons(color = "black",
-            #             stroke = T,
-            #             weight = 1,
-            #             fill = F,
-            #             group = "counties",
-            #             data = counties) %>%
-            # addPolygons(stroke = T,
-            #             weight = 1,
-            #             color = "black",
-            #             opacity = 1,
-            #             fill = T,
-            #             fillColor = ~pal(color_category),
-            #             fillOpacity = 1,
-            #             data = selected_wdacounties_sf()) %>%
             addPolygons(stroke = T,
                         weight = 1,
                         color = "black",
@@ -207,15 +192,22 @@ shinyServer(function(input, output, session) {
     output$lwh_plot_year <- renderHighchart({
         filter_lwh() %>%
             mutate(above_poverty_below_alice_hh_share = below_alice_hh_share - below_poverty_hh_share) %>% 
-            pivot_longer(cols = c(below_poverty_hh_share, above_poverty_below_alice_hh_share, above_alice_hh_share)) %>% 
+            rename("Below poverty" = below_poverty_hh_share,
+                   "Above poverty, below ALICE" = above_poverty_below_alice_hh_share,
+                   "Above ALICE" = above_alice_hh_share) %>% 
+            pivot_longer(cols = c(`Below poverty`, `Above poverty, below ALICE`, `Above ALICE`)) %>% 
+            mutate(value = round(value, 1)) %>% 
             hchart(type = "column", hcaes(x = year, y = value, group = name)) %>% 
             hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
             hc_xAxis(title = list(text = "")) %>%
             hc_plotOptions(column = list(stacking = "normal"),
                            series = list(showInLegend = F)) %>%
             hc_add_theme(tx2036_hc) %>% 
+            hc_title(text = "Share of households in income tiers over time") %>% 
             # manually reorder colors bc red = bad
-            hc_colors(c("#3ead92", "#2a366c", "#f26852"))
+            hc_colors(c("#3ead92", "#2a366c", "#f26852")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + ' ' + this.y + '%')}"))
     })
     
     output$lwh_plot_demo <- renderHighchart({
@@ -228,15 +220,21 @@ shinyServer(function(input, output, session) {
                                         category == "over_65" ~ "65 and Over",
                                         category == "single_cohab" ~ "Single or Cohabiting")) %>% 
             pivot_longer("Below poverty":"Above ALICE") %>% 
+            mutate(value = round(value, 1)) %>% 
             hchart(type = "column", hcaes(x = category, y = value, group = name)) %>% 
             hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
             hc_xAxis(title = list(text = "")) %>%
-            hc_plotOptions(column = list(stacking = "normal")) %>% 
+            hc_plotOptions(column = list(stacking = "normal"),
+                           series = list(showInLegend = F)) %>% 
+            
             hc_add_theme(tx2036_hc) %>% 
-            hc_legend(align = "left", 
-                      verticalAlign = "bottom",
-                      layout = "horizontal") %>% 
-            hc_colors(c("#3ead92", "#2a366c", "#f26852"))
+            hc_title(text = "Share of households in income tiers by family type") %>% 
+            # hc_legend(align = "left", 
+            #           verticalAlign = "bottom",
+            #           layout = "horizontal") %>% 
+            hc_colors(c("#3ead92", "#2a366c", "#f26852")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + ' ' + this.y + '%')}"))
     })
     
     ## 2. trends in working age adults --------
@@ -277,7 +275,7 @@ shinyServer(function(input, output, session) {
             filter(wda == input$select_wda & year == 2036) 
         return(df)
     })
-    
+    observe(print(filter_waa()))
     ## Plots
     # line chart
     output$waa_plot <- renderHighchart({
@@ -387,8 +385,7 @@ shinyServer(function(input, output, session) {
         green_pal <- function(x) rgb(colorRamp(c("white", "#3ead92"))(x), maxColorValue = 255)
         
         table <- reactable(aj_table_data(), 
-                           defaultColDef = colDef(
-                               align = "center"),
+                           defaultColDef = colDef(align = "center"),
                            filterable = T,
                            showPageSizeOptions = F,
                            striped = F,
@@ -497,7 +494,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$edu_plot_pseo <- renderHighchart({
-        filter_pseo() %>% 
+        df <- filter_pseo() %>% 
         mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
                                         degree_level == "02" ~ "Certificate 1-2 years",
                                         degree_level == "03" ~ "Associates",
@@ -505,11 +502,17 @@ shinyServer(function(input, output, session) {
                                         degree_level == "05" ~ "Baccalaureate")) %>% 
             mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
                                                                   "Certificate 2-4 years", "Baccalaureate"),
-                                         ordered = T)) %>% 
-            hchart("scatter", hcaes(y = y10_p50_earnings, x = degree_level), size = 5) %>%
+                                         ordered = T))
+        highchart() %>% 
+            hc_add_series(data = df, "scatter", hcaes(y = y10_p50_earnings, x = degree_level, size = 100)) %>%
+            hc_add_series(data = df, "errorbar", hcaes(x = degree_level, low = y10_p25_earnings, high = y10_p75_earnings, width = 20),
+                          color = "#f26852", whiskerWidth = 0) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_xAxis(title = list(text = "")) %>% 
             hc_yAxis(title = list(text = "")) %>% 
+            hc_plotOptions(series = list(showInLegend = F)) %>%
+            hc_tooltip(formatter = JS("function(){
+                            return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
             hc_title(text = "Median and quartile earnings for college graduates")
     })
     

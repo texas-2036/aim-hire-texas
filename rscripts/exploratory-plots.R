@@ -140,20 +140,20 @@ c <- pseo_wda_df %>%
                                   degree_level == "05" ~ "Baccalaureate")) %>% 
   mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
                                                            "Certificate 2-4 years", "Baccalaureate"),
-                                  ordered = T)) %>% 
-  ggplot(aes(y = degree_level, x = y10_p50_earnings)) + 
-  geom_point(color = "#f26852", size = 3) +
-  geom_errorbar(aes(xmin = y10_p25_earnings, xmax = y10_p75_earnings), 
-                width = 0, color = "#f26852", alpha = 0.5, size = 2)+
-  ggtheme() +
-  labs(y = NULL,
-       x = "annual earnings")
-  
-  # hchart("scatter", hcaes(y = y10_p50_earnings, x = degree_level)) %>%
-  # hc_add_series(type = "scatter", y = y10_p25_earnings, x = degree_level)
-  # hc_add_series(hcaes(low = y10_p25_earnings, high = y10_p75_earnings),
-  #               type = "errorbar", color = "red", stemWidth = 1,  whiskerLength = 1) %>% 
-  # hc_add_series(hcaes(y = y10_p50_earnings), color = "red")
+                                  ordered = T)) #%>% 
+  #pivot_longer(y10_p25_earnings:y10_p75_earnings) %>% 
+  highchart() %>% 
+  hc_add_series(data = c, "scatter", hcaes(y = y10_p50_earnings, x = degree_level),
+                radius = 50) %>%
+    hc_add_series(data = c, "errorbar", hcaes(x = degree_level, low = y10_p25_earnings, high = y10_p75_earnings),
+                  whiskerWidth = 0) %>% 
+    hc_plotOptions(series = list(showInLegend = F, radius = 100)) %>%
+  #hc_add_theme(tx2036_hc) %>% 
+  hc_xAxis(title = list(text = "")) %>% 
+  hc_yAxis(title = list(text = "")) %>% 
+  # hc_tooltip(formatter = JS("function(){
+  #                           return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>% 
+  hc_title(text = "Median and quartile earnings for college graduates")
 
 c
 
@@ -230,32 +230,42 @@ a
   
 a <- alice_hh_counts %>%
   filter(wda == "Alamo") %>% 
-  mutate(above_poverty_below_alice_hh_share = below_alice_hh_share - below_poverty_hh_share) %>% 
-  pivot_longer(cols = c(below_poverty_hh_share, above_poverty_below_alice_hh_share, above_alice_hh_share)) %>% 
-  hchart(type = "column", hcaes(x = year, y = value, color = name)) %>% 
+  mutate(above_poverty_below_alice_hh_share = below_alice_hh_share - below_poverty_hh_share) %>%
+  rename("Below poverty" = below_poverty_hh_share,
+         "Above poverty, below ALICE" = above_poverty_below_alice_hh_share,
+         "Above ALICE" = above_alice_hh_share) %>% 
+  pivot_longer(cols = c(`Below poverty`, `Above poverty, below ALICE`, `Above ALICE`)) %>% 
+  mutate(value = round(value, 1)) %>% 
+  hchart(type = "column", hcaes(x = year, y = value, group = name)) %>% 
   hc_yAxis(min = 0, max = 100, title = list(text = "")) %>% 
-  hc_plotOptions(column = list(
-  dataLabels = list(enabled = FALSE),
-  stacking = "normal",
-  enableMouseTracking = FALSE)
-) %>% 
-  hc_add_theme(tx2036_hc) 
+  hc_plotOptions(column = list(stacking = "normal")) %>%
+  hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + ' ' + this.y + '%')}"))
+  #hc_add_theme(tx2036_hc) 
 a    
 
 b <- alice_demographics %>% 
   filter(wda == "Alamo") %>% 
   mutate(hh = poverty + alice + above_alice,
-         poverty_share = 100 * poverty / hh,
-         alice_share = 100 * alice / hh,
-         above_alice_share = 100 * above_alice / hh) %>% 
+         "Below poverty" = 100 * poverty / hh,
+         "Above poverty, below ALICE" = 100 * alice / hh,
+         "Above ALICE" = 100 * above_alice / hh) %>% 
   mutate(category = case_when(category == "fam_kids" ~ "Families with Children",
                               category == "over_65" ~ "65 and Over",
-                              category == "single_cohab" ~ "Single or Cohabiting"),
-         category = factor(category, levels = "Single or Cohabiting", "Families with Children", "65 and Over")) %>% 
-  pivot_longer(poverty_share:above_alice_share) %>% 
-  hchart(type = "column", hcaes(x = category, y = value, color = name)) %>% 
-  hc_yAxis(min = 0, max = 100, title = list(text = "")) %>% 
-  hc_plotOptions(column = list(stacking = "normal")) %>% 
-  hc_add_theme(tx2036_hc) 
+                              category == "single_cohab" ~ "Single or Cohabiting")) %>% 
+  pivot_longer("Below poverty":"Above ALICE") %>% 
+  mutate(value = round(value, 1)) %>% 
+  hchart(type = "column", hcaes(x = category, y = value, group = name)) %>% 
+  hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
+  hc_xAxis(title = list(text = "")) %>%
+  hc_plotOptions(column = list(stacking = "normal"),
+                 series = list(showInLegend = F)) %>% 
+  
+  #hc_add_theme(tx2036_hc) %>% 
+  hc_title(text = "Share of households in income tiers by family type") %>% 
+
+  hc_colors(c("#3ead92", "#2a366c", "#f26852")) %>% 
+  hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + ' ' + this.y + '%')}"))
 b
 
