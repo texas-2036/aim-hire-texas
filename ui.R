@@ -75,7 +75,18 @@ shinyUI(
                                 fluidRow(
                                 br(),
                                 h2(htmlOutput("header_lwh"), align = "center", height = 4, style="padding-top: 100px;"),
-                                includeMarkdown(here::here("text", "1_living_wage_households.md"))
+                                includeMarkdown(here::here("text", "1_living_wage_households.md")),
+                                column(8,
+                                       highchartOutput("lwh_plot")
+                                ),
+                                column(4,
+                                       h3(htmlOutput("lwh_vb", aligh = "center")),
+                                       h5("Living wage households (2018)"),
+                                       # only show the pie chart if one of the demographic breakdowns is selected
+                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
+                                       highchartOutput("lwh_plot_pie")
+                                       #)
+                                )
                                 ),
                                 ## 2. trends in working age adults --------
                                 fluidRow(
@@ -103,9 +114,9 @@ shinyUI(
                                        h3(htmlOutput("waa_vb", aligh = "center")),
                                        h5("Working age adults (2036)"),
                                        # only show the pie chart if one of the demographic breakdowns is selected
-                                       conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
+                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
                                                         highchartOutput("waa_plot_pie")
-                                                        )
+                                                        #)
                                        )
                                 ),
                                 ## 3. trends in in-demand jobs --------
@@ -123,6 +134,9 @@ shinyUI(
                                     fluidRow(
                                     column(11,
                                     highchartOutput("aj_plot", height = 500),
+                                    p(style = "text-align:center;font-size:.8em;font-weight:400;color:black",
+                                      tags$a(href = "https://brookingswof.shinyapps.io/TX_workforce_dev_app/", "Source: Brookings analysis of TWC data on wages and employment projections by workforce development area; EMSI occupational employment data; Burning Glass data on job postings and online resumes."))
+                                      
                                     )), 
                                     
                                     br(),
