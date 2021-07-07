@@ -6,6 +6,7 @@ library(highcharter)
 library(tigris)
 library(sf)
 library(jastyle)
+library(rmapshaper)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
@@ -115,6 +116,9 @@ aj %>%
              ))))
   
 ###--- Living wage jobs -------------------------------
+k <- lwj_industry %>% 
+  filter(wda == "Alamo")
+
 ###--- Employment by education, post high school ------
 
 # median earnings
@@ -127,14 +131,31 @@ pseo_inst_df %>%
   hc_title(text = "Median annual earnings for graduates 10 years after graduation")
 
 # employment rate
-pseo_inst_df %>% 
-  filter(wda == "Gulf Coast") %>% 
-  mutate(emp_pct = round(100 * y10_grads_emp / (y10_grads_emp + y10_grads_nme), 1)) %>% 
-  arrange(-emp_pct) %>% 
-  hchart(type = "bar", hcaes(x = label, y = emp_pct)) %>% 
-  hc_xAxis(title = "") %>% 
-  hc_yAxis(title = "") %>% 
-  hc_title(text = "Employment percentage for graduates 10 years after graduation")
+c <- pseo_wda_df %>% 
+  filter(wda_name == "Alamo") %>% 
+  mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
+                                  degree_level == "02" ~ "Certificate 1-2 years",
+                                  degree_level == "03" ~ "Associates",
+                                  degree_level == "04" ~ "Certificate 2-4 years",
+                                  degree_level == "05" ~ "Baccalaureate")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
+                                                           "Certificate 2-4 years", "Baccalaureate"),
+                                  ordered = T)) %>% 
+  ggplot(aes(y = degree_level, x = y10_p50_earnings)) + 
+  geom_point(color = "#f26852", size = 3) +
+  geom_errorbar(aes(xmin = y10_p25_earnings, xmax = y10_p75_earnings), 
+                width = 0, color = "#f26852", alpha = 0.5, size = 2)+
+  ggtheme() +
+  labs(y = NULL,
+       x = "annual earnings")
+  
+  # hchart("scatter", hcaes(y = y10_p50_earnings, x = degree_level)) %>%
+  # hc_add_series(type = "scatter", y = y10_p25_earnings, x = degree_level)
+  # hc_add_series(hcaes(low = y10_p25_earnings, high = y10_p75_earnings),
+  #               type = "errorbar", color = "red", stemWidth = 1,  whiskerLength = 1) %>% 
+  # hc_add_series(hcaes(y = y10_p50_earnings), color = "red")
+
+c
 
 
 # share of degree type for each institution
@@ -207,14 +228,34 @@ a
   hchart("pie", hcaes(name, value)) %>% 
   hc_plotOptions(series = list(showInLegend = F, dataLabels = F))
   
-alice_hh_counts %>%
+a <- alice_hh_counts %>%
   filter(wda == "Alamo") %>% 
-    hchart(type = "line", hcaes(x = year, y = alice_household)) %>% 
-    hc_yAxis(title = list(text = "Number of living wage households")) %>% 
-    hc_title(text = "Change in the number of living wage households") %>% 
-    hc_add_theme(tx2036_hc)
-alice_hh_counts %>% 
-  hchart(type = "line", hcaes(x = year, y = alice_household)) %>% 
-  hc_yAxis(title = list(text = "Number of living wage households")) %>% 
-  hc_title(text = "Change in the number of living wage households") %>% 
-  hc_add_theme(tx2036_hc)
+  mutate(above_poverty_below_alice_hh_share = below_alice_hh_share - below_poverty_hh_share) %>% 
+  pivot_longer(cols = c(below_poverty_hh_share, above_poverty_below_alice_hh_share, above_alice_hh_share)) %>% 
+  hchart(type = "column", hcaes(x = year, y = value, color = name)) %>% 
+  hc_yAxis(min = 0, max = 100, title = list(text = "")) %>% 
+  hc_plotOptions(column = list(
+  dataLabels = list(enabled = FALSE),
+  stacking = "normal",
+  enableMouseTracking = FALSE)
+) %>% 
+  hc_add_theme(tx2036_hc) 
+a    
+
+b <- alice_demographics %>% 
+  filter(wda == "Alamo") %>% 
+  mutate(hh = poverty + alice + above_alice,
+         poverty_share = 100 * poverty / hh,
+         alice_share = 100 * alice / hh,
+         above_alice_share = 100 * above_alice / hh) %>% 
+  mutate(category = case_when(category == "fam_kids" ~ "Families with Children",
+                              category == "over_65" ~ "65 and Over",
+                              category == "single_cohab" ~ "Single or Cohabiting"),
+         category = factor(category, levels = "Single or Cohabiting", "Families with Children", "65 and Over")) %>% 
+  pivot_longer(poverty_share:above_alice_share) %>% 
+  hchart(type = "column", hcaes(x = category, y = value, color = name)) %>% 
+  hc_yAxis(min = 0, max = 100, title = list(text = "")) %>% 
+  hc_plotOptions(column = list(stacking = "normal")) %>% 
+  hc_add_theme(tx2036_hc) 
+b
+

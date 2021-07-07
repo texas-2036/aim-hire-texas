@@ -154,19 +154,19 @@ shinyServer(function(input, output, session) {
         return(text)
     })
     output$header_waa <- renderUI({
-        text <- HTML(paste0("Trends in working age adults"))
+        text <- HTML(paste0("Future workforce"))
         return(text)
     })
     output$header_idj <- renderUI({
         text <- HTML(paste0("Trends in in-demand jobs"))
         return(text)
     })
-    output$header_aj <- renderUI({
-        text <- HTML(paste0("Attractive jobs"))
-        return(text)
-    })
     output$header_lwj <- renderUI({
         text <- HTML(paste0("Living wage jobs"))
+        return(text)
+    })
+    output$header_aj <- renderUI({
+        text <- HTML(paste0("Attractive jobs"))
         return(text)
     })
     output$header_edu <- renderUI({
@@ -189,36 +189,55 @@ shinyServer(function(input, output, session) {
     })
     
     ## Value boxes
-    output$lwh_vb <- renderUI({
+    output$lwh_vb_year <- renderUI({
         df <- filter_lwh() %>% 
             filter(year == 2018)
         text <- HTML(paste0(strong(formatC(signif(df$alice_household, 3), format = "d", big.mark = ",")),
                             br()))
     })
     
+    output$lwh_vb_demo <- renderUI({
+        df <- filter_lwh_details() %>%
+            filter(category == "fam_kids")
+        text <- HTML(paste0(strong(formatC(signif(df$above_alice, 3), format = "d", big.mark = ",")),
+                            br()))
+    })
+    
     # plots
-    output$lwh_plot <- renderHighchart({
-        filter_lwh() %>% 
-            hchart(type = "line", hcaes(x = year, y = alice_household), lineWidth = 2) %>% 
-            hc_colors( "#f26852") %>% 
-            hc_yAxis(title = list(text = "Number of living wage households")) %>% 
-            hc_title(text = "Change in the number of living wage households") %>% 
-            hc_add_theme(tx2036_hc)
+    output$lwh_plot_year <- renderHighchart({
+        filter_lwh() %>%
+            mutate(above_poverty_below_alice_hh_share = below_alice_hh_share - below_poverty_hh_share) %>% 
+            pivot_longer(cols = c(below_poverty_hh_share, above_poverty_below_alice_hh_share, above_alice_hh_share)) %>% 
+            hchart(type = "column", hcaes(x = year, y = value, group = name)) %>% 
+            hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
+            hc_xAxis(title = list(text = "")) %>%
+            hc_plotOptions(column = list(stacking = "normal"),
+                           series = list(showInLegend = F)) %>%
+            hc_add_theme(tx2036_hc) %>% 
+            # manually reorder colors bc red = bad
+            hc_colors(c("#3ead92", "#2a366c", "#f26852"))
     })
     
-    output$lwh_plot_pie <- renderHighchart({
+    output$lwh_plot_demo <- renderHighchart({
         filter_lwh_details() %>% 
-            hchart("pie", hcaes(category, alice)) %>% 
-            hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
-            hc_colors(c("#3ead92", "#f26852", "#5f6fc1")) %>% 
-            hc_add_theme(
-                hc_theme_merge(
-                    tx2036_hc,
-                    hc_theme_null(chart = list(backgroundColor = "transparent"))
-                )
-            )
+            mutate(hh = poverty + alice + above_alice,
+                   "Below poverty" = 100 * poverty / hh,
+                   "Above poverty, below ALICE" = 100 * alice / hh,
+                   "Above ALICE" = 100 * above_alice / hh) %>% 
+            mutate(category = case_when(category == "fam_kids" ~ "Families with Children",
+                                        category == "over_65" ~ "65 and Over",
+                                        category == "single_cohab" ~ "Single or Cohabiting")) %>% 
+            pivot_longer("Below poverty":"Above ALICE") %>% 
+            hchart(type = "column", hcaes(x = category, y = value, group = name)) %>% 
+            hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
+            hc_xAxis(title = list(text = "")) %>%
+            hc_plotOptions(column = list(stacking = "normal")) %>% 
+            hc_add_theme(tx2036_hc) %>% 
+            hc_legend(align = "left", 
+                      verticalAlign = "bottom",
+                      layout = "horizontal") %>% 
+            hc_colors(c("#3ead92", "#2a366c", "#f26852"))
     })
-    
     
     ## 2. trends in working age adults --------
     # reactives
@@ -275,12 +294,12 @@ shinyServer(function(input, output, session) {
             filter(year == 2036) %>% 
             hchart("pie", hcaes(name, value)) %>% 
             hc_plotOptions(series = list(showInLegend = F, dataLabels = F)) %>% 
-            hc_add_theme(
-                hc_theme_merge(
-                    tx2036_hc,
-                    hc_theme_null(chart = list(backgroundColor = "transparent"))
-                )
-            )
+            hc_add_theme(tx2036_hc)
+            #     hc_theme_merge(
+            #         tx2036_hc,
+            #         hc_theme_null(chart = list(backgroundColor = "transparent"))
+            #     )
+            # )
         })
     
     ## Value boxes
@@ -292,6 +311,7 @@ shinyServer(function(input, output, session) {
     
     
     ## 3. trends in in-demand jobs --------
+    ## 5. living wage jobs --------
     ## 4. attractive jobs --------
     ## Reactives 
     filter_aj <- reactive({
@@ -412,7 +432,7 @@ shinyServer(function(input, output, session) {
     })
     
     
-    ## 5. living wage jobs --------
+
     ## 6. employment by education --------
     ## Reactives 
     filter_edu <- reactive({
@@ -429,8 +449,8 @@ shinyServer(function(input, output, session) {
     output$edu_plot_income <- renderHighchart({
         filter_edu() %>% 
             mutate(median_income = round(median_income)) %>% 
-            hchart(type = "bar", hcaes(x = education, y = median_income)) %>% 
-            hc_colors("#f26852") %>% 
+            hchart(type = "column", hcaes(x = education, y = median_income)) %>% 
+            #hc_colors("#f26852") %>% 
             hc_xAxis(title = list(text = "")) %>%
             hc_yAxis(title = list(text = "Median Income")) %>%
             hc_title(text = "Median income by education") %>%
@@ -439,11 +459,12 @@ shinyServer(function(input, output, session) {
                             return ('$' + this.y)}"))
     })
     
+    # employment rate
     output$edu_plot_rate <- renderHighchart({
         filter_edu() %>%
             mutate(pct_employed = round(pct_employed)) %>% 
-            hchart(type = "bar", hcaes(x = education, y = pct_employed)) %>%
-            hc_colors("#f26852") %>%
+            hchart(type = "column", hcaes(x = education, y = pct_employed)) %>%
+            #hc_colors("#f26852") %>%
             hc_xAxis(title = list(text = "")) %>%
             hc_yAxis(title = list(text = "Employment Rate"),
                      max = 100) %>%
@@ -467,6 +488,29 @@ shinyServer(function(input, output, session) {
             filter(education == "High school diploma")
         text <- HTML(paste0(round(value$pct_employed), "%",
                             br()))
+    })
+    
+    ### post high school
+    filter_pseo <- reactive({
+        df <- pseo_wda_df %>% 
+            filter(wda_name == input$select_wda)
+    })
+    
+    output$edu_plot_pseo <- renderHighchart({
+        filter_pseo() %>% 
+        mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
+                                        degree_level == "02" ~ "Certificate 1-2 years",
+                                        degree_level == "03" ~ "Associates",
+                                        degree_level == "04" ~ "Certificate 2-4 years",
+                                        degree_level == "05" ~ "Baccalaureate")) %>% 
+            mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
+                                                                  "Certificate 2-4 years", "Baccalaureate"),
+                                         ordered = T)) %>% 
+            hchart("scatter", hcaes(y = y10_p50_earnings, x = degree_level), size = 5) %>%
+            hc_add_theme(tx2036_hc) %>% 
+            hc_xAxis(title = list(text = "")) %>% 
+            hc_yAxis(title = list(text = "")) %>% 
+            hc_title(text = "Median and quartile earnings for college graduates")
     })
     
 })

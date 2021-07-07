@@ -49,13 +49,13 @@ shinyUI(
                                     column(11, offset = 1,
                                     strong(a("Living wage households", type = "link", href = "#header_lwh")), 
                                     br(),
-                                    strong(a("Trends in working age adults", type = "link", href = "#header_waa")),
+                                    strong(a("Future workforce", type = "link", href = "#header_waa")),
                                     br(),
                                     strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
                                     br(),
-                                    strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
-                                    br(),
                                     strong(a("Living wage jobs", type = "link", href = "#header_lwj")),
+                                    br(),
+                                    strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
                                     strong(a("Employment by education", type = "link", href = "#header_edu")),
                                     tags$hr()
@@ -76,16 +76,15 @@ shinyUI(
                                 br(),
                                 h2(htmlOutput("header_lwh"), align = "center", height = 4, style="padding-top: 100px;"),
                                 includeMarkdown(here::here("text", "1_living_wage_households.md")),
-                                column(8,
-                                       highchartOutput("lwh_plot")
-                                ),
-                                column(4,
-                                       h3(htmlOutput("lwh_vb", aligh = "center")),
-                                       h5("Living wage households (2018)"),
-                                       # only show the pie chart if one of the demographic breakdowns is selected
-                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
-                                       highchartOutput("lwh_plot_pie")
-                                       #)
+                                fluidRow(
+                                    column(6,
+                                           h3(htmlOutput("lwh_vb_year", aligh = "center")),
+                                           h5("Households above ALICE Threshold (2018)"),
+                                           highchartOutput("lwh_plot_year", height = 500)),
+                                    column(6,
+                                           h3(htmlOutput("lwh_vb_demo", aligh = "center")),
+                                           h5("Families with kids above alice threshold"),
+                                           highchartOutput("lwh_plot_demo", height = 500))
                                 )
                                 ),
                                 ## 2. trends in working age adults --------
@@ -125,6 +124,12 @@ shinyUI(
                                     h2(htmlOutput("header_idj"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md"))
                                 ),
+                                ## 5. living wage jobs --------
+                                fluidRow(
+                                    br(),
+                                    h2(htmlOutput("header_lwj"), align = "center", height = 4),
+                                    includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
+                                ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
                                     class="dark-bg",
@@ -148,18 +153,14 @@ shinyUI(
                                     )
                                     )
                                 ),
-                                ## 5. living wage jobs --------
-                                fluidRow(
-                                    br(),
-                                    h2(htmlOutput("header_lwj"), align = "center", height = 4),
-                                    includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
-                                ),
+
                                 ## 6. employment by education --------
                                 fluidRow(
                                     class="dark-bg",
                                     br(),
                                     h2(htmlOutput("header_edu"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "6_employment_by_education.md")),
+                                    fluidRow(highchartOutput("edu_plot_pseo")),
                                     fluidRow(
                                         column(6,
                                                h3(htmlOutput("edu_vb_income", aligh = "center")),
@@ -170,7 +171,8 @@ shinyUI(
                                                h5("of high school graduates employed"),
                                                highchartOutput("edu_plot_rate", height = 500))
                                     )
-                                    )
+                                    ),
+                                
                                 )
                             )
                      ) # closes wda page

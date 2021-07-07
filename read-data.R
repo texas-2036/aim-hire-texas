@@ -21,21 +21,21 @@ library(reactable)
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
-# "#2a366c" dark blue
 # "#f26852" red
-# "#5f6fc1" light blue
+# "#2a366c" dark blue
 # "#3ead92" green
-
-# c("#2a366c", "#f26852", "#5f6fc1", "#3ead92")
-
-#actual tx2036 colors
-# c("#002D74", "#F26852", "#2A7DE1", "#00A9C5", "#3A4A9F")
+# "#5f6fc1" light blue
+# "#f9cd21" yellow
+# 
 
 ###--- Highcharts theme ------------------
 
 tx2036_hc <- hc_theme_merge(
   hc_theme_smpl(),
-  hc_theme(chart = list(backgroundColor = "transparent", 
+  hc_theme(colors = c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21"), 
+           marker = list(fillColor = c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21"), 
+                         lineColor = "#000", radius = 3, lineWidth = 1, symbol = "circle"), 
+           chart = list(backgroundColor = "transparent", 
                         style = list(fontFamily = "Montserrat", fontSize = "28px", 
                                      color="#fff",fontWeight="500", textTransform="uppercase")),
            title = list(style = list(fontFamily = "Montserrat", 
@@ -73,6 +73,65 @@ tx2036_hc <- hc_theme_merge(
                         tickColor = "#F3F3F3", 
                         tickWidth = 2)))
 
+ggtheme <- function (base_size = 14,
+                     base_family = "Montserrat",
+                     title_size = 23,
+                     subtitle_size = 12,
+                     caption_size = 10,
+                     ...)
+{
+  ggplot2::theme_minimal(base_size = base_size, base_family = base_family, ...) +
+    ggplot2::theme(
+      plot.title = ggtext::element_markdown(
+        size = title_size,
+        color = "#3A4A9F",
+        family = "Montserrat-ExtraBold"
+      ),
+      plot.subtitle = ggtext::element_markdown(size = subtitle_size,
+                                               family = "Montserrat"),
+      plot.caption = ggplot2::element_text(
+        family = "Montserrat-Regular",
+        color = "#8C8F93",
+        size = caption_size,
+        lineheight = 1,
+        hjust = 0,
+        vjust = -5
+      ),
+      axis.title.x = ggplot2::element_text(
+        family = "Montserrat-Bold",
+        size = 8,
+        color = "#6B6D6F"
+      ),
+      axis.title.y = ggplot2::element_text(
+        family = "Montserrat-Bold",
+        size = 8,
+        color = "#6B6D6F"
+      ),
+      legend.position = "none",
+      plot.margin = ggplot2::unit(c(
+        t = 1,
+        r = 1.5,
+        b = 2,
+        l = 1
+      ), "lines")
+    ) +
+    ggplot2::theme(
+      axis.line.x = ggplot2::element_line(color = "#5d5d5d",
+                                          size = 0.8),
+      panel.background = element_rect(fill = "transparent"), # bg of the panel
+      panel.grid.major.y = ggplot2::element_line(color = "#e3e3e3"),
+      panel.grid.minor.y = ggplot2::element_line(
+        linetype = 2,
+        size = 0,
+        color = "#e3e3e3"
+      ),
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor.x = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_text(hjust = 1),
+      axis.title.y = ggplot2::element_text(hjust = 1),
+      axis.ticks.x = ggplot2::element_line(size = 0.5)
+    )
+}
 ###--- Load data -------------------------
 load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
@@ -84,7 +143,10 @@ aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
 # demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 # lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
-# load(here::here("clean-data", "pseo-data.RData"))
+load(here::here("clean-data", "pseo-data.RData"))
+lwj_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
+lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
+
 
 ###--- Helper functions ------------------------
 disconnected <- sever_default(
