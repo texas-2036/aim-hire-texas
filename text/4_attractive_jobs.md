@@ -1,3 +1,7 @@
+Not all in-demand jobs or even higher-paying jobs are necessarily considered high-quality jobs. The charts below pull from the Brookings Institution’s Texas Workforce Development Toolkit (https://brookingswof.shinyapps.io/TX_workforce_dev_app/) to show the intersection between job quality and job demand in this WDA. This provides an even more nuanced picture of which jobs are expected to be most attractive in the local labor market.
+
 The **Quality Index** measures two dimensions of an occupation's quality: its local median wage and its upward mobility (defined as its prospects of leading to a higher-wage job than other occupations at a comparative wage level within five years). The **Demand Index** is an overall measure of demand for a given occupation in the local labor market, based on its historical and projected contribution to local job growth.
 
-The upper half of the chart shows high-quality occupations, while the right half shows high-demand occupations. Consequently, the upper right quadrant includes the most promising occupations according to both quality and demand for jobs.
+The upper half of the chart shows high-quality occupations, while the right half shows high-demand occupations. Jobs that are shaded in green in the upper-right quadrant of the scatterplot below/above are considered the most attractive jobs – they are both in-demand and considered high quality. The size of each dot represents the current share of the local job market.
+
+The table below lists all jobs and shows their scores in terms of quality, demand, and total share of the local job market.
