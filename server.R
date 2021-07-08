@@ -504,9 +504,9 @@ shinyServer(function(input, output, session) {
                                                                   "Certificate 2-4 years", "Baccalaureate"),
                                          ordered = T))
         highchart() %>% 
-            hc_add_series(data = df, "scatter", hcaes(y = y10_p50_earnings, x = degree_level, size = 100)) %>%
+            hc_add_series(data = df, "scatter", hcaes(y = y10_p50_earnings, x = degree_level, size = 100, opacity = 1)) %>%
             hc_add_series(data = df, "errorbar", hcaes(x = degree_level, low = y10_p25_earnings, high = y10_p75_earnings, width = 20),
-                          color = "#f26852", whiskerWidth = 0) %>% 
+                          color = "#f26852", whiskerWidth = 1,  lineWidth = 5) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_xAxis(title = list(text = "")) %>% 
             hc_yAxis(title = list(text = "")) %>% 
