@@ -18,6 +18,13 @@ shinyServer(function(input, output, session) {
     
     ###--- LANDING PAGE ----------------------------
     ## * Content -----
+    ## slickR images -----
+    output$home_slides <- renderSlickR({
+        imgs <- list.files(here::here("www", "slickr"), pattern=".png", full.names = TRUE)
+        slickR(imgs, height = 300, width = "95%") +
+            settings(dots = T, autoplay = T, autoplaySpeed = 3000)
+        
+    })
     ## map --------
     output$home_map <- renderLeaflet({
         pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
@@ -139,23 +146,23 @@ shinyServer(function(input, output, session) {
         return(text)
     })
     output$header_waa <- renderUI({
-        text <- HTML(paste0("Future workforce"))
+        text <- HTML(paste0(" "))
         return(text)
     })
     output$header_idj <- renderUI({
-        text <- HTML(paste0("Trends in in-demand jobs"))
+        text <- HTML(paste0(""))
         return(text)
     })
     output$header_lwj <- renderUI({
-        text <- HTML(paste0("Living wage jobs"))
+        text <- HTML(paste0(""))
         return(text)
     })
     output$header_aj <- renderUI({
-        text <- HTML(paste0("Attractive jobs"))
+        text <- HTML(paste0(""))
         return(text)
     })
     output$header_edu <- renderUI({
-        text <- HTML(paste0("Employment by education"))
+        text <- HTML(paste0(""))
         return(text)
     })
 
@@ -319,6 +326,35 @@ shinyServer(function(input, output, session) {
     
     
     ## 3. trends in in-demand jobs --------
+    ## Reactives 
+    idj_table_data <- reactive({
+        top <- idj %>% 
+            ungroup() %>% 
+            filter(wda == input$select_wda | wda == "Texas")
+    })
+    
+    
+    ## Tables
+    output$idj_top_table <- renderReactable({
+        df <- idj_table_data() %>% 
+            filter(type == "top")
+       
+        options(reactable.theme = reactableTheme(
+            color = "black",
+            backgroundColor = "#FFFFFF", 
+            borderColor = "#5f6fc1",
+            stripedColor = "#f8f8ff"
+        ))
+    
+        table <- reactable(df, 
+                           defaultColDef = colDef(align = "center"),
+                           showPageSizeOptions = F,
+                           striped = T,
+                           highlight = T)
+
+        return(table)
+    })
+    
     ## 5. living wage jobs --------
     ## 4. attractive jobs --------
     ## Reactives 

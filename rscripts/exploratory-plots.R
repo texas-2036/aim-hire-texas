@@ -23,7 +23,7 @@ load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
-demand <- readRDS(here::here("clean-data", "faethm-jobs-2036.rds"))
+idj <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
@@ -92,8 +92,47 @@ waa %>%
   ) %>% 
   hc_title(text = "Projected demographic breakdown of workforce")
 ###--- In demand jobs -------------------------
-demand %>% 
-  filter(faethm_wda_name == "Alamo") %>% 
+
+## Process data to make summary table for speedy loading
+### MOVE THIS TO THE APPROPRIATE CLEANING SCRIPT - CAN'T FIND NOW ###
+top_summary <- idj %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = annual_average_employment_2036, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title) %>% 
+  mutate(type = "top")
+
+bot_summary <- idj %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_min(order_by = annual_average_employment_2036, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title) %>% 
+  mutate(type = "bottom")
+
+growth_summary <- idj %>% 
+  ungroup() %>% 
+  mutate(growth = 100 * (annual_average_employment_2036 - annual_average_employment_2018) / annual_average_employment_2018) %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = growth, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title) %>% 
+  mutate(type = "growth")
+
+idj <- rbind(top_summary, bot_summary) %>% 
+  rbind(growth_summary)
+saveRDS(idj, here::here("clean-data", "in-demand-jobs-summary.rds"))
+
+top <- idj %>% 
+  ungroup() %>% 
+  filter(wda == "Alamo" | wda == "Texas") %>%
+  filter(type == "top") %>% 
+  select(-type) %>%
+  mutate(rank = seq(1, 10)) 
+  pivot_wider(names_from = wda, values_from = job)
+  arrange(annual_average_employment_2036) %>% 
+  tail(10) %>% 
+  select(`Most in-demand jobs in selected WDA` = oes_2019_estimates_title) %>% 
+  cbind(idj_top_texas)
+
   filter(percent_of_total_workforce > 1) %>% 
   arrange(-percent_of_total_workforce) %>% 
   hchart(type = "bar", hcaes(job_name, percent_of_total_workforce), name = "") %>% 

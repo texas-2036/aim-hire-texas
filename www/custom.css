@@ -589,6 +589,9 @@ letter-spacing: 3px;
     background-color: #201F50;
 }
 
+.main-panel > .row.dark-bg a {
+   color: pink;
+}
 
 .well-panel {
     overflow-y: auto; 
