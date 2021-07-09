@@ -254,16 +254,16 @@ shinyServer(function(input, output, session) {
                                                   "White women", "Black women", "Hispanic women", "Asian women", "Other women",
                                                   "White men", "Black men", "Hispanic men", "Asian men", "Other men"),
                                  ordered = T))
-        if (input$waa_plot_gender_select == F & input$waa_plot_race_select == F) {
+        if (input$waa_plot_selects == "total") {
             df <- filter(df, name == "total")
         }
-        else if (input$waa_plot_gender_select == T & input$waa_plot_race_select == F) {
+        else if (input$waa_plot_selects == "gender") {
             df <- filter(df, name %in% c("Female", "Male"))
         }
-        else if (input$waa_plot_gender_select == F & input$waa_plot_race_select == T) {
+        else if (input$waa_plot_selects == "race-ethnicity") {
             df <- filter(df, name %in% c("White", "Black", "Hispanic", "Asian", "Other"))
         }
-        else if (input$waa_plot_gender_select == T & input$waa_plot_race_select == T) {
+        else if (input$waa_plot_selects == "race-ethnicity and gender") {
             df <- filter(df, name %in% c("White women", "Black women", "Hispanic women", "Asian women", "Other women",
                                           "White men", "Black men", "Hispanic men", "Asian men", "Other men"))
         }
@@ -283,7 +283,12 @@ shinyServer(function(input, output, session) {
             hchart(type = "line", hcaes(x = year, y = value, group = name)) %>% 
             hc_yAxis(title = list(text = "Number of working age adults")) %>% 
             hc_title(text = "Projected Number of Working Age Adults Through 2036") %>% 
-            hc_add_theme(tx2036_hc)
+            hc_add_theme(tx2036_hc) %>% 
+            hc_colors(c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21", 
+                        "#F9BCB3", "#8997D1", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + 
+                                      ': ' + this.y )}"))
     })
     
     # demographics pie
@@ -292,7 +297,12 @@ shinyServer(function(input, output, session) {
             filter(year == 2036) %>% 
             hchart("pie", hcaes(name, value)) %>% 
             hc_plotOptions(series = list(showInLegend = F, dataLabels = F)) %>% 
-            hc_add_theme(tx2036_hc)
+            hc_add_theme(tx2036_hc) %>% 
+            hc_colors(c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21", 
+                        "#F9BCB3", "#8997D1", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + 
+                                      ': ' + this.y )}"))
             #     hc_theme_merge(
             #         tx2036_hc,
             #         hc_theme_null(chart = list(backgroundColor = "transparent"))

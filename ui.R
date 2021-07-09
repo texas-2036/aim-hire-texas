@@ -96,26 +96,22 @@ shinyUI(
                                 ),
                                 fluidRow(
                                     class="dark-bg",
-                                    column(width = 4, align = "center",
-                                    checkboxInput(inputId = "waa_plot_race_select",
-                                                label = "Show data by race-ethnicity?",
-                                                value = F)),
-                                    column(width = 4, align = "left",
-                                    checkboxInput(inputId = "waa_plot_gender_select",
-                                                label = "Show data by gender?",
-                                              value = F)
-                                    )
                                 ),
                                 column(8,
-                                highchartOutput("waa_plot")
+                                highchartOutput("waa_plot"),
+                                radioButtons(inputId = "waa_plot_selects",
+                                             label = "Show demographic breakdowns?",
+                                             choices = c("total", "race-ethnicity", "gender", "race-ethnicity and gender"),
+                                             selected = "total",
+                                             inline = T)
                                 ),
                                 column(4,
                                        h3(htmlOutput("waa_vb", aligh = "center")),
                                        h5("Working age adults (2036)"),
                                        # only show the pie chart if one of the demographic breakdowns is selected
-                                       #conditionalPanel(condition = "input.waa_plot_race_select == 'TRUE'",
+                                       conditionalPanel(condition = "input.waa_plot_selects != 'total'",
                                                         highchartOutput("waa_plot_pie")
-                                                        #)
+                                                        )
                                        )
                                 ),
                                 ## 3. trends in in-demand jobs --------
@@ -126,13 +122,13 @@ shinyUI(
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
+                                    class="dark-bg",
                                     br(),
                                     h2(htmlOutput("header_lwj"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
-                                    class="dark-bg",
                                     br(),
                                     h2(htmlOutput("header_aj"), align = "center", height = 4),
                                     includeMarkdown(here::here("text", "4_attractive_jobs.md")),
