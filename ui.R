@@ -74,7 +74,7 @@ shinyUI(
                                     br(),
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
-                                    strong(a("Employment by education", type = "link", href = "#header_edu")),
+                                    strong(a("Education pipeline", type = "link", href = "#header_edu")),
                                     tags$hr()
                                     ),
                                     
@@ -188,16 +188,24 @@ shinyUI(
                                     class="dark-bg",
                                     br(),
                                     div(htmlOutput("header_edu"), style="margin-top: -100px;"),
-                                    h2("Employment by education", align = "center", height = 4, style="padding-top: 130px;"),
+                                    h2("Education pipeline", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "6_employment_by_education.md")),
-                                    fluidRow(highchartOutput("edu_plot_pseo")),
+                                    fluidRow(
+                                        column(8,
+                                        highchartOutput("edu_plot_pseo")
+                                        ),
+                                        column(4,
+                                               h3(htmlOutput("edu_vb_state")),
+                                               h5("of post-high school grads employed in Texas"),
+                                               highchartOutput("edu_plot_pseo_state"))
+                                        ),
                                     fluidRow(
                                         column(6,
-                                               h3(htmlOutput("edu_vb_income", aligh = "center")),
+                                               h3(htmlOutput("edu_vb_income")),
                                                h5("Median income of high school graduates"),
                                                highchartOutput("edu_plot_income", height = 500)),
                                         column(6,
-                                               h3(htmlOutput("edu_vb_rate", aligh = "center")),
+                                               h3(htmlOutput("edu_vb_rate")),
                                                h5("of high school graduates employed"),
                                                highchartOutput("edu_plot_rate", height = 500))
                                     )
@@ -205,7 +213,20 @@ shinyUI(
                                 
                                 )
                             )
-                     ) # closes wda page
+                     ), # closes wda page
+            tabPanel(title = "Compare WDAs",
+                   tags$hr(),
+                   tags$hr(),
+                   tags$hr(),
+                   tags$hr(),
+                   tags$hr(),
+                   selectizeInput(
+                       inputId = "comp_select_wda",
+                         label = "Select Workforce Development Areas to compare: ",
+                         choices = unique(crosswalk$wda),
+                         multiple = T, 
+                         options = list(maxItems = 5)
+                         ))
             ) # close navbarPage
         ) # close tagList
     ) # close ui

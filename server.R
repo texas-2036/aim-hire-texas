@@ -604,4 +604,32 @@ shinyServer(function(input, output, session) {
             hc_title(text = "Median and quartile earnings for college graduates")
     })
     
+    output$edu_vb_state <- renderUI({
+        value <- filter_pseo() %>% 
+            mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
+            summarize(instate = sum(y10_grads_emp_instate),
+                      outstate = sum(y10_grads_emp_outstate)) %>% 
+            mutate(pct = 100 * instate / (instate + outstate))
+        text <- HTML(paste0(round(value$pct), "%",
+                            br()))
+    })
+    
+    output$edu_plot_pseo_state <- renderHighchart({
+        filter_pseo() %>%
+            #select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 
+            mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
+            #select(-y10_grads_emp) %>% 
+            group_by(wda_name) %>% 
+            summarize(`Employed in Texas` = sum(y10_grads_emp_instate),
+                      `Employed outside of Texas` = sum(y10_grads_emp_outstate)) %>% 
+            pivot_longer(`Employed in Texas`:`Employed outside of Texas`) %>% 
+            hchart("pie", hcaes(name, value)) %>% 
+            hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
+            hc_add_theme(tx2036_hc) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.name + 
+                                      ': ' + this.y )}"))
+
+    })
+    
 })

@@ -244,6 +244,18 @@ pseo_inst_df %>%
   hc_yAxis(title = "") %>% 
   hc_title(text = "Median and 25th, 75th percentile earnings for graduates of Galveston College")
 
+state <- pseo_wda_df %>% 
+  select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 
+  mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
+  select(-y10_grads_emp) %>% 
+  group_by(wda_name) %>% 
+  summarize(instate = sum(y10_grads_emp_instate),
+            outstate = sum(y10_grads_emp_outstate)) %>% 
+  pivot_longer(instate:outstate) %>% 
+  filter(wda_name == "Alamo") %>% 
+  hchart("pie", hcaes(name, value)) %>% 
+  hc_title(text = "out of state")
+state
 ###--- Employment by education, high school -----------
 edu %>% 
   filter(wda == "Gulf Coast") %>% 
