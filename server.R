@@ -329,15 +329,15 @@ shinyServer(function(input, output, session) {
     ## Reactives 
     idj_table_data <- reactive({
         top <- idj %>% 
-            ungroup() %>% 
-            filter(wda == input$select_wda | wda == "Texas")
+            filter(wda == input$select_wda) %>% 
+            select(-c(wda, rank))
     })
-    
     
     ## Tables
     output$idj_top_table <- renderReactable({
         df <- idj_table_data() %>% 
-            filter(type == "top")
+            filter(type == "top") %>% 
+            select(-type)
        
         options(reactable.theme = reactableTheme(
             color = "black",
@@ -352,6 +352,48 @@ shinyServer(function(input, output, session) {
                            striped = T,
                            highlight = T)
 
+        return(table)
+    })
+    
+    output$idj_bot_table <- renderReactable({
+        df <- idj_table_data() %>% 
+            filter(type == "bottom") %>% 
+            select(-type)
+        
+        options(reactable.theme = reactableTheme(
+            color = "black",
+            backgroundColor = "#FFFFFF", 
+            borderColor = "#5f6fc1",
+            stripedColor = "#f8f8ff"
+        ))
+        
+        table <- reactable(df, 
+                           defaultColDef = colDef(align = "center"),
+                           showPageSizeOptions = F,
+                           striped = T,
+                           highlight = T)
+        
+        return(table)
+    })
+    
+    output$idj_growth_table <- renderReactable({
+        df <- idj_table_data() %>% 
+            filter(type == "growth") %>% 
+            select(-type)
+        
+        options(reactable.theme = reactableTheme(
+            color = "black",
+            backgroundColor = "#FFFFFF", 
+            borderColor = "#5f6fc1",
+            stripedColor = "#f8f8ff"
+        ))
+        
+        table <- reactable(df, 
+                           defaultColDef = colDef(align = "center"),
+                           showPageSizeOptions = F,
+                           striped = T,
+                           highlight = T)
+        
         return(table)
     })
     

@@ -117,9 +117,22 @@ growth_summary <- idj %>%
   select(wda, job = oes_2019_estimates_title) %>% 
   mutate(type = "growth")
 
-idj <- rbind(top_summary, bot_summary) %>% 
-  rbind(growth_summary)
-saveRDS(idj, here::here("clean-data", "in-demand-jobs-summary.rds"))
+idj_wdas <- rbind(top_summary, bot_summary) %>% 
+  rbind(growth_summary) %>% 
+  ungroup() %>% 
+  group_by(wda, type) %>% 
+  mutate(rank = 1:10) %>% 
+  ungroup() %>% 
+  rename(`Selected WDA` = job)
+
+idj_texas <- idj_summary %>% 
+  filter(wda == "Texas") %>% 
+  ungroup() %>% 
+  select(`Texas` = `Selected WDA`, type, rank)
+
+idj_summary <- left_join(idj_wdas, idj_texas)
+
+saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))
 
 top <- idj %>% 
   ungroup() %>% 
