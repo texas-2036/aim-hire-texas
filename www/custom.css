@@ -413,6 +413,19 @@ display: none !important;
     font-family: "Cabin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+.rt-align-center{
+    text-align: left;
+    padding: 8px 10px;
+}
+
+.rt-th-content {
+    font-size: 16px;
+}
+
+.rt-table {
+    border-radius: 4px;
+}
+
 .reactable2036-header {
   margin: 8px 0;
   color: #2d2d2d;
@@ -502,6 +515,72 @@ letter-spacing: 3px;
     Salmon: #F26852
 */
 
+/* .homepage-top-spacer {
+    height: 200px;
+} */
+
+.homepage-wrapper {
+    max-width: 1000px;
+    padding: 40px;
+    margin: 0px auto;
+}
+
+.slides-wrapper {
+    padding-top: 120px;
+    background-color: #3A4A9F;
+}
+
+.home-slides {
+    max-width: 1000px;
+    padding: 40px;
+    margin: 0px auto;
+}
+
+.slick-slide {
+    background-color: transparent;
+}
+
+.slick-dots {
+    margin-top: 20px;
+}
+
+.slick-dots li.slick-active button:before {
+    color: white;
+}
+
+.slick-dots li button:before {
+    color: white;
+    font-size: 16px;
+}
+
+.slick-prev:before, .slick-next:before {
+    color: white;
+    font-size: 28px;
+}
+
+.homepage-wrapper p {
+    margin: 30px 20px;
+}
+
+.map-row {
+    background-color: #3A4A9F;
+    border-radius: 4px;
+    padding-top: 10px;
+}
+
+.row.dark-bg.wda-intro {
+    padding-top: 120px !important;
+    padding-bottom: 20px;
+}
+
+.row.dark-bg.wda-intro p {
+    font-size: 16px;
+}
+
+.map-header {
+    color: #fff;
+}
+
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
     color: #201F50;
     background-color: #fff;
@@ -589,10 +668,12 @@ letter-spacing: 3px;
     background-color: #201F50;
 }
 
-.main-panel > .row.dark-bg a {
-   color: pink;
-}
+.main-panel > .row a {
+    color: #FD9D88;
+    text-decoration: underline;
+ }
 
+ 
 .well-panel {
     overflow-y: auto; 
     position:fixed; 

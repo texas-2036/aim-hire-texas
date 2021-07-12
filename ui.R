@@ -4,7 +4,7 @@ source("read-data.R")
 shinyUI(
     tagList(
         useShinyjs(),
-        scroller::use_scroller(),
+        # scroller::use_scroller(),
         tags$head(
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
             tags$link(rel="shortcut icon", href="favicon.png"),
@@ -26,24 +26,28 @@ shinyUI(
             
             ###--- LANDING PAGE ----------------------------
             tabPanel(title = "Home",
-                     tags$hr(),
-                     tags$hr(),
-                     tags$hr(),
-                     tags$hr(),
-                     tags$hr(),
-                     tags$hr(),
-                     fluidRow(
-                     includeMarkdown(here::here("text", "home.md")),
-                     slickROutput("home_slides", width = "100%", height = "300px"),
-                     includeMarkdown(here::here("text", "home2.md"))
-                     ),
-                     fluidRow(
-                         h4("Click a Workforce Development Area to learn more", align = "center", style="padding-top: 120px;"),
-                         leafletOutput("home_map", height = 700)
-                         ),
-                     includeMarkdown(here::here("text", "home3.md")),
-                     tags$hr(),
-                     img(src = "AHT-FINAL-LOGO.png", height = 150)
+                    fluidRow(
+                        class="slides-wrapper",
+                        tags$div(
+                            class="home-slides",
+                            slickROutput("home_slides", width = "100%", height = "300px"),
+                        )
+                    ),
+                     tags$div(
+                        class="homepage-wrapper",
+                        fluidRow(
+                            includeMarkdown(here::here("text", "home.md")),
+                            includeMarkdown(here::here("text", "home2.md"))
+                        ),
+                        fluidRow(
+                            class="map-row",
+                            h4("Click a Workforce Development Area to learn more", align = "center", class="map-header"),
+                            leafletOutput("home_map", height = 700)
+                            ),
+                        includeMarkdown(here::here("text", "home3.md")),
+                        tags$hr(),
+                        img(src = "AHT-FINAL-LOGO.png", height = 150)
+                     )
                      ), # closes home page
             
             ###--- WDA PAGE ---------------------------
@@ -87,12 +91,12 @@ shinyUI(
                                 ## * Main panel -----------
                                 ## 1. living wage households --------
                                 fluidRow(
-                                    class="dark-bg",
-                                    includeMarkdown(here::here("text", "wda_intro.md")
-                                                    )
+                                    class="dark-bg wda-intro",
+                                    includeMarkdown(here::here("text", "wda_intro.md"))
                                     ),
                                 fluidRow(
-                                h2(htmlOutput("header_lwh"), align = "center", height = 4, style="padding-top: 100px;"),
+                                    div(htmlOutput("header_lwh"), style="margin-top: -100px;"),
+                                    h2("Living wage households", align = "center", height = 4, style="padding-top: 130px;"),
                                 includeMarkdown(here::here("text", "1_living_wage_households.md")),
                                 fluidRow(
                                     column(6,
@@ -108,8 +112,8 @@ shinyUI(
                                 ## 2. trends in working age adults --------
                                 fluidRow(
                                     class="dark-bg",
-                                    h2(htmlOutput("header_waa"), align = "center", height = 4),
-                                    h2("Future Workforce"),
+                                    div(htmlOutput("header_waa"), style="margin-top: -100px;"),
+                                    h2("Future Workforce", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "2_working_age_adults.md")
                                 ),
                                 fluidRow(
@@ -135,8 +139,8 @@ shinyUI(
                                 ## 3. trends in in-demand jobs --------
                                 fluidRow(
                                     br(),
-                                    h2(htmlOutput("header_idj"), align = "center", height = 4),
-                                    h2("Trends in in-demand jobs"),
+                                    div(htmlOutput("header_idj"), style="margin-top: -100px;"),
+                                    h2("Trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                     br(),
                                     h4("Top 10 most in-demand jobs"),
@@ -152,15 +156,15 @@ shinyUI(
                                 fluidRow(
                                     class="dark-bg",
                                     br(),
-                                    h2(htmlOutput("header_lwj"), align = "center", height = 4),
-                                    h2("Living wage jobs"),
+                                    div(htmlOutput("header_lwj"), style="margin-top: -100px;"),
+                                    h2("Living wage jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
                                     br(),
-                                    h2(htmlOutput("header_aj"), align = "center", height = 4),
-                                    h2("Attractive jobs"),
+                                    div(htmlOutput("header_aj"), style="margin-top: -100px;"),
+                                    h2("Attractive jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "4_attractive_jobs.md")),
                                     fluidRow(
                                     column(11,
@@ -184,8 +188,8 @@ shinyUI(
                                 fluidRow(
                                     class="dark-bg",
                                     br(),
-                                    h2(htmlOutput("header_edu"), align = "center", height = 4),
-                                    h2("Employment by education"),
+                                    div(htmlOutput("header_edu"), style="margin-top: -100px;"),
+                                    h2("Employment by education", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "6_employment_by_education.md")),
                                     fluidRow(highchartOutput("edu_plot_pseo")),
                                     fluidRow(

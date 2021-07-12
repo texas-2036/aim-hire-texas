@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
     
     # section headers
     output$header_lwh <- renderUI({
-        text <- HTML(paste0("Living wage households"))
+        text <- HTML(paste0(""))
         return(text)
     })
     output$header_waa <- renderUI({
@@ -342,7 +342,7 @@ shinyServer(function(input, output, session) {
         options(reactable.theme = reactableTheme(
             color = "black",
             backgroundColor = "#FFFFFF", 
-            borderColor = "#5f6fc1",
+            borderColor = "#DDDDF5",
             stripedColor = "#f8f8ff"
         ))
     
@@ -363,7 +363,7 @@ shinyServer(function(input, output, session) {
         options(reactable.theme = reactableTheme(
             color = "black",
             backgroundColor = "#FFFFFF", 
-            borderColor = "#5f6fc1",
+            borderColor = "#DDDDF5",
             stripedColor = "#f8f8ff"
         ))
         
@@ -384,7 +384,7 @@ shinyServer(function(input, output, session) {
         options(reactable.theme = reactableTheme(
             color = "black",
             backgroundColor = "#FFFFFF", 
-            borderColor = "#5f6fc1",
+            borderColor = "#DDDDF5",
             stripedColor = "#f8f8ff"
         ))
         
@@ -465,7 +465,7 @@ shinyServer(function(input, output, session) {
         options(reactable.theme = reactableTheme(
             color = "black",
             backgroundColor = "#FFFFFF", 
-            borderColor = "#5f6fc1",
+            borderColor = "#DDDDF5",
             stripedColor = "#f8f8ff"
         ))
         
