@@ -23,10 +23,11 @@ load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
-idj <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
+idj_raw <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
+lw_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
 load(here::here("clean-data", "pseo-data.RData"))
 
 counties <- tigris::counties(state = "48") %>% 
@@ -95,44 +96,50 @@ waa %>%
 
 ## Process data to make summary table for speedy loading
 ### MOVE THIS TO THE APPROPRIATE CLEANING SCRIPT - CAN'T FIND NOW ###
-top_summary <- idj %>% 
+top_summary <- idj_raw %>% 
   ungroup() %>% 
   group_by(wda) %>% 
   slice_max(order_by = annual_average_employment_2036, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title) %>% 
-  mutate(type = "top")
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "top", 
+         value = round(value))
 
-bot_summary <- idj %>% 
+bot_summary <- idj_raw %>% 
   ungroup() %>% 
   group_by(wda) %>% 
   slice_min(order_by = annual_average_employment_2036, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title) %>% 
-  mutate(type = "bottom")
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "bottom",
+         value = round(value))
 
-growth_summary <- idj %>% 
+growth_summary <- idj_raw %>% 
   ungroup() %>% 
   mutate(growth = 100 * (annual_average_employment_2036 - annual_average_employment_2018) / annual_average_employment_2018) %>% 
   group_by(wda) %>% 
   slice_max(order_by = growth, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title) %>% 
-  mutate(type = "growth")
+  select(wda, job = oes_2019_estimates_title, value = growth) %>% 
+  mutate(type = "growth", 
+         value = round(value))
 
-idj_wdas <- rbind(top_summary, bot_summary) %>% 
+idj_summary <- rbind(top_summary, bot_summary) %>% 
   rbind(growth_summary) %>% 
   ungroup() %>% 
   group_by(wda, type) %>% 
   mutate(rank = 1:10) %>% 
-  ungroup() %>% 
-  rename(`Selected WDA` = job)
+  ungroup()
 
-idj_texas <- idj_summary %>% 
-  filter(wda == "Texas") %>% 
-  ungroup() %>% 
-  select(`Texas` = `Selected WDA`, type, rank)
-
-idj_summary <- left_join(idj_wdas, idj_texas)
+# idj_texas <- idj_summary %>% 
+#   filter(wda == "Texas") %>% 
+#   ungroup() %>% 
+#   select(`Texas` = `Selected WDA`, type, rank)
+# 
+# idj_summary <- left_join(idj_wdas, idj_texas)
 
 saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))
+idj_summary %>% 
+  filter(wda == "Alamo") %>% 
+  filter(type == "growth") %>% 
+  hchart("bar", hcaes(y = value, x = job))
 
 top <- idj %>% 
   ungroup() %>% 
@@ -281,6 +288,15 @@ lw1 <- lw %>%
   hchart("pie", hcaes(wage_band, no_of_employed)) %>% 
   hc_title(text = "Number of workers employed in each wage bracket")
 lw1
+
+lw_industry %>% 
+  filter(wda == "Alamo") %>% 
+  group_by(wda, industry_title, wage_band) %>% 
+  summarize(number_jobs = sum(no_of_employed)) %>% 
+
+  hchart(type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+  hc_plotOptions(column = list(stacking = "normal")) %>% 
+  hc_add_theme(tx2036_hc)
 
 ###--- living wage households --------------------------
 a <- alice_hh_counts %>% 

@@ -327,77 +327,139 @@ shinyServer(function(input, output, session) {
     
     ## 3. trends in in-demand jobs --------
     ## Reactives 
-    idj_table_data <- reactive({
+    idj_filter <- reactive({
         top <- idj %>% 
             filter(wda == input$select_wda) %>% 
-            select(-c(wda, rank))
+            filter(type == input$select_idj_type)
+    })
+    
+    idj_filter_texas <- reactive({
+        top <- idj %>% 
+            filter(wda == "Texas") %>% 
+            filter(type == input$select_idj_type)
+    })
+    
+    output$idj_title <- renderUI({
+        if (input$select_idj_type == "top") {
+            text <- "Top 10 most in demand jobs"
+        } else if (input$select_idj_type == "bottom") {
+            text <- "Bottom 10 least in demand jobs"
+        } else {
+            text <- "Top 10 fastest growing jobs"
+        }
+        return(text)
+    })
+    
+    output$idj_plot <- renderHighchart({
+        idj_filter() %>% 
+            hchart("bar", hcaes(y = value, x = job)) %>% 
+            hc_add_theme(tx2036_hc) %>% 
+            hc_yAxis(title = list(text = "")) %>% 
+            hc_xAxis(title = list(text = "")) %>% 
+            hc_title(text = "Selected WDA") %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + this.y )}"))
+    })
+    
+    output$idj_plot_texas <- renderHighchart({
+        idj_filter_texas() %>% 
+            hchart("bar", hcaes(y = value, x = job)) %>% 
+            hc_add_theme(tx2036_hc) %>% 
+            hc_yAxis(title = list(text = "")) %>% 
+            hc_xAxis(title = list(text = "")) %>% 
+            hc_title(text = "Texas overall") %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + this.y )}"))
     })
     
     ## Tables
-    output$idj_top_table <- renderReactable({
-        df <- idj_table_data() %>% 
-            filter(type == "top") %>% 
-            select(-type)
-       
-        options(reactable.theme = reactableTheme(
-            color = "black",
-            backgroundColor = "#FFFFFF", 
-            borderColor = "#DDDDF5",
-            stripedColor = "#f8f8ff"
-        ))
-    
-        table <- reactable(df, 
-                           defaultColDef = colDef(align = "center"),
-                           showPageSizeOptions = F,
-                           striped = T,
-                           highlight = T)
-
-        return(table)
-    })
-    
-    output$idj_bot_table <- renderReactable({
-        df <- idj_table_data() %>% 
-            filter(type == "bottom") %>% 
-            select(-type)
-        
-        options(reactable.theme = reactableTheme(
-            color = "black",
-            backgroundColor = "#FFFFFF", 
-            borderColor = "#DDDDF5",
-            stripedColor = "#f8f8ff"
-        ))
-        
-        table <- reactable(df, 
-                           defaultColDef = colDef(align = "center"),
-                           showPageSizeOptions = F,
-                           striped = T,
-                           highlight = T)
-        
-        return(table)
-    })
-    
-    output$idj_growth_table <- renderReactable({
-        df <- idj_table_data() %>% 
-            filter(type == "growth") %>% 
-            select(-type)
-        
-        options(reactable.theme = reactableTheme(
-            color = "black",
-            backgroundColor = "#FFFFFF", 
-            borderColor = "#DDDDF5",
-            stripedColor = "#f8f8ff"
-        ))
-        
-        table <- reactable(df, 
-                           defaultColDef = colDef(align = "center"),
-                           showPageSizeOptions = F,
-                           striped = T,
-                           highlight = T)
-        
-        return(table)
-    })
-    
+    # output$idj_top_table <- renderReactable({
+    #     df <- idj_table_data() %>% 
+    #         filter(type == "top") %>% 
+    #         select(-type)
+    #    
+    #     options(reactable.theme = reactableTheme(
+    #         color = "black",
+    #         backgroundColor = "#FFFFFF", 
+    #         borderColor = "#DDDDF5",
+    #         stripedColor = "#f8f8ff"
+    #     ))
+    # 
+    #     table <- reactable(df, 
+    #                        defaultColDef = colDef(align = "center"),
+    #                        showPageSizeOptions = F,
+    #                        striped = T,
+    #                        highlight = T)
+    # 
+    #     return(table)
+    # })
+    # 
+    # output$idj_bot_table <- renderReactable({
+    #     df <- idj_table_data() %>% 
+    #         filter(type == "bottom") %>% 
+    #         select(-type)
+    #     
+    #     options(reactable.theme = reactableTheme(
+    #         color = "black",
+    #         backgroundColor = "#FFFFFF", 
+    #         borderColor = "#DDDDF5",
+    #         stripedColor = "#f8f8ff"
+    #     ))
+    #     
+    #     table <- reactable(df, 
+    #                        defaultColDef = colDef(align = "center"),
+    #                        showPageSizeOptions = F,
+    #                        striped = T,
+    #                        highlight = T)
+    #     
+    #     return(table)
+    # })
+    # 
+    # output$idj_growth_table <- renderReactable({
+    #     df <- idj_table_data() %>% 
+    #         filter(type == "growth") %>% 
+    #         select(-type)
+    #     
+    #     options(reactable.theme = reactableTheme(
+    #         color = "black",
+    #         backgroundColor = "#FFFFFF", 
+    #         borderColor = "#DDDDF5",
+    #         stripedColor = "#f8f8ff"
+    #     ))
+    #     
+    #     table <- reactable(df, 
+    #                        defaultColDef = colDef(align = "center"),
+    #                        showPageSizeOptions = F,
+    #                        striped = T,
+    #                        highlight = T)
+    #     
+    #     return(table)
+    # })
+    # 
     ## 5. living wage jobs --------
+    filter_lwj <- reactive({
+        df <- lwj_industry %>% 
+            filter(wda == input$select_wda)
+    })
+    
+    output$lwj_plot_industry <- renderHighchart({
+        filter_lwj() %>%
+            group_by(wda, industry_title, wage_band) %>% 
+            summarize(number_jobs = sum(no_of_employed)) %>% 
+            hchart(type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+            hc_xAxis(title = list(text = "")) %>%
+            hc_yAxis(title = list(text = "Number of jobs")) %>%
+            hc_plotOptions(bar = list(stacking = "normal")) %>%
+            hc_add_theme(tx2036_hc) %>% 
+            hc_title(text = "Share of living wage jobs across industries") %>% 
+            hc_colors(c("#f26852", "#5f6fc1", "#2a366c", "#3ead92")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                                return (this.point.wage_band + ': ' + this.y)}"))
+    })
+    
+    
     ## 4. attractive jobs --------
     ## Reactives 
     filter_aj <- reactive({
@@ -592,13 +654,16 @@ shinyServer(function(input, output, session) {
                                                                   "Certificate 2-4 years", "Baccalaureate"),
                                          ordered = T))
         highchart() %>% 
-            hc_add_series(data = df, "scatter", hcaes(y = y10_p50_earnings, x = degree_level, size = 100, opacity = 1)) %>%
+            hc_add_series(data = df, "scatter", hcaes(x = degree_level, y = y10_p50_earnings, size = 100, opacity = 1)) %>%
             hc_add_series(data = df, "errorbar", hcaes(x = degree_level, low = y10_p25_earnings, high = y10_p75_earnings, width = 20),
                           color = "#f26852", whiskerWidth = 1,  lineWidth = 5) %>% 
             hc_add_theme(tx2036_hc) %>% 
-            hc_xAxis(title = list(text = "")) %>% 
+            hc_xAxis(title = list(text = ""),
+                     labels = format(c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
+                                             "Certificate 2-4 years", "Baccalaureate"))) %>% 
             hc_yAxis(title = list(text = "")) %>% 
             hc_plotOptions(series = list(showInLegend = F)) %>%
+           
             hc_tooltip(formatter = JS("function(){
                             return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
             hc_title(text = "Median and quartile earnings for college graduates")

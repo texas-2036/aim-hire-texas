@@ -142,14 +142,25 @@ shinyUI(
                                     h2("Trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                     br(),
-                                    h4("Top 10 most in-demand jobs"),
-                                    reactableOutput("idj_top_table"),
-                                    tags$hr(),
-                                    h4("Bottom 10 least in-demand jobs"),
-                                    reactableOutput("idj_bot_table"),
-                                    tags$hr(),
-                                    h4("Top 10 highest growth jobs"),
-                                    reactableOutput("idj_growth_table"),
+                                    selectInput(inputId = "select_idj_type",
+                                                label = "select type",
+                                                choices = c("Highest Demand" = "top", 
+                                                            "Lowest Demand" = "bottom", 
+                                                            "Highest Growth" = "growth")),
+                                    fluidRow(
+                                        h3(htmlOutput("idj_title")),
+                                        column(6,
+                                               highchartOutput("idj_plot", height = 500)),
+                                        column(6,
+                                               highchartOutput("idj_plot_texas", height = 500))
+                                    )
+                                    # reactableOutput("idj_top_table"),
+                                    # tags$hr(),
+                                    # h4("Bottom 10 least in-demand jobs"),
+                                    # reactableOutput("idj_bot_table"),
+                                    # tags$hr(),
+                                    # h4("Top 10 highest growth jobs"),
+                                    # reactableOutput("idj_growth_table"),
                                 ),
                                 ## 5. living wage jobs --------
                                 fluidRow(
@@ -157,7 +168,8 @@ shinyUI(
                                     br(),
                                     div(htmlOutput("header_lwj"), style="margin-top: -100px;"),
                                     h2("Living wage jobs", align = "center", height = 4, style="padding-top: 130px;"),
-                                    includeMarkdown(here::here("text", "5_living_wage_jobs.md"))
+                                    includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
+                                    highchartOutput("lwj_plot_industry", height = 700)
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
