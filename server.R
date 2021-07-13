@@ -351,7 +351,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$idj_plot <- renderHighchart({
-        idj_filter() %>% 
+       plot <- idj_filter() %>% 
             hchart("bar", hcaes(y = value, x = job)) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_yAxis(title = list(text = "")) %>% 
@@ -374,70 +374,6 @@ shinyServer(function(input, output, session) {
                                       ': ' + this.y )}"))
     })
     
-    ## Tables
-    # output$idj_top_table <- renderReactable({
-    #     df <- idj_table_data() %>% 
-    #         filter(type == "top") %>% 
-    #         select(-type)
-    #    
-    #     options(reactable.theme = reactableTheme(
-    #         color = "black",
-    #         backgroundColor = "#FFFFFF", 
-    #         borderColor = "#DDDDF5",
-    #         stripedColor = "#f8f8ff"
-    #     ))
-    # 
-    #     table <- reactable(df, 
-    #                        defaultColDef = colDef(align = "center"),
-    #                        showPageSizeOptions = F,
-    #                        striped = T,
-    #                        highlight = T)
-    # 
-    #     return(table)
-    # })
-    # 
-    # output$idj_bot_table <- renderReactable({
-    #     df <- idj_table_data() %>% 
-    #         filter(type == "bottom") %>% 
-    #         select(-type)
-    #     
-    #     options(reactable.theme = reactableTheme(
-    #         color = "black",
-    #         backgroundColor = "#FFFFFF", 
-    #         borderColor = "#DDDDF5",
-    #         stripedColor = "#f8f8ff"
-    #     ))
-    #     
-    #     table <- reactable(df, 
-    #                        defaultColDef = colDef(align = "center"),
-    #                        showPageSizeOptions = F,
-    #                        striped = T,
-    #                        highlight = T)
-    #     
-    #     return(table)
-    # })
-    # 
-    # output$idj_growth_table <- renderReactable({
-    #     df <- idj_table_data() %>% 
-    #         filter(type == "growth") %>% 
-    #         select(-type)
-    #     
-    #     options(reactable.theme = reactableTheme(
-    #         color = "black",
-    #         backgroundColor = "#FFFFFF", 
-    #         borderColor = "#DDDDF5",
-    #         stripedColor = "#f8f8ff"
-    #     ))
-    #     
-    #     table <- reactable(df, 
-    #                        defaultColDef = colDef(align = "center"),
-    #                        showPageSizeOptions = F,
-    #                        striped = T,
-    #                        highlight = T)
-    #     
-    #     return(table)
-    # })
-    # 
     ## 5. living wage jobs --------
     filter_lwj <- reactive({
         df <- lwj_industry %>% 
