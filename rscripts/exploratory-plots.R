@@ -128,36 +128,7 @@ idj_summary <- rbind(top_summary, bot_summary) %>%
   mutate(rank = 1:10) %>% 
   ungroup()
 
-# idj_texas <- idj_summary %>% 
-#   filter(wda == "Texas") %>% 
-#   ungroup() %>% 
-#   select(`Texas` = `Selected WDA`, type, rank)
-# 
-# idj_summary <- left_join(idj_wdas, idj_texas)
-
 saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))
-idj_summary %>% 
-  filter(wda == "Alamo") %>% 
-  filter(type == "growth") %>% 
-  hchart("bar", hcaes(y = value, x = job))
-
-top <- idj %>% 
-  ungroup() %>% 
-  filter(wda == "Alamo" | wda == "Texas") %>%
-  filter(type == "top") %>% 
-  select(-type) %>%
-  mutate(rank = seq(1, 10)) 
-  pivot_wider(names_from = wda, values_from = job)
-  arrange(annual_average_employment_2036) %>% 
-  tail(10) %>% 
-  select(`Most in-demand jobs in selected WDA` = oes_2019_estimates_title) %>% 
-  cbind(idj_top_texas)
-
-  filter(percent_of_total_workforce > 1) %>% 
-  arrange(-percent_of_total_workforce) %>% 
-  hchart(type = "bar", hcaes(job_name, percent_of_total_workforce), name = "") %>% 
-  hc_title(text = "Jobs that will be the most in-demand in 2036") %>% 
-  hc_xAxis(title = "") 
 
 ###--- Attractive jobs --------------------------------
 aj %>% 
@@ -349,3 +320,21 @@ b <- alice_demographics %>%
                                 return (this.point.name + ' ' + this.y + '%')}"))
 b
 
+
+###--- comparison table ---------------------------------
+
+demand <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds")) %>% 
+  filter(type == "top")
+attractive <- aj %>% 
+  select(wda = wfb, job = occupation)
+
+t1 <- waa %>% 
+  filter(year == "2036") %>% 
+  select(wda, wda_number, contains("total")) %>% 
+  mutate(wda = case_when(wda == "State of Texas" ~ "Texas",
+                         T ~ wda))
+
+
+  
+  
+  
