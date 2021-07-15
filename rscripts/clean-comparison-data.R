@@ -42,16 +42,26 @@ counties <- tigris::counties(state = "48") %>%
   st_transform(crs = wgs84) %>% 
   ms_simplify(0.05)
 
-
 ###--- comparison table ---------------------------------
 
+# workforce total and re breakdown
+t1 <- waa %>% 
+  filter(year == "2036") %>% 
+  select(wda, wda_number, contains("total")) %>% 
+  select(wda, wda_number, total, 
+         "White" = nh_white_total,
+         "Black" = nh_black_total,
+         "Hispanic" = hispanic_total,
+         "Asian" = nh_asian_total,
+         "Other" = nh_other_total) %>% 
+  pivot_longer(White:Other, names_to = "race", values_to = "number") %>% 
+  mutate(wda = case_when(wda == "State of Texas" ~ "Texas",
+                         T ~ wda)) %>% 
+  ggplot(aes(x = race, y = number)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~wda)
+t1
 demand <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds")) %>% 
   filter(type == "top")
 attractive <- aj %>% 
   select(wda = wfb, job = occupation)
-
-t1 <- waa %>% 
-  filter(year == "2036") %>% 
-  select(wda, wda_number, contains("total")) %>% 
-  mutate(wda = case_when(wda == "State of Texas" ~ "Texas",
-                         T ~ wda))
