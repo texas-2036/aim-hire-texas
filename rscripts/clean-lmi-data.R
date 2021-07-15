@@ -138,5 +138,40 @@ df <- left_join(wda_jobs_projection, wages, by=c("wda", "wda_number", "oes_2019_
 
 saveRDS(df, here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
+###--- Summarize further to only include top 10, bottom 10, top growth ----------------
+idj_raw <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
+## Process data to make summary table for speedy loading
+top_summary <- idj_raw %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = annual_average_employment_2036, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "top", 
+         value = round(value))
 
+bot_summary <- idj_raw %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_min(order_by = annual_average_employment_2036, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "bottom",
+         value = round(value))
+
+growth_summary <- idj_raw %>% 
+  ungroup() %>% 
+  mutate(growth = 100 * (annual_average_employment_2036 - annual_average_employment_2018) / annual_average_employment_2018) %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = growth, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title, value = growth) %>% 
+  mutate(type = "growth", 
+         value = round(value))
+
+idj_summary <- rbind(top_summary, bot_summary) %>% 
+  rbind(growth_summary) %>% 
+  ungroup() %>% 
+  group_by(wda, type) %>% 
+  mutate(rank = 1:10) %>% 
+  ungroup()
+
+saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))

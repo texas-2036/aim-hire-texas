@@ -19,17 +19,31 @@ wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0
 # c("#2a366c", "#f26852", "#5f6fc1", "#3ead92")
 
 ###--- Load data -------------------------
+
+# lwh - living wage households
 load(here::here("clean-data", "alice_living_wage_hh.RData"))
-wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
-lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
+
+# waa - working age adults/future workforce
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
+
+# idj - indemand jobs
 idj_raw <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
-aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
-edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
+idj_summary <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds"))
+lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds")) # demand and earnings
+
+# lwj - living wage jobs
 lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 lw_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
-load(here::here("clean-data", "pseo-data.RData"))
 
+# aj - attractive jobs 
+aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
+
+# edu - education pipeline
+edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds")) # census
+load(here::here("clean-data", "pseo-data.RData"))                  # pseo
+
+# shapefiles
+wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 counties <- tigris::counties(state = "48") %>% 
   dplyr::select(county = NAME, geometry) %>% 
   st_transform(crs = wgs84) %>% 
@@ -92,43 +106,6 @@ waa %>%
     
   ) %>% 
   hc_title(text = "Projected demographic breakdown of workforce")
-###--- In demand jobs -------------------------
-
-## Process data to make summary table for speedy loading
-### MOVE THIS TO THE APPROPRIATE CLEANING SCRIPT - CAN'T FIND NOW ###
-top_summary <- idj_raw %>% 
-  ungroup() %>% 
-  group_by(wda) %>% 
-  slice_max(order_by = annual_average_employment_2036, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
-  mutate(type = "top", 
-         value = round(value))
-
-bot_summary <- idj_raw %>% 
-  ungroup() %>% 
-  group_by(wda) %>% 
-  slice_min(order_by = annual_average_employment_2036, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
-  mutate(type = "bottom",
-         value = round(value))
-
-growth_summary <- idj_raw %>% 
-  ungroup() %>% 
-  mutate(growth = 100 * (annual_average_employment_2036 - annual_average_employment_2018) / annual_average_employment_2018) %>% 
-  group_by(wda) %>% 
-  slice_max(order_by = growth, n = 10) %>% 
-  select(wda, job = oes_2019_estimates_title, value = growth) %>% 
-  mutate(type = "growth", 
-         value = round(value))
-
-idj_summary <- rbind(top_summary, bot_summary) %>% 
-  rbind(growth_summary) %>% 
-  ungroup() %>% 
-  group_by(wda, type) %>% 
-  mutate(rank = 1:10) %>% 
-  ungroup()
-
-saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))
 
 ###--- Attractive jobs --------------------------------
 aj %>% 
@@ -321,18 +298,6 @@ b <- alice_demographics %>%
 b
 
 
-###--- comparison table ---------------------------------
-
-demand <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds")) %>% 
-  filter(type == "top")
-attractive <- aj %>% 
-  select(wda = wfb, job = occupation)
-
-t1 <- waa %>% 
-  filter(year == "2036") %>% 
-  select(wda, wda_number, contains("total")) %>% 
-  mutate(wda = case_when(wda == "State of Texas" ~ "Texas",
-                         T ~ wda))
 
 
   
