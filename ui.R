@@ -238,7 +238,9 @@ shinyUI(
                          choices = unique(crosswalk$wda),
                          multiple = T, 
                          options = list(maxItems = 5)
-                         ))
+                         ),
+                   reactableOutput("comparison_table")
+                   ) # close comparison page
             ) # close navbarPage
         ) # close tagList
     ) # close ui

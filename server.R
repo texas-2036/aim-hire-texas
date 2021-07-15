@@ -633,4 +633,21 @@ shinyServer(function(input, output, session) {
 
     })
     
-})
+    output$comparison_table <- renderReactable({
+        
+        options(reactable.theme = reactableTheme(
+        color = "black",
+        backgroundColor = "#FFFFFF", 
+        borderColor = "#DDDDF5",
+        stripedColor = "#f8f8ff"
+    ))
+    
+    table <- reactable(comparison_people, 
+                       defaultColDef = colDef(align = "center"),
+                       filterable = T,
+                       showPageSizeOptions = F,
+                       striped = F,
+                       highlight = T)
+    return(table)
+    })
+    })

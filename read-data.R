@@ -150,6 +150,7 @@ load(here::here("clean-data", "pseo-data.RData"))
 lwj_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
 lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
+comparison_people <- readRDS(here::here("clean-data", "comparison_table_people.rds"))
 
 ###--- Helper functions ------------------------
 disconnected <- sever_default(
