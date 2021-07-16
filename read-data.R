@@ -18,6 +18,7 @@ library(formattable)
 library(paletteer)
 library(reactable)
 library(slickR)
+library(sparkline)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")

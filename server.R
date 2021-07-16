@@ -633,6 +633,13 @@ shinyServer(function(input, output, session) {
 
     })
     
+    ###--- COMPARISON PAGE ----------------------------
+    
+    filter_comparison <- reactive({
+        df <- comparison_people %>% 
+            filter(wda == "Texas" | wda %in% input$comp_select_wda)
+    })
+    
     output$comparison_table <- renderReactable({
         
         options(reactable.theme = reactableTheme(
@@ -642,7 +649,7 @@ shinyServer(function(input, output, session) {
         stripedColor = "#f8f8ff"
     ))
     
-    table <- reactable(comparison_people, 
+    table <- reactable(filter_comparison(), 
                        defaultColDef = colDef(align = "center"),
                        filterable = T,
                        showPageSizeOptions = F,
