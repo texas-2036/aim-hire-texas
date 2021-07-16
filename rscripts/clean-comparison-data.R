@@ -112,19 +112,22 @@ race_spark <- people %>%
     value, 
     type = "pie", 
     height = "100",
+    borderWidth = 1,
     sliceColors = c('#f26852',' #2a366c',' #3ead92',' #5f6fc1',' #f9cd21')
   ))
 
 alice_spark <- people %>% 
-  select(wda, above_alice_hh_share) %>%
-  mutate(below_alice_hh_share = 100 - above_alice_hh_share) %>% 
-  pivot_longer(above_alice_hh_share:below_alice_hh_share) %>% 
+  select(wda, above_alice_hh_share, above_alice_household) %>%
+  mutate(below_alice_household = round(above_alice_household * (100 - above_alice_hh_share) / above_alice_hh_share)) %>%
+  select(-above_alice_hh_share) %>% 
+  pivot_longer(above_alice_household:below_alice_household) %>% 
   group_by(wda) %>% 
   summarize("Share of households above ALICE threshold" = spk_chr(
     value, 
     type = "pie", 
     height = "100",
-    sliceColors = c('#f26852', 'transparent')
+    borderWidth = 1,
+    sliceColors = c('#f26852', '#D3D3D3')
   ))
 
 edu_spark <- people %>% 
@@ -136,7 +139,8 @@ edu_spark <- people %>%
     value, 
     type = "pie", 
     height = "100",
-    sliceColors = c('#f26852', 'transparent')
+    borderWidth = 1,
+    sliceColors = c('#f26852', '#D3D3D3')
   ))
 
 table <- left_join(people, race_spark) %>% 
@@ -151,7 +155,7 @@ table <- left_join(people, race_spark) %>%
          `Employment rate of high school graduates`) %>%
   mutate(`Predicted number of working age adults, 2036` = prettyNum(`Predicted number of working age adults, 2036`, big.mark = ","),
          `Number of households above ALICE threshold` = prettyNum(`Number of households above ALICE threshold`, big.mark = ","),
-         `Median income of high school graduates` = paste0("$", prettyNum(`Median income of high school graduates`, big.mark = ","))) #%>%
+         `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) #%>%
   datatable(., escape = F, filter = "top", 
           options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
             '

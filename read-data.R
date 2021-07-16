@@ -19,6 +19,7 @@ library(paletteer)
 library(reactable)
 library(slickR)
 library(sparkline)
+library(DT)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
@@ -151,7 +152,7 @@ load(here::here("clean-data", "pseo-data.RData"))
 lwj_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
 lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
-comparison_people <- readRDS(here::here("clean-data", "comparison_table_people.rds"))
+comparison_people <- readRDS(here::here("clean-data", "comparison_table_people_sparkline.rds"))
 
 ###--- Helper functions ------------------------
 disconnected <- sever_default(

@@ -232,14 +232,29 @@ shinyUI(
                    tags$hr(),
                    tags$hr(),
                    tags$hr(),
+                   fluidRow(
+                       column(10, offset = 1, align = "center",
+                       h4("Select Workforce Development Areas to compare: ", align = "center"),
                    selectizeInput(
                        inputId = "comp_select_wda",
-                         label = "Select Workforce Development Areas to compare: ",
-                         choices = unique(crosswalk$wda),
-                         multiple = T, 
-                         options = list(maxItems = 5)
+                       label = "",
+                       choices = unique(crosswalk$wda),
+                       multiple = T, 
+                       width = "1000px",
+                       options = list(maxItems = 5)
                          ),
-                   reactableOutput("comparison_table")
+                   tags$hr()
+                   )),
+                   column(10, offset = 1,
+                   DT::dataTableOutput("comparison_table")
+                   ),
+                   # selectInput(
+                   #     inputId = "select_comparison_jobs_type",
+                   #     label = "select type",
+                   #     choices = c("Highest Demand" = "top", 
+                   #                 "Lowest Demand" = "bottom", 
+                   #                 "Highest Growth" = "growth")
+                   # )
                    ) # close comparison page
             ) # close navbarPage
         ) # close tagList

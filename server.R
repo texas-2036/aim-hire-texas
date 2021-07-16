@@ -635,26 +635,37 @@ shinyServer(function(input, output, session) {
     
     ###--- COMPARISON PAGE ----------------------------
     
-    filter_comparison <- reactive({
-        df <- comparison_people %>% 
-            filter(wda == "Texas" | wda %in% input$comp_select_wda)
+    ## people table
+    filter_comparison_people <- reactive({
+        comparison_people %>%
+            filter(Area == "Texas" | Area %in% input$comp_select_wda)
     })
-    
-    output$comparison_table <- renderReactable({
+
+    output$comparison_table <- DT::renderDataTable({
         
-        options(reactable.theme = reactableTheme(
-        color = "black",
-        backgroundColor = "#FFFFFF", 
-        borderColor = "#DDDDF5",
-        stripedColor = "#f8f8ff"
-    ))
-    
-    table <- reactable(filter_comparison(), 
-                       defaultColDef = colDef(align = "center"),
-                       filterable = T,
-                       showPageSizeOptions = F,
-                       striped = F,
-                       highlight = T)
+    table <- datatable(filter_comparison_people(), 
+                       escape = F, 
+                       rownames = F,
+                       options = list(dom = "t",
+                                      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+                                      fnDrawCallback = htmlwidgets::JS(
+                           '
+            function () {
+              HTMLWidgets.staticRender();
+            }
+            '
+                       )
+                       )) %>% 
+        spk_add_deps() %>% 
+        formatStyle(c("Area", "Predicted number of working age adults, 2036", 
+                      "Predicted race-ethnicity breakdown of working age adults, 2036",
+                      "Number of households above ALICE threshold",
+                      "Share of households above ALICE threshold",
+                      "Median income of high school graduates",
+                      "Employment rate of high school graduates"), 
+                    'vertical-align'='middle') 
     return(table)
     })
+    
+    
     })
