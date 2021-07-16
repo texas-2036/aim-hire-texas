@@ -114,18 +114,32 @@ race_spark <- people %>%
   ))
 
 alice_spark <- people %>% 
-  select(wda, `Working age adults: White`:`Working age adults: Other`) %>% 
-  pivot_longer(`Working age adults: White`:`Working age adults: Other`) %>% 
+  select(wda, `Share of households above ALICE threshold`) %>%
+  mutate(`Share of households below ALICE threshold` = 100 - `Share of households above ALICE threshold`) %>% 
+  pivot_longer(`Share of households above ALICE threshold`:`Share of households below ALICE threshold`) %>% 
   group_by(wda) %>% 
-  summarize("Predicted Race-Ethnicity breakdown of future workforce" = spk_chr(
+  summarize("Spark of households above ALICE threshold" = spk_chr(
     value, 
     type = "pie", 
     height = "100",
-    sliceColors = c('#f26852',' #2a366c',' #3ead92',' #5f6fc1',' #f9cd21')
+    sliceColors = c('#f26852', 'transparent')
   ))
 
+edu_spark <- people %>% 
+  select(wda, `Employment rate of high school grads`) %>%
+  mutate(`unemployed` = 100 - `Employment rate of high school grads`) %>% 
+  pivot_longer(`Employment rate of high school grads`:`unemployed`) %>% 
+  group_by(wda) %>% 
+  summarize("Spark: Employment rate of high school grads" = spk_chr(
+    value, 
+    type = "pie", 
+    height = "100",
+    sliceColors = c('#f26852', 'transparent')
+  ))
 
 table <- left_join(people, race_spark) %>% 
+  left_join(alice_spark) %>% 
+  left_join(edu_spark) %>% 
   select(-c(`Working age adults: White`:`Working age adults: Other`)) %>% 
   datatable(., escape = F, filter = "top", 
           options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
