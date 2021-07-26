@@ -233,7 +233,7 @@ shinyUI(
                    tags$hr(),
                    tags$hr(),
                    fluidRow(
-                       column(10, offset = 1, align = "center",
+                       column(6, offset = 3, align = "center",
                        h4("Select Workforce Development Areas to compare: ", align = "center"),
                    selectizeInput(
                        inputId = "comp_select_wda",
