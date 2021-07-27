@@ -243,18 +243,26 @@ shinyUI(
                        width = "1000px",
                        options = list(maxItems = 5)
                          ),
-                   tags$hr()
+                   tags$hr(),
+                   h3("Workforce", align = "center"),
                    )),
                    column(10, offset = 1,
                    DT::dataTableOutput("comparison_table")
                    ),
-                   # selectInput(
-                   #     inputId = "select_comparison_jobs_type",
-                   #     label = "select type",
-                   #     choices = c("Highest Demand" = "top", 
-                   #                 "Lowest Demand" = "bottom", 
-                   #                 "Highest Growth" = "growth")
-                   # )
+                   
+                   fluidRow(
+                       column(10, offset = 1,
+                              tags$hr(),
+                              h3("Jobs", align = "center"))),
+                   fluidRow(
+                       class="dark-bg",
+                   column(5, offset = 1,
+                       highchartOutput("comparison_jobs_demand")
+                   
+                   ),
+                   column(5, 
+                          highchartOutput("comparison_jobs_wage"))
+                   )
                    ) # close comparison page
             ) # close navbarPage
         ) # close tagList

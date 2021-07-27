@@ -155,7 +155,7 @@ table <- left_join(people, race_spark) %>%
          `Employment rate of high school graduates`) %>%
   mutate(`Predicted number of working age adults, 2036` = prettyNum(`Predicted number of working age adults, 2036`, big.mark = ","),
          `Number of households above ALICE threshold` = prettyNum(`Number of households above ALICE threshold`, big.mark = ","),
-         `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) #%>%
+         `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) %>%
   datatable(., escape = F, filter = "top", 
           options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
             '
@@ -172,7 +172,33 @@ saveRDS(table, here::here("clean-data", "comparison_table_people_sparkline.rds")
 ###--- jobs table ---------------------------------
 # idea: just list top 10 in-demand jobs and add a symbol for living wage ($) and/or attractive (*)
 # but which data source to use... all brookings? can't join brookings and lmi
-demand <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds")) %>% 
-  filter(type == "top")
-attractive <- aj %>% 
-  select(wda = wfb, job = occupation)
+demand <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "demand", 
+         value = round(value))
+
+wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
+  filter(wage_band == "High Wage" | wage_band == "Mid-High Wage") %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(type = "living_wage", 
+         value = round(value))
+
+job_summary <- rbind(demand, wage) %>% 
+  ungroup() %>% 
+  group_by(wda, type) %>% 
+  mutate(rank = 1:5) %>% 
+  ungroup()  
+
+table_demo <- job_summary %>% 
+  filter(wda %in% c("Texas", "Alamo", "Gulf Coast", "Borderplex")) %>% 
+  filter(type == "demand") %>% 
+  select(rank, job, wda) %>% 
+  pivot_wider(id_cols = rank, names_from = "wda", values_from = "job")
+View(table_demo)
+saveRDS(job_summary, here::here("clean-data", "comparison_table_jobs.rds"))
