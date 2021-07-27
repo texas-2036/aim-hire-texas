@@ -298,8 +298,17 @@ b <- alice_demographics %>%
 b
 
 
+  df <- comparison_jobs %>% 
+    filter(wda %in% c("Alamo", "Borderplex", "Gulf Coast")) 
 
 
+purrr::map(unique(df$wda), function(x) {
+  df %>% 
+    filter(wda == x) %>% 
+    filter(type == "demand") %>% 
+    hchart("bar", hcaes(y = value, x = job))
+}) %>% 
+  hw_grid(rowheight = 225, ncol = 1) 
   
   
   
