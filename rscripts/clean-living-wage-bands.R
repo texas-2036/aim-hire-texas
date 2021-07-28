@@ -59,6 +59,24 @@ twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.x
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   )
 
+twc_2019_texas <- twc_2019 %>% 
+  ungroup() %>% 
+  group_by(soc_code, occupation_title) %>% 
+  summarize(median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
+            no_of_employed = sum(no_of_employed, na.rm=T)) %>% 
+  mutate(
+    wage_band = case_when(
+      median_wage>65000 ~ "High Wage",
+      median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
+      median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
+      median_wage<25000 ~ "Low Wage"
+    ),
+    wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
+  ) %>% 
+  mutate(wda = "Texas",
+         wda_number = 0)
+  
+twc_2019 <- rbind(twc_2019, twc_2019_texas)
 
 saveRDS(twc_2019, file=here::here("clean-data", "twc_living_wage_bands.rds"))
 

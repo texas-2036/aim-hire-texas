@@ -400,7 +400,7 @@ shinyServer(function(input, output, session) {
     ## Reactives 
     filter_aj <- reactive({
             df <- aj %>% 
-                filter(wfb == input$select_wda) %>% 
+                filter(wda == input$select_wda) %>% 
                 filter(!is.na(demand_index))
     })
     
@@ -445,7 +445,7 @@ shinyServer(function(input, output, session) {
     
     aj_table_data <- reactive ({
         aj %>% 
-            filter(wfb == input$select_wda) %>% 
+            filter(wda == input$select_wda) %>% 
             mutate(quality_index = round(quality_index, 1),
                    demand_index = round(demand_index, 1),
                    share_of_local_jobs_percent = round(share_of_local_jobs_percent, 1)) %>% 
@@ -670,8 +670,8 @@ shinyServer(function(input, output, session) {
     ## 2. Jobs table --------
     filter_comparison_jobs <- reactive({
         df <- comparison_jobs %>% 
-            #filter(wda == "Texas" | wda %in% input$comp_select_wda) 
-            filter(wda %in% input$comp_select_wda) 
+            filter(wda == "Texas" | wda %in% input$comp_select_wda) 
+            #filter(wda %in% input$comp_select_wda) 
     })
     observe(print(filter_comparison_jobs()))
     
@@ -684,6 +684,9 @@ shinyServer(function(input, output, session) {
                 hc_title(text=paste0(x)) %>% 
                 hc_yAxis(title = list(text = "Number of jobs")) %>%
                 hc_xAxis(title = list(text = "")) %>%
+                hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + this.y )}")) %>% 
                 hc_add_theme(
                     hc_theme_merge(
                         tx2036_hc,
@@ -703,6 +706,31 @@ shinyServer(function(input, output, session) {
                 hc_title(text=paste0(x)) %>% 
                 hc_yAxis(title = list(text = "Number of jobs")) %>%
                 hc_xAxis(title = list(text = "")) %>%
+                hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + this.y )}")) %>% 
+                hc_add_theme(
+                    hc_theme_merge(
+                        tx2036_hc,
+                        hc_theme(chart = list(backgroundColor = "#201F50"))
+                    )
+                )
+        }) %>% 
+            hw_grid(rowheight = 225, ncol = 1) 
+    })
+    
+    output$comparison_jobs_attractive <- renderUI({
+        purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
+            filter_comparison_jobs() %>% 
+                filter(wda == x) %>% 
+                filter(type == "attractive") %>% 
+                hchart("bar", hcaes(y = value, x = job)) %>% 
+                hc_title(text=paste0(x)) %>% 
+                hc_yAxis(title = list(text = "Share of local jobs")) %>%
+                hc_xAxis(title = list(text = "")) %>%
+                hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + this.y )}")) %>% 
                 hc_add_theme(
                     hc_theme_merge(
                         tx2036_hc,

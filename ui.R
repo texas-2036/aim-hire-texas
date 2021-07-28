@@ -256,13 +256,17 @@ shinyUI(
                               h3("Jobs", align = "center"))),
                    fluidRow(
                        class="dark-bg",
-                   column(5, offset = 1,
-                          h5("All top in-demand jobs"),
+                   column(4,
+                          h4("All top in-demand jobs"),
                        htmlOutput("comparison_jobs_demand")
                        ),
-                   column(5, 
-                          h5("Top in-demand jobs that earn a living wage"),
+                   column(4, 
+                          h4("Top in-demand jobs that earn a living wage"),
                           htmlOutput("comparison_jobs_wage")
+                          ),
+                   column(4,
+                          h4("Top in-demand jobs that are attractive"),
+                          htmlOutput("comparison_jobs_attractive")
                           )
                    )
                    ) # close comparison page

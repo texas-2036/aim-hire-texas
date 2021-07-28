@@ -189,16 +189,19 @@ wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
   mutate(type = "living_wage", 
          value = round(value))
 
+attractive <- readRDS(here::here("clean-data", "brookings-data.rds")) %>% 
+  filter(quality_index > 0) %>% 
+  ungroup() %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = share_of_local_jobs_percent, n = 5) %>% 
+  select(wda, job = occupation, value = share_of_local_jobs_percent) %>% 
+  mutate(type = "attractive")
+
 job_summary <- rbind(demand, wage) %>% 
+  rbind(attractive) %>% 
   ungroup() %>% 
   group_by(wda, type) %>% 
   mutate(rank = 1:5) %>% 
   ungroup()  
 
-table_demo <- job_summary %>% 
-  filter(wda %in% c("Texas", "Alamo", "Gulf Coast", "Borderplex")) %>% 
-  filter(type == "demand") %>% 
-  select(rank, job, wda) %>% 
-  pivot_wider(id_cols = rank, names_from = "wda", values_from = "job")
-View(table_demo)
 saveRDS(job_summary, here::here("clean-data", "comparison_table_jobs.rds"))
