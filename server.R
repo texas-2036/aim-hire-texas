@@ -381,16 +381,21 @@ shinyServer(function(input, output, session) {
     })
     
     output$lwj_plot_industry <- renderHighchart({
-        filter_lwj() %>%
-            group_by(wda, industry_title, wage_band) %>% 
+        df1 <- df %>%
+            group_by(industry_title, wage_band) %>% 
             summarize(number_jobs = sum(no_of_employed)) %>% 
-            hchart(type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
-            hc_xAxis(title = list(text = "")) %>%
+            arrange(desc(number_jobs))
+        
+        highchart() %>% 
+            hc_add_series(df1, type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+            hc_xAxis(title = list(text = ""),
+                     categories = as.list(df1$industry_title)) %>%
             hc_yAxis(title = list(text = "Number of jobs")) %>%
             hc_plotOptions(bar = list(stacking = "normal")) %>%
+            hc_legend(reversed = T) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_title(text = "Share of living wage jobs across industries") %>% 
-            hc_colors(c("#f26852", "#5f6fc1", "#2a366c", "#3ead92")) %>% 
+            hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.wage_band + ': ' + this.y)}"))
     })
@@ -595,8 +600,8 @@ shinyServer(function(input, output, session) {
                           color = "#f26852", whiskerWidth = 1,  lineWidth = 5) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_xAxis(title = list(text = ""),
-                     labels = format(c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
-                                             "Certificate 2-4 years", "Baccalaureate"))) %>% 
+                     
+                     categories = as.list(df$degree_level)) %>% 
             hc_yAxis(title = list(text = "")) %>% 
             hc_plotOptions(series = list(showInLegend = F)) %>%
            
@@ -675,27 +680,27 @@ shinyServer(function(input, output, session) {
     })
     observe(print(filter_comparison_jobs()))
     
-    output$comparison_jobs_demand <- renderUI({
-        purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
-            filter_comparison_jobs() %>% 
-                filter(wda == x) %>% 
-                filter(type == "demand") %>% 
-                hchart("bar", hcaes(y = value, x = job)) %>% 
-                hc_title(text=paste0(x)) %>% 
-                hc_yAxis(title = list(text = "Number of jobs")) %>%
-                hc_xAxis(title = list(text = "")) %>%
-                hc_tooltip(formatter = JS("function(){
-                                return (this.point.job + 
-                                      ': ' + this.y )}")) %>% 
-                hc_add_theme(
-                    hc_theme_merge(
-                        tx2036_hc,
-                        hc_theme(chart = list(backgroundColor = "#201F50"))
-                    )
-                )
-         }) %>% 
-             hw_grid(rowheight = 300, ncol = 1) 
-    })
+    # output$comparison_jobs_demand <- renderUI({
+    #     purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
+    #         filter_comparison_jobs() %>% 
+    #             filter(wda == x) %>% 
+    #             filter(type == "demand") %>% 
+    #             hchart("bar", hcaes(y = value, x = job)) %>% 
+    #             hc_title(text=paste0(x)) %>% 
+    #             hc_yAxis(title = list(text = "Number of jobs")) %>%
+    #             hc_xAxis(title = list(text = "")) %>%
+    #             hc_tooltip(formatter = JS("function(){
+    #                             return (this.point.job + 
+    #                                   ': ' + this.y )}")) %>% 
+    #             hc_add_theme(
+    #                 hc_theme_merge(
+    #                     tx2036_hc,
+    #                     hc_theme(chart = list(backgroundColor = "#201F50"))
+    #                 )
+    #             )
+    #      }) %>% 
+    #          hw_grid(rowheight = 300, ncol = 1) 
+    # })
    
     output$comparison_jobs_wage <- renderUI({
         purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
@@ -719,26 +724,26 @@ shinyServer(function(input, output, session) {
             hw_grid(rowheight = 300, ncol = 1) 
     })
     
-    output$comparison_jobs_attractive <- renderUI({
-        purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
-            filter_comparison_jobs() %>% 
-                filter(wda == x) %>% 
-                filter(type == "attractive") %>% 
-                hchart("bar", hcaes(y = value, x = job)) %>% 
-                hc_title(text=paste0(x)) %>% 
-                hc_yAxis(title = list(text = "Share of local jobs")) %>%
-                hc_xAxis(title = list(text = "")) %>%
-                hc_tooltip(formatter = JS("function(){
-                                return (this.point.job + 
-                                      ': ' + this.y )}")) %>% 
-                hc_add_theme(
-                    hc_theme_merge(
-                        tx2036_hc,
-                        hc_theme(chart = list(backgroundColor = "#201F50"))
-                    )
-                )
-        }) %>% 
-            hw_grid(rowheight = 300, ncol = 1) 
-    })
+    # output$comparison_jobs_attractive <- renderUI({
+    #     purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
+    #         filter_comparison_jobs() %>% 
+    #             filter(wda == x) %>% 
+    #             filter(type == "attractive") %>% 
+    #             hchart("bar", hcaes(y = value, x = job)) %>% 
+    #             hc_title(text=paste0(x)) %>% 
+    #             hc_yAxis(title = list(text = "Share of local jobs")) %>%
+    #             hc_xAxis(title = list(text = "")) %>%
+    #             hc_tooltip(formatter = JS("function(){
+    #                             return (this.point.job + 
+    #                                   ': ' + this.y )}")) %>% 
+    #             hc_add_theme(
+    #                 hc_theme_merge(
+    #                     tx2036_hc,
+    #                     hc_theme(chart = list(backgroundColor = "#201F50"))
+    #                 )
+    #             )
+    #     }) %>% 
+    #         hw_grid(rowheight = 300, ncol = 1) 
+    # })
     
     }) # close whole app

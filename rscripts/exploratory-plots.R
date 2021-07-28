@@ -123,8 +123,43 @@ aj %>%
              ))))
   
 ###--- Living wage jobs -------------------------------
-k <- lwj_industry %>% 
-  filter(wda == "Alamo")
+
+# reactive
+df <- lwj_industry %>% 
+    filter(wda == "Alamo")
+
+df %>%
+  group_by(industry_title, wage_band) %>% 
+  summarize(number_jobs = sum(no_of_employed)) %>% 
+  hchart(type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+  hc_xAxis(title = list(text = "")) %>%
+  hc_yAxis(title = list(text = "Number of jobs")) %>%
+  hc_plotOptions(bar = list(stacking = "normal")) %>%
+  #hc_add_theme(tx2036_hc) %>% 
+  hc_title(text = "Share of living wage jobs across industries") %>% 
+  hc_colors(c("#f26852", "#5f6fc1", "#2a366c", "#3ead92")) %>% 
+  hc_tooltip(formatter = JS("function(){
+                                return (this.point.wage_band + ': ' + this.y)}"))
+
+# hchart
+df1 <- df %>%
+    group_by(industry_title, wage_band) %>% 
+    summarize(number_jobs = sum(no_of_employed)) %>% 
+  arrange(desc(number_jobs))
+
+highchart() %>% 
+  hc_add_series(df1, type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+   hc_xAxis(title = list(text = ""),
+            categories = as.list(df1$industry_title)) %>%
+    hc_yAxis(title = list(text = "Number of jobs")) %>%
+    hc_plotOptions(bar = list(stacking = "normal")) %>%
+    #hc_add_theme(tx2036_hc) %>% 
+    hc_title(text = "Share of living wage jobs across industries") %>% 
+    hc_colors(c("#f26852", "#5f6fc1", "#2a366c", "#3ead92")) %>% 
+    hc_tooltip(formatter = JS("function(){
+                                return (this.point.wage_band + ': ' + this.y)}"))
+
+
 
 ###--- Employment by education, post high school ------
 

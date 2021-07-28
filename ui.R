@@ -255,19 +255,18 @@ shinyUI(
                               tags$hr(),
                               h3("Jobs", align = "center"))),
                    fluidRow(
-                       class="dark-bg",
-                   column(4,
-                          h4("All top in-demand jobs"),
-                       htmlOutput("comparison_jobs_demand")
-                       ),
-                   column(4, 
+                   # column(4,
+                   #        h4("All top in-demand jobs"),
+                   #     htmlOutput("comparison_jobs_demand")
+                   #     ),
+                   column(5, offset = 1, 
                           h4("Top in-demand jobs that earn a living wage"),
                           htmlOutput("comparison_jobs_wage")
-                          ),
-                   column(4,
-                          h4("Top in-demand jobs that are attractive"),
-                          htmlOutput("comparison_jobs_attractive")
                           )
+                   # column(4,
+                   #        h4("Top in-demand jobs that are attractive"),
+                   #        htmlOutput("comparison_jobs_attractive")
+                   #        )
                    )
                    ) # close comparison page
             ) # close navbarPage
