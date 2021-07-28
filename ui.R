@@ -257,11 +257,13 @@ shinyUI(
                    fluidRow(
                        class="dark-bg",
                    column(5, offset = 1,
-                       highchartOutput("comparison_jobs_demand")
-                   
-                   ),
+                          h5("All top in-demand jobs"),
+                       htmlOutput("comparison_jobs_demand")
+                       ),
                    column(5, 
-                          highchartOutput("comparison_jobs_wage"))
+                          h5("Top in-demand jobs that earn a living wage"),
+                          htmlOutput("comparison_jobs_wage")
+                          )
                    )
                    ) # close comparison page
             ) # close navbarPage
