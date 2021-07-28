@@ -694,7 +694,7 @@ shinyServer(function(input, output, session) {
                     )
                 )
          }) %>% 
-             hw_grid(rowheight = 225, ncol = 1) 
+             hw_grid(rowheight = 300, ncol = 1) 
     })
    
     output$comparison_jobs_wage <- renderUI({
@@ -716,7 +716,7 @@ shinyServer(function(input, output, session) {
                     )
                 )
         }) %>% 
-            hw_grid(rowheight = 225, ncol = 1) 
+            hw_grid(rowheight = 300, ncol = 1) 
     })
     
     output$comparison_jobs_attractive <- renderUI({
@@ -738,7 +738,7 @@ shinyServer(function(input, output, session) {
                     )
                 )
         }) %>% 
-            hw_grid(rowheight = 225, ncol = 1) 
+            hw_grid(rowheight = 300, ncol = 1) 
     })
     
     }) # close whole app
