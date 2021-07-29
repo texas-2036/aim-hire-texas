@@ -703,40 +703,43 @@ shinyServer(function(input, output, session) {
             #filter(wda %in% input$comp_select_wda) 
     })
     
-    output$comparison_jobs_demand <- renderUI({
-        purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
-            filter_comparison_jobs() %>%
-                filter(wda == x) %>%
-                filter(type == "demand") %>%
-                hchart("bar", hcaes(y = value, x = job)) %>%
-                hc_title(text=paste0(x)) %>%
-                hc_yAxis(title = list(text = "Number of jobs")) %>%
-                hc_xAxis(title = list(text = "")) %>%
-                hc_tooltip(formatter = JS("function(){
-                                return (this.point.job +
-                                      ': ' + this.y )}")) %>%
-                hc_add_theme(
-                    hc_theme_merge(
-                        tx2036_hc,
-                        hc_theme(chart = list(backgroundColor = "#201F50"))
-                    )
-                )
-         }) %>%
-             hw_grid(rowheight = 300, ncol = 1)
-    })
+    # output$comparison_jobs_demand <- renderUI({
+    #     purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
+    #         filter_comparison_jobs() %>%
+    #             filter(wda == x) %>%
+    #             filter(type == "demand") %>%
+    #             hchart("bar", hcaes(y = value, x = job)) %>%
+    #             hc_title(text=paste0(x)) %>%
+    #             hc_yAxis(title = list(text = "Number of jobs")) %>%
+    #             hc_xAxis(title = list(text = "")) %>%
+    #             hc_tooltip(formatter = JS("function(){
+    #                             return (this.point.job +
+    #                                   ': ' + this.y )}")) %>%
+    #             hc_add_theme(
+    #                 hc_theme_merge(
+    #                     tx2036_hc,
+    #                     hc_theme(chart = list(backgroundColor = "#201F50"))
+    #                 )
+    #             )
+    #      }) %>%
+    #          hw_grid(rowheight = 300, ncol = 1)
+    # })
    
     output$comparison_jobs_wage <- renderUI({
         purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
             filter_comparison_jobs() %>% 
                 filter(wda == x) %>% 
-                filter(type == "living_wage") %>% 
+                #filter(type == "living_wage") %>% 
                 hchart("bar", hcaes(y = value, x = job)) %>% 
-                hc_title(text=paste0(x)) %>% 
+                hc_title(text=paste0("<br>", x)) %>% 
                 hc_yAxis(title = list(text = "Number of jobs")) %>%
                 hc_xAxis(title = list(text = "")) %>%
                 hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
                                       ': ' + this.y )}")) %>% 
+                hc_caption(text = paste0("<b>All top in-demand jobs: </b><br><em>", 
+                                         filter_comparison_jobs()$indemand_jobs[1],
+                                         "</em>")) %>% 
                 hc_add_theme(
                     hc_theme_merge(
                         tx2036_hc,

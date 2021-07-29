@@ -240,7 +240,7 @@ shinyUI(
                    selectizeInput(
                        inputId = "comp_select_wda",
                        label = "",
-                       choices = unique(crosswalk$wda),
+                       choices = c("Select up to five WDAs to compare" = "", unique(crosswalk$wda)),
                        multiple = T, 
                        width = "1000px",
                        options = list(maxItems = 5)
@@ -257,11 +257,11 @@ shinyUI(
                               tags$hr(),
                               h3("Jobs", align = "center"))),
                    fluidRow(
-                   column(5, offset = 1,
-                          h4("All top in-demand jobs"),
-                       htmlOutput("comparison_jobs_demand")
-                       ),
-                   column(5,  
+                   # column(5, offset = 1,
+                   #        h4("All top in-demand jobs"),
+                   #     #htmlOutput("comparison_jobs_demand")
+                   #     ),
+                   column(8, offset = 2,  
                           h4("Top in-demand jobs that earn a living wage"),
                           htmlOutput("comparison_jobs_wage")
                           )

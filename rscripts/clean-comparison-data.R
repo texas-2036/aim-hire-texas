@@ -170,15 +170,47 @@ table
 saveRDS(table, here::here("clean-data", "comparison_table_people_sparkline.rds"))
 
 ###--- jobs table ---------------------------------
-# idea: just list top 10 in-demand jobs and add a symbol for living wage ($) and/or attractive (*)
-# but which data source to use... all brookings? can't join brookings and lmi
+# demand <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>% 
+#   ungroup() %>% 
+#   group_by(wda) %>% 
+#   slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
+#   select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+#   mutate(type = "demand", 
+#          value = round(value))
+# 
+# wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
+#   filter(wage_band == "High Wage" | wage_band == "Mid-High Wage") %>% 
+#   ungroup() %>% 
+#   group_by(wda) %>% 
+#   slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
+#   select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+#   mutate(type = "living_wage", 
+#          value = round(value))
+# 
+# attractive <- readRDS(here::here("clean-data", "brookings-data.rds")) %>% 
+#   filter(quality_index > 0) %>% 
+#   ungroup() %>% 
+#   group_by(wda) %>% 
+#   slice_max(order_by = share_of_local_jobs_percent, n = 5) %>% 
+#   select(wda, job = occupation, value = share_of_local_jobs_percent) %>% 
+#   mutate(type = "attractive")
+# 
+# job_summary <- rbind(demand, wage) %>% 
+#   rbind(attractive) %>% 
+#   ungroup() %>% 
+#   group_by(wda, type) %>% 
+#   mutate(rank = 1:5) %>% 
+#   ungroup()  
+# 
+# saveRDS(job_summary, here::here("clean-data", "comparison_table_jobs.rds"))
+
 demand <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>% 
   ungroup() %>% 
   group_by(wda) %>% 
   slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
-  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
-  mutate(type = "demand", 
-         value = round(value))
+  select(wda, job = oes_2019_estimates_title) %>% 
+  group_by(wda) %>% 
+  summarize(indemand_jobs = paste(job, collapse = " // "))
 
 wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
   filter(wage_band == "High Wage" | wage_band == "Mid-High Wage") %>% 
@@ -186,22 +218,6 @@ wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
   group_by(wda) %>% 
   slice_max(order_by = annual_average_employment_2036, n = 5) %>% 
   select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
-  mutate(type = "living_wage", 
-         value = round(value))
-
-attractive <- readRDS(here::here("clean-data", "brookings-data.rds")) %>% 
-  filter(quality_index > 0) %>% 
-  ungroup() %>% 
-  group_by(wda) %>% 
-  slice_max(order_by = share_of_local_jobs_percent, n = 5) %>% 
-  select(wda, job = occupation, value = share_of_local_jobs_percent) %>% 
-  mutate(type = "attractive")
-
-job_summary <- rbind(demand, wage) %>% 
-  rbind(attractive) %>% 
-  ungroup() %>% 
-  group_by(wda, type) %>% 
-  mutate(rank = 1:5) %>% 
-  ungroup()  
-
-saveRDS(job_summary, here::here("clean-data", "comparison_table_jobs.rds"))
+  mutate(value = round(value)) %>% 
+  left_join(demand)
+saveRDS(wage, here::here("clean-data", "comparison_table_jobs.rds"))
