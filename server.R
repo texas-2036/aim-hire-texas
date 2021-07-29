@@ -133,10 +133,10 @@ shinyServer(function(input, output, session) {
     
     # list of counties
     output$wda_counties <- renderUI({
-        counties <- crosswalk %>% 
+        counties <- county_list %>% 
             filter(wda == input$select_wda) %>% 
-            pull(county)
-        text <- HTML(paste0(strong("Counties in ", input$select_wda, ":")),
+            pull(text)
+        text <- HTML(paste0(strong("Counties in ", input$select_wda, " WDA:", br())),
                      paste(counties))
     })
     
