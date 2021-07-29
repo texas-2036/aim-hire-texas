@@ -1,3 +1,1 @@
 In order to build strong households, we need to prepare today’s workforce for the high-paying jobs of tomorrow. The table below shows the Top 10 jobs that are expected to be most in-demand in 2036 and currently pay a living wage (see methodology for definition).
-
-Living wage jobs are also concentrated in particular industries. The next chart shows the number and share of jobs in each major industry that are currently paying a living wage in this WDA.

@@ -1,0 +1,1 @@
+Living wage jobs are also concentrated in particular industries. The next chart shows the number and share of jobs in each major industry that are currently paying a living wage in this WDA.

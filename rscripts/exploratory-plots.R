@@ -159,7 +159,26 @@ highchart() %>%
     hc_tooltip(formatter = JS("function(){
                                 return (this.point.wage_band + ': ' + this.y)}"))
 
+df <- lwj_industry %>% 
+  ungroup() %>% 
+  filter(wda == "Gulf Coast") %>%
+  group_by(industry_title, wage_band) %>% 
+  summarize(wda = wda[1],
+            number_jobs = sum(no_of_employed)) %>% 
+  arrange(desc(number_jobs))
 
+highchart() %>% 
+  hc_add_series(df, type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+  hc_xAxis(title = list(text = ""),
+           categories = as.list(df$industry_title)) %>%
+  hc_yAxis(title = list(text = "Number of jobs")) %>%
+  hc_plotOptions(bar = list(stacking = "normal")) %>%
+  hc_legend(reversed = T) %>% 
+  #hc_add_theme(tx2036_hc) %>% 
+  hc_title(text = "Share of living wage jobs across industries") %>% 
+  hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>% 
+  hc_tooltip(formatter = JS("function(){
+                                return (this.point.wage_band + ': ' + this.y)}"))
 
 ###--- Employment by education, post high school ------
 

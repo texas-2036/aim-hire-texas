@@ -169,6 +169,8 @@ shinyUI(
                                     div(htmlOutput("header_lwj"), style="margin-top: -100px;"),
                                     h2("Living wage jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
+                                    highchartOutput("lwj_plot", height = 400),
+                                    includeMarkdown(here::here("text", "5_living_wage_jobs2.md")),
                                     highchartOutput("lwj_plot_industry", height = 700)
                                 ),
                                 ## 4. attractive jobs --------
@@ -255,11 +257,11 @@ shinyUI(
                               tags$hr(),
                               h3("Jobs", align = "center"))),
                    fluidRow(
-                   # column(4,
-                   #        h4("All top in-demand jobs"),
-                   #     htmlOutput("comparison_jobs_demand")
-                   #     ),
-                   column(5, offset = 1, 
+                   column(5, offset = 1,
+                          h4("All top in-demand jobs"),
+                       htmlOutput("comparison_jobs_demand")
+                       ),
+                   column(5,  
                           h4("Top in-demand jobs that earn a living wage"),
                           htmlOutput("comparison_jobs_wage")
                           )
