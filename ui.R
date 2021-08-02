@@ -61,14 +61,27 @@ shinyUI(
                                     div(
                                         class="well-panel-select",
                                         selectizeInput(inputId = "select_wda",
-                                            label = "",
-                                            choices = unique(crosswalk$wda),
-                                            selected = "Alamo"),
+                                                   label = "",
+                                                   choices = c(unique(crosswalk$wda), "Texas"),
+                                                   selected = "Texas"),
                                     ),
                                     br(),
+                                    
+                                    conditionalPanel(condition = "input.select_wda != 'Texas'",
+                                    # h2(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
-                                    tags$hr(),
+                                    tags$hr()
+                                    ),
+                                    
+                                    conditionalPanel(condition = "input.select_wda == 'Texas'",
+                                                    #  h2("Texas Statewide", align = "center", height = 4, color = "blue"), 
+                                                     leafletOutput("mini_map_tx", height = 310),
+                                                     #p(htmlOutput("wda_counties", align = "center")),
+                                                     tags$hr()
+                                    ),
+                                    
+                                    
                                     p(strong("Jump to section:")), 
                                     
                                     column(11, offset = 1,

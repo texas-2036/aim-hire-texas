@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
                         fillColor = ~pal(color_category),
                         fillOpacity = 1,
                         data = selected_wda_sf(),
-                        layerId = ~wda) %>%
+                        layerId = ~wda) 
 
             setMapWidgetStyle(list(background= "transparent")) %>%
             htmlwidgets::onRender("function(el, x) {
@@ -129,6 +129,38 @@ shinyServer(function(input, output, session) {
                map.dragging.disable();
                }")
 
+    })
+    
+    output$mini_map_tx  <- renderLeaflet({
+        pal <- colorFactor(palette = c("#2a366c", "#f26852", "#5f6fc1", "#3ead92"), wda_sf$color_category)
+        leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 5, maxZoom = 5)) %>%
+            setView(-99.9018, 30.9686, zoom = 6) %>%
+            addPolygons(stroke = F,
+                        fill = T,
+                        fillOpacity = 0.5,
+                        fillColor = ~pal(color_category),
+                        group = "wdas",
+                        data = wda_sf) %>%
+            addPolygons(stroke = T,
+                        weight = 1,
+                        color = "black",
+                        opacity = 1,
+                        fill = T,
+                        fillOpacity = 0,
+                        label = ~wda,
+                        group = "highlight",
+                        layerId = ~wda,
+                        highlightOptions = highlightOptions(color="white",
+                                                            opacity=1, weight=3, bringToFront=T),
+                        data = wda_sf) 
+
+            
+            setMapWidgetStyle(list(background= "transparent")) %>%
+            htmlwidgets::onRender("function(el, x) {
+               map = this
+               map.dragging.disable();
+               }")
+        
     })
     
     # list of counties

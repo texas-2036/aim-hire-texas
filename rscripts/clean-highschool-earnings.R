@@ -130,9 +130,23 @@ edu_wda <- left_join(employment_edu, crosswalk) %>%
   fill(wda_population) %>% 
   fill(wda_medianincome) %>% 
   select(wda_number, wda, education, everything())
-saveRDS(edu_wda, here::here("clean-data", "wda_edu_employment.rds"))
-View(edu_wda)
 
-ggplot(edu_wda, aes(x = education, y = median_income, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
-ggplot(edu_wda, aes(x = education, y = pct_total_employed, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
-ggplot(edu_wda, aes(x = education, y = pct_in_laborforce, group = wda)) + geom_point() + geom_line() + theme_bw() + facet_wrap(~wda)
+edu_texas <- edu_wda %>% 
+  group_by(education) %>% 
+  summarize(wda_medianincome = weighted.mean(wda_medianincome, wda_population, na.rm = T),
+            pct_in_laborforce = weighted.mean(pct_in_laborforce, wda_number_people, na.rm = T),
+            pct_employed = weighted.mean(pct_employed, wda_number_people, na.rm = T),
+            pct_unemployed = weighted.mean(pct_unemployed, wda_number_people, na.rm = T),
+            median_income = weighted.mean(median_income, wda_number_people, na.rm = T),
+            wda_number_people = sum(wda_number_people, na.rm = T),
+            wda_number_in_laborforce = sum(wda_number_in_laborforce, na.rm = T)
+            ) %>% 
+  mutate(wda = "Texas",
+         wda_number = 0,
+         wda_population = NA)
+
+edu_wda <- rbind(edu_wda, edu_texas)
+
+saveRDS(edu_wda, here::here("clean-data", "wda_edu_employment.rds"))
+
+
