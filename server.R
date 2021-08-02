@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
                         fillColor = ~pal(color_category),
                         fillOpacity = 1,
                         data = selected_wda_sf(),
-                        layerId = ~wda) 
+                        layerId = ~wda) %>%
 
             setMapWidgetStyle(list(background= "transparent")) %>%
             htmlwidgets::onRender("function(el, x) {
@@ -152,7 +152,7 @@ shinyServer(function(input, output, session) {
                         layerId = ~wda,
                         highlightOptions = highlightOptions(color="white",
                                                             opacity=1, weight=3, bringToFront=T),
-                        data = wda_sf) 
+                        data = wda_sf) %>%
 
             
             setMapWidgetStyle(list(background= "transparent")) %>%
