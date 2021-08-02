@@ -61,6 +61,21 @@ pseo_wda_df <- pseo_inst_df %>%
     num_of_institutions = n()
   )
 
+pseo_tx_df <- pseo_wda_df %>% 
+  group_by(degree_level) %>% 
+  summarise(y10_p25_earnings = weighted.mean(y10_p25_earnings, y10_grads_earn, na.rm = T),
+            y10_p50_earnings = weighted.mean(y10_p50_earnings, y10_grads_earn, na.rm = T), 
+            y10_p75_earnings = weighted.mean(y10_p75_earnings, y10_grads_earn, na.rm = T),
+            y10_grads_earn = sum(y10_grads_earn, na.rm = T),
+            y10_ipeds_count = sum(y10_ipeds_count, na.rm = T),
+            y10_grads_emp = sum(y10_grads_emp, na.rm = T),
+            y10_grads_emp_instate = sum(y10_grads_emp_instate, na.rm = T),
+            y10_grads_nme = sum(y10_grads_nme, na.rm = T),
+            num_of_institutions = sum(num_of_institutions, na.rm = T)) %>% 
+  mutate(wda_name = "Texas")
+
+pseo_wda_df <- rbind(pseo_wda_df, pseo_tx_df)
+
 save(pseo_inst_df, pseo_wda_df, file=here::here("clean-data", "pseo-data.RData"))
 
 

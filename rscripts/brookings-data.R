@@ -24,8 +24,14 @@ data_tx <- data %>%
   summarize(share_of_local_jobs_percent = mean(share_of_local_jobs_percent, na.rm = T),
             quality_index = mean(quality_index, na.rm = T),
             demand_index = mean(demand_index, na.rm = T)) %>% 
-  mutate(quality_and_demand_quadrant = NA,
-         wda = "Texas")
+  mutate(quality_score = case_when(quality_index >= 0 ~ "High quality",
+                                   quality_index < 0 ~ "Low quality"),
+         demand_score = case_when(demand_index >= 0 ~ "High demand",
+                                  demand_index < 0 ~ "Low demand")) %>% 
+  mutate(quality_and_demand_quadrant = paste0(quality_score, " - ", demand_score),
+         wda = "Texas") %>% 
+  select(-quality_score, -demand_score)
+    
   
 export <- rbind(data, data_tx) %>% 
   saveRDS(here::here("clean-data", "brookings-data.rds"))

@@ -57,10 +57,22 @@ shinyUI(
                          div(
                                 wellPanel(
                                     class='well-panel',
+                                    
+                                    conditionalPanel(condition = "input.select_wda != 'Texas'",
                                     h2(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
-                                    tags$hr(),
+                                    tags$hr()
+                                    ),
+                                    
+                                    conditionalPanel(condition = "input.select_wda == 'Texas'",
+                                                     h2("Texas Statewide", align = "center", height = 4, color = "blue"), 
+                                                     leafletOutput("mini_map_tx", height = 310),
+                                                     #p(htmlOutput("wda_counties", align = "center")),
+                                                     tags$hr()
+                                    ),
+                                    
+                                    
                                     p(strong("Jump to section:")), 
                                     
                                     column(11, offset = 1,
@@ -80,8 +92,8 @@ shinyUI(
                                     
                                     selectizeInput(inputId = "select_wda",
                                                    label = "Choose a different WDA: ",
-                                                   choices = unique(crosswalk$wda),
-                                                   selected = "Alamo"),
+                                                   choices = c(unique(crosswalk$wda), "Texas"),
+                                                   selected = "Texas"),
                                     width = "100%")), 
             
                          div(

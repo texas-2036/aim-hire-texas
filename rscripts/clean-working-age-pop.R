@@ -26,7 +26,11 @@ clean <- df %>%
   summarise(
     across(total:nh_other_female, sum, na.rm=T)
   ) %>% 
-  filter(year<=2036)
+  filter(year<=2036) %>% 
+  mutate(wda = case_when(wda == "State of Texas" ~ "Texas",
+                         T ~ wda),
+         wda_number = case_when(wda == "Texas" ~ 0,
+                                T ~ wda_number))
 
 write_rds(clean, here::here("clean-data", "working-age-pop-2036.rds"))
 
