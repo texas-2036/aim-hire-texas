@@ -143,6 +143,7 @@ ggtheme <- function (base_size = 14,
 ###--- Load data -------------------------
 load(here::here("clean-data", "alice_living_wage_hh.RData"))
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
+texas_sf <- readRDS(here::here("clean-data", "texas_shapefile.rds"))
 counties <- readRDS(here::here("clean-data", "county_shapefile.rds"))
 county_list <- readRDS(here::here("clean-data", "wda_county_list.RDS"))
 crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))

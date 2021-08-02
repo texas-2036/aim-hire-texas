@@ -81,6 +81,14 @@ shinyServer(function(input, output, session) {
                              selected = input$mini_map_shape_click$id)
     })
     
+    observeEvent(input$mini_map_tx_shape_click$id, {
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = unique(crosswalk$wda),
+                             selected = input$mini_map_tx_shape_click$id)
+    })
+    
     ###--- WDA PAGE ----------------------------
     ## * Well panel --------
     
@@ -153,6 +161,13 @@ shinyServer(function(input, output, session) {
                         highlightOptions = highlightOptions(color="white",
                                                             opacity=1, weight=3, bringToFront=T),
                         data = wda_sf) %>%
+            addPolygons(stroke = T,
+                        weight = 5,
+                        color = "black",
+                        fill = F,
+                        data = texas_sf
+                
+            ) %>% 
 
             
             setMapWidgetStyle(list(background= "transparent")) %>%

@@ -67,18 +67,19 @@ shinyUI(
                                     ),
                                     br(),
                                     
-                                    leafletOutput("mini_map", height = 310),
+                                    
                                     
                                     conditionalPanel(condition = "input.select_wda != 'Texas'",
+                                                     leafletOutput("mini_map", height = 310),
                                                      p(htmlOutput("wda_counties", align = "center")),
                                                      tags$hr()
                                                      ),
                                     
-                                    # conditionalPanel(condition = "input.select_wda == 'Texas'",
-                                    #                  leafletOutput("mini_map_tx", height = 310),
-                                    #                  #p(htmlOutput("wda_counties", align = "center")),
-                                    #                  tags$hr()
-                                    # ),
+                                    conditionalPanel(condition = "input.select_wda == 'Texas'",
+                                                     leafletOutput("mini_map_tx", height = 310),
+                                                     #p(htmlOutput("wda_counties", align = "center")),
+                                                     tags$hr()
+                                    ),
                                     
                                     
                                     p(strong("Jump to section:")), 
