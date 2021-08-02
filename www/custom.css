@@ -638,6 +638,7 @@ letter-spacing: 3px;
 
 .wda-wrapper {
     display: flex;
+    flex-direction: row;
 }
 
 .main-panel {
@@ -645,16 +646,60 @@ letter-spacing: 3px;
     max-width: 70%;
 }
 
+.well-panel {
+    overflow-y: auto; 
+    position:fixed; 
+    width: 31%; 
+    width: calc(30% + 1px); 
+    top:70px; 
+    bottom:0px;
+    left: 0px;
+    background-color: #fff;
+    padding-top: 20px;
+    margin-bottom: 0px;
+    border-radius: 0px;
+    border: none;
+    border-right: 2px solid #3A4A9F;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+}
+
+.well-panel-select {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    padding: 0px;
+    box-shadow: none;
+}
+
 @media only screen and (max-width: 750px) {
+    .wda-wrapper {
+        display: flex;
+        flex-direction: column;
+    }    
     .main-panel {
         max-width: 100%;
         width: 100%;
     }
     .well-panel {
-        display: none;
+        position: relative; 
+        width: 100%; 
+        top: 0px; 
+        padding-top: 155px;
+        border: none;
+        box-shadow: none;
     }
     .well-placeholder {
-        display: none;
+       display: none;
+    }
+    .well-panel-select {
+        position: fixed;
+        top: 80px;
+        left: 0px;
+        width: 100%;
+        background-color: #fff;
+        padding: 0px 10px;
+        box-shadow: 0 2px 3px rgba(0,0,0,.08);
+        z-index: 1000;
     }
 } 
 
@@ -673,27 +718,159 @@ letter-spacing: 3px;
     text-decoration: underline;
  }
 
- 
-.well-panel {
-    overflow-y: auto; 
-    position:fixed; 
-    width: 31%; 
-    width: calc(30% + 1px); 
-    top:90px; 
-    bottom:0px;
-    left: 0px;
-    background-color: #fff;
-    padding-top: 30px;
-    margin-bottom: 0px;
-    border-radius: 0px;
-    border: none;
-    border-right: 2px solid #3A4A9F;
-    box-shadow: 0 2px 4px rgba(0,0,0,.12);
-}
-
 .well-placeholder {
     width: 30%;
     height: 100vh;
+}
+
+.well-panel-mobile .shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+}
+
+.well-panel .selectize-input {
+    border: 2px solid #ACB6E8;
+}
+
+.well-panel .selectize-input .item {
+    padding-top: 4px;
+    font-size: 24px;
+    color: #3A4A9F;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.well-panel .selectize-control.single .selectize-input:after {
+    border-color: #3A4A9F transparent transparent transparent;
+}
+
+.well-panel .control-label {
+    font-weight: 400;
+    text-align: center;
+}
+
+/* Compare WDAs Page */
+.row.jobs {
+    background-color: #201F50;
+    color: #fff;
+    padding: 30px 40px;
+}
+
+.row.jobs h4 {
+    color: #C4CCF4;
+}
+
+.sparkline.html-widget.html-widget-static-bound {
+   display: inline-flex;
+   justify-content: center;
+   align-items: center;
+   height: 40px;
+}
+
+.sparkline.html-widget.html-widget-static-bound canvas {
+    position: relative;
+    top: 36px;
+}
+
+.comp-select {
+    padding-top: 100px;
+    /* color: #fff;
+    background-color: #3A4A9F; */
+    background-color: #F5F6FB;
+    /* box-shadow: 0 2px 4px rgba(10,23,86,.08); */
+    margin-bottom: 20px;
+}
+
+.comp-select h4 {
+    margin: 0px;
+    margin-top: 15px;
+}
+
+
+.no-comps-selected p {
+    color: #696969;
+    padding-top: 30px;
+    padding-bottom: 0px;
+    font-style: italic;
+}
+
+.no-comps-selected-jobs {
+    margin-top: 10px;
+    border-top: 1px solid #4D58A5;
+    color: #C4CCF4;
+    padding: 20px 0px;
+    font-weight: 200;
+    font-style: italic;
+}
+
+.compare-wdas-select {
+    padding-top: 110px;
+    background-color: #E7E9F7;
+    margin-bottom: 10px;
+    color: #201F50;
+}
+
+.compare-wdas-select p {
+   margin-bottom: 5px;
+}
+
+.compare-wdas-select .selectize-input {
+    border: 2px solid #C4CCF4;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.compare-wdas-select .shiny-input-container label {
+    display: none;
+}
+
+.comp-table {
+    background-color: #fff;
+    padding-bottom: 20px;
+}
+
+.race-legend {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0px 20px;
+    margin-top: 10px;
+}
+
+.race-legend-row {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.race-legend-row p {
+    margin-bottom: 0px;
+    font-size: 15px;
+}
+
+.race-legend-circle {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border-radius: 100%;
+}
+
+.race-legend-circle.green {
+    background-color: #3EAD92;
+}
+
+.race-legend-circle.red {
+    background-color: #F26852;
+}
+
+.race-legend-circle.dark-blue {
+    background-color: #2A366C;
+}
+
+.race-legend-circle.light-blue {
+    background-color: #5F6FC1;
+}
+
+.race-legend-circle.yellow {
+    background-color: #F9CD21;
 }
 
 /* FLIPPED COLORS */

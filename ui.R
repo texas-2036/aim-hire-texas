@@ -5,6 +5,7 @@ shinyUI(
     tagList(
         useShinyjs(),
         tags$head(
+            HTML("<title>Aim Hire Texas</title>"),
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
             tags$link(rel="shortcut icon", href="favicon.png"),
             tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
@@ -57,7 +58,14 @@ shinyUI(
                          div(
                                 wellPanel(
                                     class='well-panel',
-                                    h2(htmlOutput("wda_name"), align = "center", height = 4), 
+                                    div(
+                                        class="well-panel-select",
+                                        selectizeInput(inputId = "select_wda",
+                                            label = "",
+                                            choices = unique(crosswalk$wda),
+                                            selected = "Alamo"),
+                                    ),
+                                    br(),
                                     leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
                                     tags$hr(),
@@ -75,15 +83,34 @@ shinyUI(
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
-                                    tags$hr()
                                     ),
-                                    
-                                    selectizeInput(inputId = "select_wda",
-                                                   label = "Choose a different WDA: ",
-                                                   choices = unique(crosswalk$wda),
-                                                   selected = "Alamo"),
                                     width = "100%")), 
-            
+                        # div(
+                        #         class='well-panel-mobile',
+                        #         selectizeInput(inputId = "select_wda",
+                        #             label = "",
+                        #             choices = unique(crosswalk$wda),
+                        #             selected = "Alamo"),
+                        #         br(),
+                        #         leafletOutput("mini_map", height = 310),
+                        #         p(htmlOutput("wda_counties", align = "center")),
+                        #         tags$hr(),
+                        #         p(strong("Jump to section:")), 
+
+                        #         column(11, offset = 1,
+                        #         strong(a("Living wage households", type = "link", href = "#header_lwh")), 
+                        #         br(),
+                        #         strong(a("Future workforce", type = "link", href = "#header_waa")),
+                        #         br(),
+                        #         strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
+                        #         br(),
+                        #         strong(a("Living wage jobs", type = "link", href = "#header_lwj")),
+                        #         br(),
+                        #         strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
+                        #         br(),
+                        #         strong(a("Education pipeline", type = "link", href = "#header_edu")),
+                        #         ),
+                        #         width = "100%"), 
                          div(
                                 class='main-panel',
                                 
@@ -229,14 +256,10 @@ shinyUI(
                             )
                      ), # closes wda page
             tabPanel(title = "Compare WDAs",
-                   tags$hr(),
-                   tags$hr(),
-                   tags$hr(),
-                   tags$hr(),
-                   tags$hr(),
                    fluidRow(
+                       class="compare-wdas-select",
                        column(6, offset = 3, align = "center",
-                       h4("Select Workforce Development Areas to compare: ", align = "center"),
+                       p("Selected Workforce Development Areas"),
                    selectizeInput(
                        inputId = "comp_select_wda",
                        label = "",
@@ -245,18 +268,55 @@ shinyUI(
                        width = "1000px",
                        options = list(maxItems = 5)
                          ),
-                   tags$hr(),
-                   h3("Workforce", align = "center"),
                    )),
-                   column(10, offset = 1,
-                   DT::dataTableOutput("comparison_table")
+                   div(
+                       class='comp-table',
+                       fluidRow(
+                            column(10, offset = 1,
+                            DT::dataTableOutput("comparison_table")
+                            ),
+                       ),
+                        div(
+                            class="race-legend",
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle light-blue"),
+                                p("Asian")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle dark-blue"),
+                                p("Black")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle green"),
+                                p("Hispanic")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle red"),
+                                p("White")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle yellow"),
+                                p("Other")
+                            )
+                        ),
+                        conditionalPanel(
+                            condition = "(typeof input.comp_select_wda == 'undefined' || input.comp_select_wda.length < 1)",
+                            fluidRow(
+                                class='no-comps-selected',
+                                column(
+                                    10, offset = 1, align = 'center', 
+                                    p('No comparison WDAs selected. Use the selector at the top of page to display WDAs.')
+                                )
+                            )
+                        ),
                    ),
-                   
                    fluidRow(
-                       column(10, offset = 1,
-                              tags$hr(),
-                              h3("Jobs", align = "center"))),
-                   fluidRow(
+                       class="jobs",
                    # column(5, offset = 1,
                    #        h4("All top in-demand jobs"),
                    #     #htmlOutput("comparison_jobs_demand")
@@ -264,7 +324,19 @@ shinyUI(
                    column(8, offset = 2,  
                           h4("Top in-demand jobs that earn a living wage"),
                           htmlOutput("comparison_jobs_wage")
-                          )
+                          ),
+                    conditionalPanel(
+                        condition = "(typeof input.comp_select_wda == 'undefined' || input.comp_select_wda.length < 1)",
+                        fluidRow(
+                            column(
+                                10, offset=1, align = 'center', 
+                                p(
+                                    class='no-comps-selected-jobs', 
+                                    'No comparison WDAs selected. Use the selector at the top of page to display WDAs.'
+                                )
+                            )
+                        )
+                    ),
                    # column(4,
                    #        h4("Top in-demand jobs that are attractive"),
                    #        htmlOutput("comparison_jobs_attractive")
