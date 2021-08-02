@@ -633,7 +633,10 @@ letter-spacing: 3px;
     .aht-logo {
         top: -10px;
     }
-    
+    .row.dark-bg.wda-intro {
+        padding-top: 25px !important;
+        padding-bottom: 20px;
+    }
 } 
 
 .wda-wrapper {
