@@ -68,14 +68,12 @@ shinyUI(
                                     br(),
                                     
                                     conditionalPanel(condition = "input.select_wda != 'Texas'",
-                                    # h2(htmlOutput("wda_name"), align = "center", height = 4), 
                                     leafletOutput("mini_map", height = 310),
                                     p(htmlOutput("wda_counties", align = "center")),
                                     tags$hr()
                                     ),
                                     
                                     conditionalPanel(condition = "input.select_wda == 'Texas'",
-                                                    #  h2("Texas Statewide", align = "center", height = 4, color = "blue"), 
                                                      leafletOutput("mini_map_tx", height = 310),
                                                      #p(htmlOutput("wda_counties", align = "center")),
                                                      tags$hr()
@@ -98,32 +96,6 @@ shinyUI(
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
                                     ),
                                     width = "100%")), 
-                        # div(
-                        #         class='well-panel-mobile',
-                        #         selectizeInput(inputId = "select_wda",
-                        #             label = "",
-                        #             choices = unique(crosswalk$wda),
-                        #             selected = "Alamo"),
-                        #         br(),
-                        #         leafletOutput("mini_map", height = 310),
-                        #         p(htmlOutput("wda_counties", align = "center")),
-                        #         tags$hr(),
-                        #         p(strong("Jump to section:")), 
-
-                        #         column(11, offset = 1,
-                        #         strong(a("Living wage households", type = "link", href = "#header_lwh")), 
-                        #         br(),
-                        #         strong(a("Future workforce", type = "link", href = "#header_waa")),
-                        #         br(),
-                        #         strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
-                        #         br(),
-                        #         strong(a("Living wage jobs", type = "link", href = "#header_lwj")),
-                        #         br(),
-                        #         strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
-                        #         br(),
-                        #         strong(a("Education pipeline", type = "link", href = "#header_edu")),
-                        #         ),
-                        #         width = "100%"), 
                          div(
                                 class='main-panel',
                                 

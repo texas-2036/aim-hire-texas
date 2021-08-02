@@ -726,10 +726,6 @@ letter-spacing: 3px;
     height: 100vh;
 }
 
-.well-panel-mobile .shiny-input-container:not(.shiny-input-container-inline) {
-    width: 100%;
-}
-
 .well-panel .selectize-input {
     border: 2px solid #ACB6E8;
 }
