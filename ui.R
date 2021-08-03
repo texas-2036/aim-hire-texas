@@ -42,11 +42,18 @@ shinyUI(
                         fluidRow(
                             class="map-row",
                             h4("Click a Workforce Development Area to learn more", align = "center", class="map-header"),
-                            actionButton(inputId = "statewide_select", 
-                                       label = "Or, show statewide data",
-                                       align = "center"),
-                            leafletOutput("home_map", height = 700)
+
+                            leafletOutput("home_map", height = 700),
+                            column(width = 4, offset = 4,
+                                   actionButton(inputId = "statewide_select", 
+                                                label = "Or, show statewide data",
+                                                align = "center")),
+                            br(),
+                            br(),
+                            br(),
+
                             ),
+                        
                         includeMarkdown(here::here("text", "home3.md")),
                         tags$hr(),
                         img(src = "AHT-FINAL-LOGO.png", height = 150)
@@ -166,8 +173,10 @@ shinyUI(
                                                             "Highest Growth" = "growth")),
                                     fluidRow(
                                         h3(htmlOutput("idj_title")),
+                                        conditionalPanel(condition = "input.select_wda != 'Texas'",
                                         column(6,
-                                               highchartOutput("idj_plot", height = 500)),
+                                               highchartOutput("idj_plot", height = 500))
+                                        ),
                                         column(6,
                                                highchartOutput("idj_plot_texas", height = 500))
                                     )
