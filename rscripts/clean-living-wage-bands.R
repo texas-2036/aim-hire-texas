@@ -30,6 +30,32 @@ wda28_crosswalk <- wda_crosswalk %>%
     across(wda:wda_number, first)
   )
 
+#County population
+acs <- load_variables(2019, "acs5", cache=T)
+county_pop <- tidycensus::get_acs(
+  geography = "county", state = 48,
+  variables = "B01001_001", cache_table = T
+) %>% 
+  clean_names() %>% 
+  mutate(geoid = as.numeric(geoid)) %>% 
+  dplyr::select(geoid, totpop=estimate)
+
+
+#Alice wage bands
+alice <- readRDS(here::here("raw-data", "alice-wage-data.rds")) %>% 
+  filter(x=="Two Adults, 2 in Child Care") %>% 
+  left_join(., wda_crosswalk, by="county") %>% 
+  left_join(., county_pop, by=c("fips_county" = "geoid")) %>% 
+  group_by(wda, wda_number) %>% 
+  summarise(
+    alice_wage_avg = weighted.mean(annually, wt=totpop, na.rm=T),
+    alice_high = alice_wage_avg + 20000,
+    alice_low = alice_wage_avg - 20000
+  )
+
+
+
+
 #This now exists in clean-lmi-data.R
 # #Living wages by occupation ---------
 twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.xlsx")) %>%
@@ -49,12 +75,13 @@ twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.x
     median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
     no_of_employed = sum(no_of_employed, na.rm=T)
   ) %>%
+  left_join(., alice) %>% 
   mutate(
     wage_band = case_when(
-      median_wage>65000 ~ "High Wage",
-      median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
-      median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
-      median_wage<25000 ~ "Low Wage"
+      median_wage>alice_high ~ "High Wage",
+      median_wage>alice_wage_avg & median_wage<=alice_high ~ "Mid-High Wage",
+      median_wage>=alice_low & median_wage<=alice_wage_avg ~ "Mid-Low Wage",
+      median_wage<alice_low ~ "Low Wage"
     ),
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   )
@@ -65,11 +92,14 @@ twc_2019_texas <- twc_2019 %>%
   summarize(median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
             no_of_employed = sum(no_of_employed, na.rm=T)) %>% 
   mutate(
+    alice_wage_avg = 55000,
+    alice_high = alice_wage_avg + 20000,
+    alice_low = alice_wage_avg - 20000,
     wage_band = case_when(
-      median_wage>65000 ~ "High Wage",
-      median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
-      median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
-      median_wage<25000 ~ "Low Wage"
+      median_wage>alice_high ~ "High Wage",
+      median_wage>alice_wage_avg & median_wage<=alice_high ~ "Mid-High Wage",
+      median_wage>=alice_low & median_wage<=alice_wage_avg ~ "Mid-Low Wage",
+      median_wage<alice_low ~ "Low Wage"
     ),
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   ) %>% 
@@ -107,12 +137,13 @@ wda_df <- do.call(rbind, pull_data) %>%
     median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
     no_of_employed = sum(no_of_employed, na.rm=T)  
   ) %>% 
+  left_join(., alice) %>% 
   mutate(
     wage_band = case_when(
-      median_wage>65000 ~ "High Wage",
-      median_wage>45000 & median_wage<=65000 ~ "Mid-High Wage",
-      median_wage>=25000 & median_wage<=45000 ~ "Mid-Low Wage",
-      median_wage<25000 ~ "Low Wage"
+      median_wage>alice_high ~ "High Wage",
+      median_wage>alice_wage_avg & median_wage<=alice_high ~ "Mid-High Wage",
+      median_wage>=alice_low & median_wage<=alice_wage_avg ~ "Mid-Low Wage",
+      median_wage<alice_low ~ "Low Wage"
     ),
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   )
