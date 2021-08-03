@@ -145,7 +145,9 @@ wda_df <- do.call(rbind, pull_data) %>%
   mutate(
     wda = ifelse(is.na(wda), "Texas", wda)
   ) %>% 
+  # remove soc_code and occupation_title?
   group_by(wda, wda_number, naics_code, industry_title, soc_code, occupation_title) %>% 
+  #group_by(wda, wda_number, naics_code, industry_title) %>% 
   summarise(
     median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
     no_of_employed = sum(no_of_employed, na.rm=T)  
@@ -163,7 +165,9 @@ wda_df <- do.call(rbind, pull_data) %>%
     ),
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
   ) %>% 
-  ungroup()
+  ungroup() %>% 
+  group_by(wda, wda_number, industry_title, wage_band) %>% 
+  summarize(no_of_employed = sum(no_of_employed)) 
 
 
 saveRDS(wda_df, file=here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
