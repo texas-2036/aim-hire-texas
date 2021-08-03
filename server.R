@@ -407,17 +407,17 @@ shinyServer(function(input, output, session) {
             filter(wda == "Texas") %>% 
             filter(type == input$select_idj_type)
     })
-    
-    output$idj_title <- renderUI({
-        if (input$select_idj_type == "top") {
-            text <- "Top 10 most in demand jobs"
-        } else if (input$select_idj_type == "bottom") {
-            text <- "Bottom 10 least in demand jobs"
-        } else {
-            text <- "Top 10 fastest growing jobs"
-        }
-        return(text)
-    })
+    # 
+    # output$idj_title <- renderUI({
+    #     if (input$select_idj_type == "top") {
+    #         text <- "Top 10 most in demand jobs"
+    #     } else if (input$select_idj_type == "bottom") {
+    #         text <- "Bottom 10 least in demand jobs"
+    #     } else {
+    #         text <- "Top 10 fastest growing jobs"
+    #     }
+    #     return(text)
+    # })
     
     output$idj_plot <- renderHighchart({
        plot <- idj_filter() %>% 
