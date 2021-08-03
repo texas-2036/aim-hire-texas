@@ -68,8 +68,29 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(unique(crosswalk$wda), "Texas"),
                              selected = input$home_map_shape_click$id)
+        updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
+    })
+    
+    observeEvent(input$statewide_select, {
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = c(unique(crosswalk$wda), "Texas"),
+                             selected = "Texas")
+        updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
+    })
+    
+    observeEvent(input$county_search, {
+        wda <- crosswalk %>% 
+            filter(county == input$county_search) %>% 
+            pull(wda)
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = c(unique(crosswalk$wda), "Texas"),
+                             selected = wda)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
     
@@ -162,7 +183,8 @@ shinyServer(function(input, output, session) {
                                                             opacity=1, weight=3, bringToFront=T),
                         data = wda_sf) %>%
             addPolygons(stroke = T,
-                        weight = 5,
+                        weight = 4,
+                        opacity = 1,
                         color = "black",
                         fill = F,
                         data = texas_sf
