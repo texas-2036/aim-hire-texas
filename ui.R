@@ -42,6 +42,9 @@ shinyUI(
                         fluidRow(
                             class="map-row",
                             h4("Click a Workforce Development Area to learn more", align = "center", class="map-header"),
+                            actionButton(inputId = "statewide_select", 
+                                       label = "Or, show statewide data",
+                                       align = "center"),
                             leafletOutput("home_map", height = 700)
                             ),
                         includeMarkdown(here::here("text", "home3.md")),
@@ -63,7 +66,7 @@ shinyUI(
                                         selectizeInput(inputId = "select_wda",
                                                    label = "",
                                                    choices = c(unique(crosswalk$wda), "Texas"),
-                                                   selected = "Texas"),
+                                                   selected = "Alamo"),
                                     ),
                                     br(),
                                     

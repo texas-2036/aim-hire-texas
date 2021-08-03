@@ -68,8 +68,17 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(unique(crosswalk$wda), "Texas"),
                              selected = input$home_map_shape_click$id)
+        updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
+    })
+    
+    observeEvent(input$statewide_select, {
+        updateSelectizeInput(session, 
+                             inputId = "select_wda", 
+                             label = "Choose a different WDA: ",
+                             choices = c(unique(crosswalk$wda), "Texas"),
+                             selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
     

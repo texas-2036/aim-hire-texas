@@ -581,6 +581,11 @@ letter-spacing: 3px;
     color: #fff;
 }
 
+.map-subheader {
+    color: #fff;
+    font-style: italic;
+}
+
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
     color: #201F50;
     background-color: #fff;
