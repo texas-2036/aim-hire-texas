@@ -27,4 +27,5 @@ combos <- expand.grid(counties$county_name, alice_categories) %>%
 
 write_csv(combos, here::here("raw-data", "alice-data-blank.csv"))
 
+write_csv(counties, here::here("raw-data", "alice-data-blank-254.csv"))
 
