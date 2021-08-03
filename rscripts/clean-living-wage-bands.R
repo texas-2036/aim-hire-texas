@@ -139,6 +139,9 @@ wda_df <- do.call(rbind, pull_data) %>%
   ) %>% 
   left_join(., alice) %>% 
   mutate(
+    alice_wage_avg = ifelse(is.na(alice_wage_avg), 55000, alice_wage_avg) ,
+    alice_high = ifelse(is.na(alice_high), 55000 + 20000, alice_high) ,
+    alice_low = ifelse(is.na(alice_low), 55000 - 20000, alice_low) ,
     wage_band = case_when(
       median_wage>alice_high ~ "High Wage",
       median_wage>alice_wage_avg & median_wage<=alice_high ~ "Mid-High Wage",
