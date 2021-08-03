@@ -65,6 +65,8 @@ twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.x
     median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
   ) %>%
   filter(!is.na(median_wage) & soc_code != "00-0000") %>%
+  mutate(detail= str_sub(soc_code, -1)) %>%
+  filter(detail!=0) %>%
   dplyr::select(wda28_name = area, soc_code, occupation_title, no_of_employed, median_wage) %>%
   left_join(., wda28_crosswalk) %>%
   mutate(
@@ -88,6 +90,14 @@ twc_2019 <- readxl::read_excel(here::here("raw-data/twc-lmi/twc-lmi-wages-2019.x
 
 twc_2019_texas <- twc_2019 %>% 
   ungroup() %>% 
+  clean_names() %>%
+  mutate(
+    no_of_employed = ifelse(no_of_employed=="N/A", NA, as.numeric(no_of_employed)),
+    median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
+  ) %>%
+  filter(!is.na(median_wage) & soc_code != "00-0000") %>%
+  mutate(detail= str_sub(soc_code, -1)) %>%
+  filter(detail!=0) %>%
   group_by(soc_code, occupation_title) %>% 
   summarize(median_wage = weighted.mean(median_wage, wt=no_of_employed, na.rm=T),
             no_of_employed = sum(no_of_employed, na.rm=T)) %>% 
@@ -126,7 +136,10 @@ wda_df <- do.call(rbind, pull_data) %>%
     no_of_employed = ifelse(no_of_employed=="N/A", NA, as.numeric(no_of_employed)),
     median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
   ) %>% 
-  filter(!is.na(median_wage) & soc_code != "00-0000") %>% 
+  filter(!is.na(median_wage) & soc_code != "00-0000"
+         ) %>% 
+  mutate(detail= str_sub(soc_code, -1)) %>%
+  filter(detail!=0) %>%
   dplyr::select(wda28_name = area, naics_code, industry_title, soc_code, occupation_title, no_of_employed, median_wage) %>% 
   left_join(., wda28_crosswalk, by="wda28_name") %>% 
   mutate(
@@ -149,15 +162,32 @@ wda_df <- do.call(rbind, pull_data) %>%
       median_wage<alice_low ~ "Low Wage"
     ),
     wage_band = factor(wage_band, levels = c("Low Wage", "Mid-Low Wage","Mid-High Wage","High Wage"))
-  )
+  ) %>% 
+  ungroup()
 
 
 saveRDS(wda_df, file=here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
 
 
-
-
-
-
-
+# test <- wda_df %>%
+#   group_by(wda, industry_title, wage_band) %>%
+#   summarise(
+#     n_jobs = sum(no_of_employed, na.rm=T)
+#   )
+# 
+# # testdf <- do.call(rbind, pull_data) %>% 
+# #   clean_names() %>% 
+# #   filter(area == "Capital Area") %>% 
+# #   mutate(detail= str_sub(soc_code, -1)) %>% 
+# #   filter(detail!=0)
+# # 
+# test <- testdf %>%
+#   mutate(
+#     no_of_employed = ifelse(no_of_employed=="N/A", NA, as.numeric(no_of_employed)),
+#     median_wage = ifelse(median_wage=="N/A", NA, as.numeric(median_wage))
+#   ) %>%
+#   group_by(industry_title) %>%
+#   summarise(
+#     n_jobs = sum(no_of_employed, na.rm=T)
+#   )
 
