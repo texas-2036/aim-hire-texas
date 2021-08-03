@@ -162,7 +162,8 @@ shinyServer(function(input, output, session) {
                                                             opacity=1, weight=3, bringToFront=T),
                         data = wda_sf) %>%
             addPolygons(stroke = T,
-                        weight = 5,
+                        weight = 4,
+                        opacity = 1,
                         color = "black",
                         fill = F,
                         data = texas_sf
