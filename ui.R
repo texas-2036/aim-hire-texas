@@ -278,38 +278,39 @@ shinyUI(
                    div(
                        class='comp-table',
                        fluidRow(
-                            column(10, offset = 1,
-                            DT::dataTableOutput("comparison_table")
-                            ),
-                       ),
-                        div(
-                            class="race-legend",
+                            class="comp-table-and-legend",
+                            DT::dataTableOutput("comparison_table"),
                             div(
-                                class="race-legend-row",
-                                div(class="race-legend-circle light-blue"),
-                                p("Asian")
-                            ),
-                            div(
-                                class="race-legend-row",
-                                div(class="race-legend-circle dark-blue"),
-                                p("Black")
-                            ),
-                            div(
-                                class="race-legend-row",
-                                div(class="race-legend-circle green"),
-                                p("Hispanic")
-                            ),
-                            div(
-                                class="race-legend-row",
-                                div(class="race-legend-circle red"),
-                                p("White")
-                            ),
-                            div(
-                                class="race-legend-row",
-                                div(class="race-legend-circle yellow"),
-                                p("Other")
+                                class="race-legend",
+                                p("Race-ethnicity legend"),
+                                div(
+                                    class="race-legend-row",
+                                    div(class="race-legend-circle light-blue"),
+                                    p("Asian")
+                                ),
+                                div(
+                                    class="race-legend-row",
+                                    div(class="race-legend-circle maroon"),
+                                    p("Black")
+                                ),
+                                div(
+                                    class="race-legend-row",
+                                    div(class="race-legend-circle green"),
+                                    p("Hispanic")
+                                ),
+                                div(
+                                    class="race-legend-row",
+                                    div(class="race-legend-circle red"),
+                                    p("White")
+                                ),
+                                div(
+                                    class="race-legend-row",
+                                    div(class="race-legend-circle yellow"),
+                                    p("Other")
+                                )
                             )
-                        ),
+                       ),
+                        
                         conditionalPanel(
                             condition = "(typeof input.comp_select_wda == 'undefined' || input.comp_select_wda.length < 1)",
                             fluidRow(

@@ -834,15 +834,40 @@ letter-spacing: 3px;
 
 .race-legend {
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
+    justify-content: start;
     padding: 0px 20px;
     margin-top: 10px;
+    width: 170px;
+}
+
+.race-legend p:first-child {
+    padding-top: 24px;
+    padding-bottom: 10px;
+    margin-right: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: grey;
+    border-bottom: 1px solid lightgrey;
+}
+
+@media only screen and (max-width: 1227px) {
+    .race-legend p:first-child {
+        padding-top: 47px;
+    }
+}
+
+@media only screen and (max-width: 1037px) {
+    .race-legend p:first-child {
+        padding-top: 70px;
+    }
 }
 
 .race-legend-row {
     display: inline-flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    padding-left: 2px;
 }
 
 .race-legend-row p {
@@ -853,7 +878,7 @@ letter-spacing: 3px;
 .race-legend-circle {
     width: 10px;
     height: 10px;
-    margin-right: 10px;
+    margin-right: 8px;
     border-radius: 100%;
 }
 
@@ -865,8 +890,8 @@ letter-spacing: 3px;
     background-color: #F26852;
 }
 
-.race-legend-circle.dark-blue {
-    background-color: #2A366C;
+.race-legend-circle.maroon {
+    background-color: #981E0B;
 }
 
 .race-legend-circle.light-blue {
@@ -875,6 +900,18 @@ letter-spacing: 3px;
 
 .race-legend-circle.yellow {
     background-color: #F9CD21;
+}
+
+.map-row .selectize-input {
+    padding: 9px 12px;
+    border-color: #EAEFF6;
+    font-size: 17px;
+}
+
+.comp-table-and-legend {
+    display: flex;
+    justify-content: center;
+    padding-left: 50px;
 }
 
 /* FLIPPED COLORS */
