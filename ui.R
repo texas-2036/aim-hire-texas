@@ -243,7 +243,7 @@ shinyUI(
                                         ),
                                         column(4,
                                                h3(htmlOutput("edu_vb_state")),
-                                               h5("of post-high school grads employed in Texas"),
+                                               h5("of post-secondary grads employed in Texas"),
                                                highchartOutput("edu_plot_pseo_state"))
                                         ),
                                     fluidRow(
@@ -349,7 +349,9 @@ shinyUI(
                    #        htmlOutput("comparison_jobs_attractive")
                    #        )
                    )
-                   ) # close comparison page
+                   ), # close comparison page
+            tabPanel(title = "Methodology"
+                     ) # close methodology tab
             ) # close navbarPage
         ) # close tagList
     ) # close ui

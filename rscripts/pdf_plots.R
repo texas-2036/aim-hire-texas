@@ -13,26 +13,18 @@ options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
 ###--- load data -------------------------
+# working age adults, r-e breakdown
+waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
+people <- readRDS( here::here("clean-data", "comparison_table_people.rds"))
 
-# lwh - living wage households
+# living wage households
 load(here::here("clean-data", "alice_living_wage_hh.RData"))
 
-# waa - working age adults/future workforce
-waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
+# living wage jobs
+lwj_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
+lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 
-# idj - indemand jobs
-idj_raw <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
-idj_summary <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds"))
-lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds")) # demand and earnings
-
-# lwj - living wage jobs
-lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
-lw_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
-
-# aj - attractive jobs 
-aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
-
-# edu - education pipeline
+# education
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds")) # census
 load(here::here("clean-data", "pseo-data.RData"))                  # pseo
 
@@ -42,9 +34,6 @@ counties <- tigris::counties(state = "48") %>%
   dplyr::select(county = NAME, geometry) %>% 
   st_transform(crs = wgs84) %>% 
   ms_simplify(0.05)
-
-# comparison table 
-people <- readRDS( here::here("clean-data", "comparison_table_people.rds"))
 
 ###--- ggtheme ----------------------------------
 ggtheme <- function (base_size = 14,
@@ -119,6 +108,50 @@ ggtheme <- function (base_size = 14,
       axis.ticks.y = ggplot2::element_line(size = 0.5, color = "#FFFFFF")
     )
 }
+
+###--- map -----------------
+selected_wda <- wda_sf %>% 
+  filter(wda == "Alamo")
+
+leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 6, maxZoom = 6)) %>%
+    setView(-99.9018, 30.9686, zoom = 6) %>% 
+    addPolygons(stroke = F,
+                fill = T,
+                fillOpacity = 1,
+                fillColor = "#5f6fc1",
+                group = "wdas",
+                data = wda_sf) %>%
+
+    addPolygons(stroke = T, 
+                weight = 3,
+                color = "black",
+                opacity = 1,
+                fill = T,
+                fillOpacity = 0,
+                label = ~wda,
+                group = "highlight",
+                layerId = ~wda,
+                data = wda_sf) %>% 
+  addPolygons(stroke = T,
+              weight = 3,
+              color = "black",
+              opacity = 1,
+              fill = T,
+              fillOpacity = 1,
+              fillColor = "#f26852",
+              group = "selected_wda",
+              data = selected_wda) %>% 
+  addPolygons(color = "black",
+              stroke = T,
+              weight = 0.5,
+              fill = F,
+              group = "counties",
+              data = counties) %>%
+    setMapWidgetStyle(list(background= "transparent")) %>% 
+    htmlwidgets::onRender("function(el, x) { 
+               map = this
+               map.dragging.disable();
+               }")
 
 ###--- plots ---------------
 # race-ethnicity pie chart
@@ -198,4 +231,43 @@ pseo_wda_df %>%
         axis.line.x = ggplot2::element_line(size = 1, color = "#ffffff")
   )
 
+###--- values -------------
 
+# percentage of hh that earn a living wage
+# number of households that earn a living wage
+alice <- alice_hh_counts %>% 
+  ungroup() %>% 
+  filter(year == "2018") %>% 
+  select(wda, above_alice_household, above_alice_hh_share) %>% 
+  mutate(above_alice_household = comma(round(above_alice_household, -3)),
+         above_alice_hh_share = paste0(round(above_alice_hh_share), "%"))
+
+# workforce
+workforce <- waa %>% 
+  ungroup() %>% 
+  filter(year == "2036") %>% 
+  select(wda, total, 
+         total_female, 
+         nh_white_total, nh_black_total, hispanic_total,
+         nh_asian_total, nh_other_total) %>% 
+  mutate(pct_hispanic = paste0(round(100 * hispanic_total / total), "%"),
+         pct_white = paste0(round(100 * nh_white_total / total), "%"),
+         pct_black = paste0(round(100 * nh_black_total / total), "%"),
+         pct_asian = paste0(round(100 * nh_asian_total / total), "%"),
+         pct_other = paste0(round(100 * nh_other_total / total), "%"),
+         pct_women = paste0(round(100 * total_female / total), "%"),
+         total = comma(round(total, -3))) %>% 
+  select(-(total_female:nh_other_total))
+
+
+# median income of high school graduates
+# median income of college-educated residents
+# median salary of BA graduates from colleges in WDA (10yr post grad)
+# percentage employed of BA graduates from colleges in WDA (10yr post grad)
+# education <- pseo_wda_df %>% 
+#   filter(degree_level == "05") %>% 
+#   select(wda = wda_name, y10_p50_earnings)
+
+  
+pdf_values <- left_join(alice, workforce)
+saveRDS(pdf_values, here::here("clean-data", "pdf_values.RDS"))
