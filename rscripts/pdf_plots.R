@@ -43,6 +43,9 @@ counties <- tigris::counties(state = "48") %>%
   st_transform(crs = wgs84) %>% 
   ms_simplify(0.05)
 
+# comparison table 
+people <- readRDS( here::here("clean-data", "comparison_table_people.rds"))
+
 ###--- GGPLOT THEME ----------------------------------
 ggtheme <- function (base_size = 14,
                      base_family = "Montserrat",
@@ -118,6 +121,19 @@ ggtheme <- function (base_size = 14,
 }
 
 ###--- plots ---------------
+# race-ethnicity pie chart
+people %>% 
+  filter(wda == "Alamo") %>% 
+  select(wda, waa_white:waa_other) %>% 
+  pivot_longer(waa_white:waa_other) %>%
+  ggplot(aes(x = "", y = value, fill = name)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "transparent")) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c('#f26852', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21'))
+
 
 # indemand jobs that are living wage
 lwj_wages %>%
@@ -139,14 +155,15 @@ lwj_wages %>%
   scale_x_continuous(labels = comma)
 
 # share of living wage jobs by industry
-lwj_industry %>% 
-  ungroup() %>% 
+lwj_industry %>%
+  ungroup() %>%
   filter(wda == "Alamo") %>%
-  group_by(industry_title, wage_band) %>% 
-  summarize(wda = wda[1],
-            number_jobs = sum(no_of_employed)) %>% 
-  mutate(industry_title = str_wrap(industry_title, width = 40)) %>% 
-  ggplot(aes(x = number_jobs, y = reorder(industry_title, number_jobs), group = wage_band, fill = wage_band)) +
+  group_by(wda, industry_title) %>%
+  mutate(mid_high = case_when(wage_band %in% c("High Wage", "Mid-High Wage") ~ no_of_employed)) %>%
+  mutate(mid_high = sum(mid_high, na.rm = T)) %>%
+  mutate(industry_title = str_wrap(industry_title, width = 40)) %>%
+  ggplot(aes(x = no_of_employed, y = reorder(industry_title, mid_high), 
+           group = wage_band, fill = wage_band)) +
   geom_bar(stat = "identity", 
            position = "stack",
            color = "white", 
@@ -154,8 +171,32 @@ lwj_industry %>%
            width = 0.6) +
   ggtheme() +
   scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
-  labs(x = NULL, y = NULL) +
-  scale_x_continuous(labels = comma)
-    
+  labs(x = "NUMBER OF JOBS", y = NULL) +
+  scale_x_continuous(labels = comma) 
+
+# median and quartile earnings for college grads
+pseo_wda_df %>% 
+  filter(wda_name == "Alamo") %>% 
+  mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
+                                  degree_level == "02" ~ "Certificate 1-2 years",
+                                  degree_level == "03" ~ "Associates",
+                                  degree_level == "04" ~ "Certificate 2-4 years",
+                                  degree_level == "05" ~ "Baccalaureate")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
+                                                        "Certificate 2-4 years", "Baccalaureate"),
+                               ordered = T)) %>% 
+  ggplot() +
+  geom_point(aes(x = degree_level, y = y10_p50_earnings),
+             size = 7, color = "#f26852") +
+  geom_errorbar(aes(x = degree_level, y = y10_p50_earnings, ymin = y10_p25_earnings, ymax = y10_p75_earnings),
+                color = "#f26852", width = 0.2, size = 2) +
+  ggtheme() +
+  scale_y_continuous(labels = comma) +
+  labs(x = NULL, y = "Earnings") +
+  theme(panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
+                                                   size = 0.2),
+        panel.grid.major.x = ggplot2::element_blank(),
+        axis.line.x = ggplot2::element_line(size = 1, color = "#ffffff")
+  )
 
 
