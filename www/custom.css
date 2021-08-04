@@ -851,6 +851,18 @@ letter-spacing: 3px;
     border-bottom: 1px solid lightgrey;
 }
 
+@media only screen and (max-width: 1227px) {
+    .race-legend p:first-child {
+        padding-top: 47px;
+    }
+}
+
+@media only screen and (max-width: 1037px) {
+    .race-legend p:first-child {
+        padding-top: 70px;
+    }
+}
+
 .race-legend-row {
     display: inline-flex;
     justify-content: flex-start;
