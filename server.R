@@ -81,8 +81,9 @@ shinyServer(function(input, output, session) {
                              selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
-    
+    observe(print(input$county_search))
     observeEvent(input$county_search, {
+        if (input$county_search %in% unique(crosswalk$county)) {
         wda <- crosswalk %>% 
             filter(county == input$county_search) %>% 
             pull(wda)
@@ -92,7 +93,8 @@ shinyServer(function(input, output, session) {
                              choices = c(unique(crosswalk$wda), "Texas"),
                              selected = wda)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
-    })
+        }
+        })
     
     observeEvent(input$mini_map_shape_click$id, {
         updateSelectizeInput(session, 
@@ -470,17 +472,17 @@ shinyServer(function(input, output, session) {
         df <- lwj_industry %>% 
             ungroup() %>% 
             filter(wda == input$select_wda) %>%
-            group_by(industry_title, wage_band) %>% 
-            summarize(wda = wda[1],
-                      number_jobs = sum(no_of_employed)) %>% 
-            arrange(desc(number_jobs))
+            # group_by(industry_title, wage_band) %>% 
+            # summarize(wda = wda[1],
+            #           number_jobs = sum(no_of_employed)) %>% 
+            arrange(desc(no_of_employed))
     })
     
     output$lwj_plot_industry <- renderHighchart({
         df <- filter_lwj_industry() 
         
         highchart() %>% 
-            hc_add_series(df, type = "bar", hcaes(x = industry_title, y = number_jobs, group = wage_band)) %>%  
+            hc_add_series(df, type = "bar", hcaes(x = industry_title, y = no_of_employed, group = wage_band)) %>%  
             hc_xAxis(title = list(text = ""),
                      categories = as.list(df$industry_title)) %>%
             hc_yAxis(title = list(text = "Number of jobs")) %>%
@@ -707,8 +709,9 @@ shinyServer(function(input, output, session) {
         value <- filter_pseo() %>% 
             mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
             summarize(instate = sum(y10_grads_emp_instate),
-                      outstate = sum(y10_grads_emp_outstate)) %>% 
-            mutate(pct = 100 * instate / (instate + outstate))
+                      outstate = sum(y10_grads_emp_outstate),
+                      unemp = sum(y10_grads_nme)) %>% 
+            mutate(pct = 100 * instate / (instate + outstate + unemp))
         text <- HTML(paste0(round(value$pct), "%",
                             br()))
     })
@@ -720,8 +723,9 @@ shinyServer(function(input, output, session) {
             #select(-y10_grads_emp) %>% 
             group_by(wda_name) %>% 
             summarize(`Employed in Texas` = sum(y10_grads_emp_instate),
-                      `Employed outside of Texas` = sum(y10_grads_emp_outstate)) %>% 
-            pivot_longer(`Employed in Texas`:`Employed outside of Texas`) %>% 
+                      `Employed outside of Texas` = sum(y10_grads_emp_outstate),
+                      `Unemployed` = sum(y10_grads_nme)) %>% 
+            pivot_longer(`Employed in Texas`:`Unemployed`) %>% 
             hchart("pie", hcaes(name, value)) %>% 
             hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
             hc_add_theme(tx2036_hc) %>% 
