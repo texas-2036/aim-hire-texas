@@ -113,7 +113,7 @@ race_spark <- people %>%
     type = "pie", 
     height = "100",
     borderWidth = 1,
-    sliceColors = c('#f26852',' #2a366c',' #3ead92',' #5f6fc1',' #f9cd21')
+    sliceColors = c('#f26852', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21')
   ))
 
 alice_spark <- people %>% 
@@ -127,7 +127,7 @@ alice_spark <- people %>%
     type = "pie", 
     height = "100",
     borderWidth = 1,
-    sliceColors = c('#f26852', '#D3D3D3')
+    sliceColors = c('#2a366c', '#D3D3D3')
   ))
 
 edu_spark <- people %>% 
@@ -140,22 +140,22 @@ edu_spark <- people %>%
     type = "pie", 
     height = "100",
     borderWidth = 1,
-    sliceColors = c('#f26852', '#D3D3D3')
+    sliceColors = c('#2a366c', '#D3D3D3')
   ))
 
 table <- left_join(people, race_spark) %>% 
   left_join(alice_spark) %>% 
   left_join(edu_spark) %>% 
-  select(Area = wda, 
-         `Predicted number of working age adults, 2036` = waa,
-         `Predicted race-ethnicity breakdown of working age adults, 2036`,
+  select(Area = wda,  
          `Number of households above ALICE threshold` = above_alice_household,
          `Share of households above ALICE threshold`,
          `Median income of high school graduates` = hs_median_income,
-         `Employment rate of high school graduates`) %>%
+         `Employment rate of high school graduates`,
+         `Predicted number of working age adults, 2036` = waa,
+         `Predicted race-ethnicity breakdown of working age adults, 2036`) %>%
   mutate(`Predicted number of working age adults, 2036` = prettyNum(`Predicted number of working age adults, 2036`, big.mark = ","),
          `Number of households above ALICE threshold` = prettyNum(`Number of households above ALICE threshold`, big.mark = ","),
-         `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) %>%
+         `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) #%>%
   datatable(., escape = F, filter = "top", 
           options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
             '

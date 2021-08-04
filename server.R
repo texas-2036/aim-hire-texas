@@ -469,31 +469,32 @@ shinyServer(function(input, output, session) {
     })
     
     filter_lwj_industry <- reactive({
-        df <- lwj_industry %>% 
-            ungroup() %>% 
+        df <- lwj_industry %>%
+            ungroup() %>%
             filter(wda == input$select_wda) %>%
-            # group_by(industry_title, wage_band) %>% 
-            # summarize(wda = wda[1],
-            #           number_jobs = sum(no_of_employed)) %>% 
-            arrange(desc(no_of_employed))
-    })
+            group_by(wda, industry_title) %>%
+            mutate(mid_high = case_when(wage_band %in% c("High Wage", "Mid-High Wage") ~ no_of_employed)) %>%
+            mutate(mid_high = sum(mid_high, na.rm = T)) %>%
+            arrange(desc(mid_high))
+        })
     
     output$lwj_plot_industry <- renderHighchart({
         df <- filter_lwj_industry() 
+        names <- unique(df$industry_title)
         
-        highchart() %>% 
-            hc_add_series(df, type = "bar", hcaes(x = industry_title, y = no_of_employed, group = wage_band)) %>%  
+        highchart() %>%
+            hc_add_series(df, type = "bar", hcaes(x = industry_title, y = no_of_employed, group = wage_band)) %>%
             hc_xAxis(title = list(text = ""),
-                     categories = as.list(df$industry_title)) %>%
+                     categories = as.list(names)) %>%
             hc_yAxis(title = list(text = "Number of jobs")) %>%
             hc_plotOptions(bar = list(stacking = "normal")) %>%
-            hc_legend(reversed = T) %>% 
-            hc_add_theme(tx2036_hc) %>% 
-            hc_title(text = "Share of living wage jobs across industries") %>% 
-            hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>% 
+            hc_legend(reversed = T) %>%
+            hc_add_theme(tx2036_hc) %>%
+            hc_title(text = "Share of living wage jobs across industries") %>%
+            hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>%
             hc_tooltip(formatter = JS("function(){
-                                return (this.point.wage_band + ': ' + this.y)}"))
-    })
+                                      return (this.point.wage_band + ': ' + this.y)}"))
+        })
     
     
     ## 4. attractive jobs --------
