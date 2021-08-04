@@ -101,7 +101,7 @@ ggtheme <- function (base_size = 14,
     ) +
     ggplot2::theme(
       axis.line.x = ggplot2::element_blank(),
-      plot.background = element_rect(fill = "#2a366c"), # bg of the panel
+      plot.background = element_rect(fill = "transparent"), # "#2a366c"), # bg of the panel
       panel.grid.major.x = ggplot2::element_line(color = "#D3D3D3",
                                                  size = 0.2),
       panel.grid.minor.x = ggplot2::element_line(
