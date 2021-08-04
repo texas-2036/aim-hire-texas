@@ -12,7 +12,7 @@ library(scales)
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
-###--- Load data -------------------------
+###--- load data -------------------------
 
 # lwh - living wage households
 load(here::here("clean-data", "alice_living_wage_hh.RData"))
@@ -46,7 +46,7 @@ counties <- tigris::counties(state = "48") %>%
 # comparison table 
 people <- readRDS( here::here("clean-data", "comparison_table_people.rds"))
 
-###--- GGPLOT THEME ----------------------------------
+###--- ggtheme ----------------------------------
 ggtheme <- function (base_size = 14,
                      base_family = "Montserrat",
                      title_size = 23,
@@ -133,7 +133,6 @@ people %>%
   theme(plot.background = element_rect(fill = "transparent")) +
   labs(x = NULL, y = NULL) +
   scale_fill_manual(values = c('#f26852', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21'))
-
 
 # indemand jobs that are living wage
 lwj_wages %>%
