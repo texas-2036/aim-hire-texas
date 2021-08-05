@@ -238,7 +238,7 @@ pseo_wda_df %>%
 alice <- alice_hh_counts %>% 
   ungroup() %>% 
   filter(year == "2018") %>% 
-  select(wda, above_alice_household, above_alice_hh_share) %>% 
+  select(wda, wda_number, above_alice_household, above_alice_hh_share) %>% 
   mutate(above_alice_household = comma(round(above_alice_household, -3)),
          above_alice_hh_share = paste0(round(above_alice_hh_share), "%"))
 
@@ -246,7 +246,7 @@ alice <- alice_hh_counts %>%
 workforce <- waa %>% 
   ungroup() %>% 
   filter(year == "2036") %>% 
-  select(wda, total, 
+  select(wda, wda_number, total, 
          total_female, 
          nh_white_total, nh_black_total, hispanic_total,
          nh_asian_total, nh_other_total) %>% 
@@ -260,14 +260,40 @@ workforce <- waa %>%
   select(-(total_female:nh_other_total))
 
 
-# median income of high school graduates
-# median income of college-educated residents
-# median salary of BA graduates from colleges in WDA (10yr post grad)
-# percentage employed of BA graduates from colleges in WDA (10yr post grad)
-# education <- pseo_wda_df %>% 
-#   filter(degree_level == "05") %>% 
-#   select(wda = wda_name, y10_p50_earnings)
+# education - census
+education1 <- edu %>% 
+  filter(education == "hs" | education == "college") %>% 
+  select(wda, wda_number, education, median_income) %>% 
+  mutate(
+    median_income = paste0("$", comma(round(median_income, -2)))
+         ) %>% 
+  pivot_wider(id_cols = c(wda, wda_number), names_from = education, values_from = median_income) %>% 
+  rename(median_income_residents_hs = hs, median_income_residents_college = college)
 
-  
-pdf_values <- left_join(alice, workforce)
-saveRDS(pdf_values, here::here("clean-data", "pdf_values.RDS"))
+# education - pseo
+wda_numbers <- edu %>% select(wda, wda_number) %>% distinct()
+education2 <- pseo_wda_df %>%
+  rename(wda = wda_name) %>% 
+  left_join(wda_numbers) %>% 
+  mutate(wda_number = case_when(wda == "Dallas-Fort Worth" ~ 4,
+                                wda == "Heart of Texas" ~ 13,
+                                wda == "North East" ~ 7,
+                                wda == "South East Texas" ~ 18,
+                                wda == "West Central" ~ 9,
+                                wda == "Lower Rio Grande" ~ 23,
+                                T ~ wda_number)) %>% 
+  mutate(degree_level_numeric = as.numeric(gsub("0", "", degree_level))) %>% 
+  group_by(wda) %>% 
+  slice_max(order_by = degree_level_numeric, n = 1) %>% 
+  mutate(emp_rate_wda_ps_grads = paste0(round(100 * y10_grads_emp / (y10_grads_emp + y10_grads_nme)), "%"),
+         y10_p50_earnings = paste0("$", comma(round(y10_p50_earnings, -2)))) %>% 
+  mutate(wda_ps_grads_degree = case_when(degree_level == "03" ~ "Associates",
+                                         degree_level == "05" ~ "Baccalaureate")) %>% 
+  ungroup() %>% 
+  select(wda_number, wda_ps_grads_degree, median_income_wda_ps_grads = y10_p50_earnings, emp_rate_wda_ps_grads)
+
+pdf_values <- left_join(alice, workforce, by = "wda_number") %>% 
+  left_join(education1, by = "wda_number") %>% 
+  left_join(education2, by = "wda_number")
+
+write_csv(pdf_values, here::here("clean-data", "pdf_values.csv"))
