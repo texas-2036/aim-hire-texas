@@ -15,11 +15,44 @@ pseoe <- read_csv(here::here("raw-data/pseo/pseoe_tx.csv"))
 
 pseof <- read_csv(here::here("raw-data/pseo/pseof_tx.csv"))
 
+
+wda_crosswalk <- read_csv(here::here("raw-data", "county_wda_crosswalk.csv")) %>% 
+  mutate(
+    wda28_name = case_when(
+      wda=="DFW" & !(county %in% c("Dallas", "Tarrant")) ~ "North Central",
+      wda=="DFW" & county %in% c("Tarrant") ~ "Tarrant County",
+      wda=="DFW" & county %in% c("Dallas") ~ "Dallas",
+      county=="Travis" ~ "Capital Area",
+      wda=="Greater Austin" & !(county %in% c("Travis")) ~ "Rural Capital",
+      county=="Cameron" ~ "Cameron County",
+      wda=="Rio Grande Valley" & !(county %in% c("Cameron")) ~ "Lower Rio Grande",
+      wda=="The Heart of Texas" ~ "Heart of Texas",
+      wda=="Northeast Texas" ~ "North East",
+      wda=="West Central Texas" ~ "West Central",
+      wda=="Southeast Texas" ~ "South East Texas",
+      TRUE ~ wda
+    )
+  )
+
+wda28_crosswalk <- wda_crosswalk %>% 
+  group_by(wda28_name) %>% 
+  summarise(
+    across(wda:wda_number, first)
+  )
+
+
 geo_crosswalk <- readxl::read_excel(here::here("raw-data/pseo/institution_geo_crosswalk.xlsx")) %>% 
   clean_names() %>% 
   mutate(
     label_institution_earnings = str_replace_all(label_institution_earnings, "\r\n", " ")  
-  )
+  ) %>% 
+  left_join(., wda28_crosswalk, by=c("wda" = "wda28_name")) %>% 
+  mutate(
+    wda.y = ifelse(wda == "Lower Rio Grande Valley", "Rio Grande Valley", wda.y),
+    wda_number = ifelse(wda == "Lower Rio Grande Valley", 23, wda_number)
+  ) %>% 
+  dplyr::select(-wda) %>% 
+  dplyr::rename(wda = wda.y)
 
 #Clean data ----------
 #All Cohorts, By Degree Bachelors/Associates/Certificates, 10 years after graduation
@@ -54,7 +87,7 @@ pseo_inst_df <- left_join(earnings, employment) %>%
 
 
 pseo_wda_df <- pseo_inst_df %>% 
-  group_by(wda_name = bcg_r_egion, degree_level) %>% 
+  group_by(wda, wda_number, degree_level) %>% 
   summarise(
     across(y10_p25_earnings:y10_p75_earnings, weighted.mean, wt=y10_grads_earn, na.rm=T),
     across(y10_grads_earn:y10_grads_nme, sum, na.rm=T),
