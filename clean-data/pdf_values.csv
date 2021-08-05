@@ -1,26 +1,26 @@
-wda.x,wda_number,above_alice_household,above_alice_hh_share,wda.y,total,pct_hispanic,pct_white,pct_black,pct_asian,pct_other,pct_women,wda,median_income_residents_hs,median_income_residents_college,wda_ps_grads_degree,median_income_wda_ps_grads,emp_rate_wda_ps_grads
-Alamo,20,"442,000",51%,Alamo,"1,859,000",58%,28%,7%,4%,2%,49%,Alamo,"$29,300","$53,800",Baccalaureate,"$68,500",73%
-Borderplex,10,"129,000",46%,Borderplex,"462,000",75%,13%,6%,3%,3%,48%,Borderplex,"$25,400","$47,100",Baccalaureate,"$54,200",74%
-Brazos Valley,16,"66,000",52%,Brazos Valley,"198,000",32%,47%,13%,6%,2%,49%,Brazos Valley,"$30,900","$47,200",Baccalaureate,"$67,300",73%
-Central Texas,26,"101,000",60%,Central Texas,"282,000",34%,37%,21%,3%,5%,47%,Central Texas,"$28,600","$50,000",Associates,"$52,000",60%
-Coastal Bend,22,"111,000",54%,Coastal Bend,"357,000",69%,23%,3%,2%,1%,47%,Coastal Bend,"$30,500","$51,500",Baccalaureate,"$55,200",77%
-Concho Valley,12,"33,000",56%,Concho Valley,"96,000",57%,37%,3%,1%,2%,44%,Concho Valley,"$30,400","$45,200",Baccalaureate,"$52,700",74%
-Deep East Texas,17,"67,000",49%,Deep East Texas,"175,000",21%,61%,15%,1%,2%,48%,Deep East Texas,"$28,900","$47,600",Baccalaureate,"$54,900",77%
-DFW,4,"1,683,000",63%,DFW,"5,324,000",29%,36%,19%,14%,3%,51%,DFW,"$32,200","$61,300",Baccalaureate,"$63,000",74%
-East Texas,8,"164,000",54%,East Texas,"439,000",21%,60%,15%,1%,2%,49%,East Texas,"$29,500","$46,400",Baccalaureate,"$56,200",77%
-Golden Crescent,19,"37,000",53%,Golden Crescent,"119,000",50%,41%,6%,1%,1%,48%,Golden Crescent,"$31,700","$51,000",Baccalaureate,"$50,300",77%
-Greater Austin,15,"501,000",60%,Greater Austin,"1,825,000",35%,45%,7%,10%,3%,50%,Greater Austin,"$31,900","$57,200",Baccalaureate,"$69,100",72%
-Gulf Coast,28,"1,318,000",55%,Gulf Coast,"5,334,000",37%,30%,17%,13%,3%,50%,Gulf Coast,"$31,700","$61,900",Baccalaureate,"$70,100",76%
-Middle Rio Grande,27,"23,000",43%,Middle Rio Grande,"92,000",89%,10%,1%,0%,1%,45%,Middle Rio Grande,"$27,200","$44,000",Associates,"$39,600",73%
-North Texas,3,"44,000",54%,North Texas,"97,000",26%,61%,8%,2%,3%,47%,North Texas,"$29,500","$46,700",Baccalaureate,"$56,700",75%
-Northeast Texas,7,"58,000",54%,Northeast Texas,"130,000",17%,62%,17%,1%,4%,50%,Northeast Texas,"$31,400","$46,500",Baccalaureate,"$45,100",75%
-Panhandle,1,"89,000",57%,Panhandle,"242,000",44%,43%,6%,5%,2%,46%,Panhandle,"$31,900","$50,600",Baccalaureate,"$54,400",77%
-Permian Basin,11,"94,000",59%,Permian Basin,"484,000",69%,24%,4%,2%,1%,41%,Permian Basin,"$37,900","$57,500",Baccalaureate,"$53,000",75%
-Rio Grande Valley,23,"149,000",39%,Rio Grande Valley,"716,000",94%,4%,0%,1%,0%,50%,Rio Grande Valley,"$22,900","$46,100",Baccalaureate,"$50,400",81%
-South Plains,2,"81,000",51%,South Plains,"248,000",51%,38%,6%,2%,2%,49%,South Plains,"$30,700","$49,200",Baccalaureate,"$71,800",75%
-South Texas,21,"33,000",41%,South Texas,"157,000",95%,4%,0%,1%,0%,50%,South Texas,"$26,500","$50,200",Baccalaureate,"$53,800",80%
-Southeast Texas,18,"76,000",54%,Southeast Texas,"203,000",21%,49%,23%,5%,2%,47%,Southeast Texas,"$34,400","$55,400",Baccalaureate,"$57,600",78%
-Texoma,25,"44,000",57%,Texoma,"103,000",19%,69%,6%,1%,5%,51%,Texoma,"$31,900","$48,900",Associates,"$51,800",79%
-The Heart of Texas,13,"71,000",54%,The Heart of Texas,"174,000",32%,51%,13%,2%,2%,50%,The Heart of Texas,"$29,600","$49,100",Associates,"$50,600",76%
-West Central Texas,9,"62,000",52%,West Central Texas,"166,000",36%,54%,6%,1%,2%,47%,West Central Texas,"$28,900","$45,300",Associates,"$48,000",77%
-Texas,0,"5,476,000",56%,Texas,"19,282,000",41%,34%,13%,9%,3%,50%,Texas,"$30,800","$57,800",Baccalaureate,"$64,800",74%
+wda,wda_number,above_alice_household,above_alice_hh_share,total,pct_hispanic,pct_white,pct_black,pct_asian,pct_other,pct_women,median_income_residents_hs,median_income_residents_college,wda_ps_grads_degree,median_income_wda_ps_grads,emp_rate_wda_ps_grads
+Alamo,20,"442,000",51%,"1,859,000",58%,28%,7%,4%,2%,49%,"$29,300","$53,800",Baccalaureate,"$68,500",73%
+Borderplex,10,"129,000",46%,"462,000",75%,13%,6%,3%,3%,48%,"$25,400","$47,100",Baccalaureate,"$54,200",74%
+Brazos Valley,16,"66,000",52%,"198,000",32%,47%,13%,6%,2%,49%,"$30,900","$47,200",Baccalaureate,"$67,300",73%
+Central Texas,26,"101,000",60%,"282,000",34%,37%,21%,3%,5%,47%,"$28,600","$50,000",Associates,"$52,000",60%
+Coastal Bend,22,"111,000",54%,"357,000",69%,23%,3%,2%,1%,47%,"$30,500","$51,500",Baccalaureate,"$55,200",77%
+Concho Valley,12,"33,000",56%,"96,000",57%,37%,3%,1%,2%,44%,"$30,400","$45,200",Baccalaureate,"$52,700",74%
+Deep East Texas,17,"67,000",49%,"175,000",21%,61%,15%,1%,2%,48%,"$28,900","$47,600",Baccalaureate,"$54,900",77%
+DFW,4,"1,683,000",63%,"5,324,000",29%,36%,19%,14%,3%,51%,"$32,200","$61,300",Baccalaureate,"$63,000",74%
+East Texas,8,"164,000",54%,"439,000",21%,60%,15%,1%,2%,49%,"$29,500","$46,400",Baccalaureate,"$56,200",77%
+Golden Crescent,19,"37,000",53%,"119,000",50%,41%,6%,1%,1%,48%,"$31,700","$51,000",Baccalaureate,"$50,300",77%
+Greater Austin,15,"501,000",60%,"1,825,000",35%,45%,7%,10%,3%,50%,"$31,900","$57,200",Baccalaureate,"$69,100",72%
+Gulf Coast,28,"1,318,000",55%,"5,334,000",37%,30%,17%,13%,3%,50%,"$31,700","$61,900",Baccalaureate,"$70,100",76%
+Middle Rio Grande,27,"23,000",43%,"92,000",89%,10%,1%,0%,1%,45%,"$27,200","$44,000",Associates,"$39,600",73%
+North Texas,3,"44,000",54%,"97,000",26%,61%,8%,2%,3%,47%,"$29,500","$46,700",Baccalaureate,"$56,700",75%
+Northeast Texas,7,"58,000",54%,"130,000",17%,62%,17%,1%,4%,50%,"$31,400","$46,500",Baccalaureate,"$45,100",75%
+Panhandle,1,"89,000",57%,"242,000",44%,43%,6%,5%,2%,46%,"$31,900","$50,600",Baccalaureate,"$54,400",77%
+Permian Basin,11,"94,000",59%,"484,000",69%,24%,4%,2%,1%,41%,"$37,900","$57,500",Baccalaureate,"$53,000",75%
+Rio Grande Valley,23,"149,000",39%,"716,000",94%,4%,0%,1%,0%,50%,"$22,900","$46,100",Baccalaureate,"$50,400",81%
+South Plains,2,"81,000",51%,"248,000",51%,38%,6%,2%,2%,49%,"$30,700","$49,200",Baccalaureate,"$71,800",75%
+South Texas,21,"33,000",41%,"157,000",95%,4%,0%,1%,0%,50%,"$26,500","$50,200",Baccalaureate,"$53,800",80%
+Southeast Texas,18,"76,000",54%,"203,000",21%,49%,23%,5%,2%,47%,"$34,400","$55,400",Baccalaureate,"$57,600",78%
+Texoma,25,"44,000",57%,"103,000",19%,69%,6%,1%,5%,51%,"$31,900","$48,900",Associates,"$51,800",79%
+The Heart of Texas,13,"71,000",54%,"174,000",32%,51%,13%,2%,2%,50%,"$29,600","$49,100",Associates,"$50,600",76%
+West Central Texas,9,"62,000",52%,"166,000",36%,54%,6%,1%,2%,47%,"$28,900","$45,300",Associates,"$48,000",77%
+Texas,0,"5,476,000",56%,"19,282,000",41%,34%,13%,9%,3%,50%,"$30,800","$57,800",Baccalaureate,"$64,800",74%
