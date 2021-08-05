@@ -156,6 +156,11 @@ idj <- readRDS(here::here("clean-data", "in-demand-jobs-summary.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds"))
 # lw <- readRDS(here::here("clean-data", "twc_living_wage_bands.rds"))
 load(here::here("clean-data", "pseo-data.RData"))
+pseo_wda_df <- pseo_wda_df %>% 
+  mutate(wda = case_when(is.na(wda) ~ "Texas",
+                         T ~ wda),
+         wda_number = case_when(is.na(wda_number) ~ 0,
+                                T ~ wda_number))
 lwj_industry <- readRDS(here::here("clean-data", "twc_living_wage_bands_by_industry.rds"))
 lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 

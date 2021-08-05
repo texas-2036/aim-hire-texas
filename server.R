@@ -677,7 +677,7 @@ shinyServer(function(input, output, session) {
     ### post high school
     filter_pseo <- reactive({
         df <- pseo_wda_df %>% 
-            filter(wda_name == input$select_wda)
+            filter(wda == input$select_wda)
     })
     
     output$edu_plot_pseo <- renderHighchart({
@@ -722,7 +722,7 @@ shinyServer(function(input, output, session) {
             #select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 
             mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
             #select(-y10_grads_emp) %>% 
-            group_by(wda_name) %>% 
+            group_by(wda) %>% 
             summarize(`Employed in Texas` = sum(y10_grads_emp_instate),
                       `Employed outside of Texas` = sum(y10_grads_emp_outstate),
                       `Unemployed` = sum(y10_grads_nme)) %>% 
