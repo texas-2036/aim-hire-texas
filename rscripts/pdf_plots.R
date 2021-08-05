@@ -266,7 +266,11 @@ education1 <- edu %>%
   select(wda, wda_number, education, median_income) %>% 
   mutate(
     median_income = paste0("$", comma(round(median_income, -2)))
+<<<<<<< HEAD
   ) %>% 
+=======
+         ) %>% 
+>>>>>>> 1f2e847a56ae569cd2cd57c42536d7164e004730
   pivot_wider(id_cols = c(wda, wda_number), names_from = education, values_from = median_income) %>% 
   rename(median_income_residents_hs = hs, median_income_residents_college = college)
 
@@ -296,4 +300,8 @@ pdf_values <- left_join(alice, workforce, by = "wda_number") %>%
   left_join(education1, by = "wda_number") %>% 
   left_join(education2, by = "wda_number")
 
+<<<<<<< HEAD
 write_csv(pdf_values, here::here("clean-data", "pdf_values.csv"))
+=======
+write_csv(pdf_values, here::here("clean-data", "pdf_values.csv"))
+>>>>>>> 1f2e847a56ae569cd2cd57c42536d7164e004730
