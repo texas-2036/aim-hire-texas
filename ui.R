@@ -11,7 +11,7 @@ shinyUI(
         waiter_show_on_load(html = tagList(h3("Thanks for being patient while we get everything set up."),
                                            spin_cube_grid()),
                             color = "#2a366c",
-                            logo = "AHT-FINAL-LOGO.png"),
+                            logo = "logo.png"),
         tags$head(
             HTML("<title>Aim Hire Texas</title>"),
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
@@ -20,7 +20,8 @@ shinyUI(
             tags$script(HTML("$('body').addClass('fixed');")),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap"),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
-            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")
+            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
+            tags$style(HTML('#pdfs{background-color:#f26852; color:#ffffff}'))
             ),
         navbarPage(
             id = "tab_being_displayed",
@@ -118,7 +119,13 @@ shinyUI(
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
+                                    tags$hr(),
                                     ),
+                                    
+                                    actionButton(inputId = "pdfs",
+                                                 label = "download pdf one-pagers",
+                                                 icon = icon("download"),
+                                                 onclick ="window.open('https://drive.google.com/drive/u/1/folders/1-YBD34JW_ihOqaxyBSW3xv3EMwq61NKj', '_blank')"),
                                     width = "100%")), 
                          div(
                                 class='main-panel',
