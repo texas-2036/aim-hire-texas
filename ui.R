@@ -1,9 +1,17 @@
 source("read-data.R")
+#source("helper-functions.R")
 
 # Define UI for application that draws a histogram
 shinyUI(
+
     tagList(
         useShinyjs(),
+        use_sever(),
+        use_waiter(),
+        waiter_show_on_load(html = tagList(h3("Thanks for being patient while we get everything set up."),
+                                           spin_cube_grid()),
+                            color = "#2a366c",
+                            logo = "AHT-FINAL-LOGO.png"),
         tags$head(
             HTML("<title>Aim Hire Texas</title>"),
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
@@ -14,9 +22,6 @@ shinyUI(
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")
             ),
-            tags$style(HTML("
-
-                            ")), # close tags$style
         navbarPage(
             id = "tab_being_displayed",
             selected = "Home",
@@ -350,7 +355,13 @@ shinyUI(
                    #        )
                    )
                    ), # close comparison page
-            tabPanel(title = "Methodology"
+            tabPanel(title = "Methodology",
+                     tags$div(
+                         class="homepage-wrapper",
+                         fluidRow(
+                             includeMarkdown(here::here("text", "methodology.md")),
+                             img(src = "aht-regions-methodology.png", height = 450)
+                         )),
                      ) # close methodology tab
             ) # close navbarPage
         ) # close tagList

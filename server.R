@@ -1,7 +1,7 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-    
+
     sever(html = disconnected, bg_color = "#3A4A9F", opacity = .92)
     ###--- REACTIVES -------------------------------
     selected_wda_sf <- reactive({
@@ -81,7 +81,7 @@ shinyServer(function(input, output, session) {
                              selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
-    observe(print(input$county_search))
+    
     observeEvent(input$county_search, {
         if (input$county_search %in% unique(crosswalk$county)) {
         wda <- crosswalk %>% 
@@ -823,27 +823,8 @@ shinyServer(function(input, output, session) {
         }) %>% 
             hw_grid(rowheight = 300, ncol = 1) 
     })
-    
-    # output$comparison_jobs_attractive <- renderUI({
-    #     purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
-    #         filter_comparison_jobs() %>% 
-    #             filter(wda == x) %>% 
-    #             filter(type == "attractive") %>% 
-    #             hchart("bar", hcaes(y = value, x = job)) %>% 
-    #             hc_title(text=paste0(x)) %>% 
-    #             hc_yAxis(title = list(text = "Share of local jobs")) %>%
-    #             hc_xAxis(title = list(text = "")) %>%
-    #             hc_tooltip(formatter = JS("function(){
-    #                             return (this.point.job + 
-    #                                   ': ' + this.y )}")) %>% 
-    #             hc_add_theme(
-    #                 hc_theme_merge(
-    #                     tx2036_hc,
-    #                     hc_theme(chart = list(backgroundColor = "#201F50"))
-    #                 )
-    #             )
-    #     }) %>% 
-    #         hw_grid(rowheight = 300, ncol = 1) 
-    # })
+
+    Sys.sleep(2) # do something that takes time
+    waiter_hide()
     
     }) # close whole app

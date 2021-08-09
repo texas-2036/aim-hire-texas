@@ -21,6 +21,7 @@ library(slickR)
 library(sparkline)
 library(DT)
 library(purrr)
+library(waiter)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
@@ -174,5 +175,11 @@ disconnected <- sever_default(
   button = "Push to Wake", 
   button_class = "info"
 )
+
+waiting_screen <- tagList(
+  spin_solar(),
+  h4("Loading data - one moment!")
+) 
+
 
 

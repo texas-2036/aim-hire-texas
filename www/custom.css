@@ -914,6 +914,64 @@ letter-spacing: 3px;
     padding-left: 50px;
 }
 
+/*/ waiter css /*/
+.pg-loading-screen .pg-loading-logo-header img {
+    display: inline-block !important;
+    height:100px;
+}
+.pg-loading-screen .pg-loading-html {
+    margin-top: 30px !important;
+    margin-bottom:20px !important;
+}
+.waiter-overlay {
+    background-color: #EAEFF6 !important;
+    color: #3A4A9F !important;
+}
+.sk-cube-grid {
+    width: 50px !important;
+    height: 50px !important;
+    margin: 0 auto;
+}
+.sk-cube-grid .sk-cube {
+    background-color: #F26852 !important;
+}
+
+.lds-cube-grid div {
+    background: #F26852 !important;
+}
+.lds-ripple div:after, .lds-heart div:before {
+    background: #F26852 !important;
+}
+.pg-loading-screen .pg-loading-inner {
+    color: #3A4A9F !important;
+}
+body {
+font-weight: 400; !important
+}
+
+frame {
+overflow: hidden;
+background-color: #2a366c;
+padding-top: 100%;
+position: relative;
+}
+frame iframe {
+border: 0;
+height: 100%;
+left: 0;
+background-color: #2a366c;
+position: absolute;
+top: 0;
+width: 100%;
+}
+img[alt=fpl] { width: 500px; 
+display:block !important;}
+img[alt=bronze] { width: 500px; 
+display:block !important;}
+
+
+
+
 /* FLIPPED COLORS */
 
 /* .h2, h2 {
