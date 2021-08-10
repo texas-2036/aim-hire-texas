@@ -126,6 +126,10 @@ shinyUI(
                                                  label = "download pdf one-pager",
                                                  icon = icon("download")),
                                                  #onclick = "window.open('pdf_url()', '_blank')"),
+                                    shiny::a(h4("Open Link", class = "btn btn-default action-button" , 
+                                                style = "fontweight:600"), target = "_blank",
+                                             href = uiOutput("pdf_url")),
+                                                 
                                     width = "100%")), 
                          div(
                                 class='main-panel',

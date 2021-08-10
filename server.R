@@ -116,10 +116,10 @@ shinyServer(function(input, output, session) {
     ## * Well panel --------
     
     # print wda name
-    output$wda_name <- renderUI({
-        text <- HTML(paste0(input$select_wda), "WDA")
-        return(text)
-        })
+    # output$wda_name <- renderUI({
+    #     text <- HTML(paste0(input$select_wda), "WDA")
+    #     return(text)
+    #     })
     
     # mini map
     output$mini_map <- renderLeaflet({
@@ -824,19 +824,26 @@ shinyServer(function(input, output, session) {
             hw_grid(rowheight = 300, ncol = 1) 
     })
     
-    # observeEvent(input$pdfs, {
+    # pdf_url <- reactive({
     #     url <- pdf_urls %>% 
     #         filter(wda == input$select_wda) %>% 
     #         pull(url)
-    #     #url <- a("url", href = url)
-    #     tagList("URL", url)
+    #     
     # })
-    observe(print(pdf_url()))
-    pdf_url <- reactive({
-        url <- pdf_urls %>% 
-            filter(wda == input$select_wda) %>% 
+
+    output$pdf_url <- renderUI({
+        url <- pdf_urls %>%
+            filter(wda == input$select_wda) %>%
             pull(url)
+        return(url)
     })
+    
+    # observeEvent(input$pdfs, {
+    #     url <- pdf_urls %>%
+    #         filter(wda == input$select_wda) %>%
+    #         pull(url)
+    #     #browseURL(url)
+    # })
     
     Sys.sleep(2) # do something that takes time
     waiter_hide()
