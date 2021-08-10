@@ -123,9 +123,9 @@ shinyUI(
                                     ),
                                     
                                     actionButton(inputId = "pdfs",
-                                                 label = "download pdf one-pagers",
-                                                 icon = icon("download"),
-                                                 onclick ="window.open('https://drive.google.com/drive/u/1/folders/1-YBD34JW_ihOqaxyBSW3xv3EMwq61NKj', '_blank')"),
+                                                 label = "download pdf one-pager",
+                                                 icon = icon("download")),
+                                                 #onclick = "window.open('pdf_url()', '_blank')"),
                                     width = "100%")), 
                          div(
                                 class='main-panel',

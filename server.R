@@ -823,7 +823,21 @@ shinyServer(function(input, output, session) {
         }) %>% 
             hw_grid(rowheight = 300, ncol = 1) 
     })
-
+    
+    # observeEvent(input$pdfs, {
+    #     url <- pdf_urls %>% 
+    #         filter(wda == input$select_wda) %>% 
+    #         pull(url)
+    #     #url <- a("url", href = url)
+    #     tagList("URL", url)
+    # })
+    observe(print(pdf_url()))
+    pdf_url <- reactive({
+        url <- pdf_urls %>% 
+            filter(wda == input$select_wda) %>% 
+            pull(url)
+    })
+    
     Sys.sleep(2) # do something that takes time
     waiter_hide()
     
