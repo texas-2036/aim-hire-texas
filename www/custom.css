@@ -606,9 +606,9 @@ letter-spacing: 3px;
    padding: 35px 20px;
    font-weight: 700;
    color: #7472c9;
-   background-color: #fff;
+   background-color: none;
    text-transform: uppercase;
-   letter-spacing: .5px;
+   letter-spacing: .2px;
    font-size: 16px;
    font-family: 'Cabin', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -725,6 +725,24 @@ letter-spacing: 3px;
     color: #FD9D88;
     text-decoration: underline;
  }
+
+.methodology-wrapper {
+    max-width: 1000px;
+    padding: 40px;
+    margin: 0px auto;
+}
+
+.methodology {
+    max-width: 1000px;
+    padding: 40px;
+    padding-top: 60px;
+    margin: 0px auto;
+}
+
+.methodology h2 {
+    padding-top: 50px;
+    color: #201F50;
+}
 
 .well-placeholder {
     width: 30%;
@@ -968,9 +986,6 @@ img[alt=fpl] { width: 500px;
 display:block !important;}
 img[alt=bronze] { width: 500px; 
 display:block !important;}
-
-
-
 
 /* FLIPPED COLORS */
 

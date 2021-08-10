@@ -368,8 +368,9 @@ shinyUI(
                    ), # close comparison page
             tabPanel(title = "Methodology",
                      tags$div(
-                         class="homepage-wrapper",
+                         class="methodology-wrapper",
                          fluidRow(
+                             class="methodology",
                              includeMarkdown(here::here("text", "methodology.md")),
                              img(src = "aht-regions-methodology.png", height = 450)
                          )),
