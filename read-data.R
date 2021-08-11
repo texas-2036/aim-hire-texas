@@ -26,6 +26,13 @@ library(waiter)
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
 
+# js needed to open url from shiny server!
+js_code <- "
+shinyjs.browseURL = function(url) {
+  window.open(url,'_blank');
+}
+"
+
 # "#f26852" red
 # "#2a366c" dark blue
 # "#3ead92" green

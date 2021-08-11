@@ -6,6 +6,7 @@ shinyUI(
 
     tagList(
         useShinyjs(),
+        extendShinyjs(text = js_code, functions = 'browseURL'),
         use_sever(),
         use_waiter(),
         waiter_show_on_load(html = tagList(h3("Thanks for being patient while we get everything set up."),
@@ -125,10 +126,6 @@ shinyUI(
                                     actionButton(inputId = "pdfs",
                                                  label = "download pdf one-pager",
                                                  icon = icon("download")),
-                                                 #onclick = "window.open('pdf_url()', '_blank')"),
-                                    shiny::a(h4("Open Link", class = "btn btn-default action-button" , 
-                                                style = "fontweight:600"), target = "_blank",
-                                             href = uiOutput("pdf_url")),
                                                  
                                     width = "100%")), 
                          div(

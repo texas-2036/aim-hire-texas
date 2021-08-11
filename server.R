@@ -824,26 +824,13 @@ shinyServer(function(input, output, session) {
             hw_grid(rowheight = 300, ncol = 1) 
     })
     
-    # pdf_url <- reactive({
-    #     url <- pdf_urls %>% 
-    #         filter(wda == input$select_wda) %>% 
-    #         pull(url)
-    #     
-    # })
-
-    output$pdf_url <- renderUI({
+    # find and download pdf - need js for browseURL() to work in deployed app!
+    observeEvent(input$pdfs, {
         url <- pdf_urls %>%
             filter(wda == input$select_wda) %>%
             pull(url)
-        return(url)
+        js$browseURL(url)
     })
-    
-    # observeEvent(input$pdfs, {
-    #     url <- pdf_urls %>%
-    #         filter(wda == input$select_wda) %>%
-    #         pull(url)
-    #     #browseURL(url)
-    # })
     
     Sys.sleep(2) # do something that takes time
     waiter_hide()
