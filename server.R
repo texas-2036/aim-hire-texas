@@ -684,9 +684,9 @@ shinyServer(function(input, output, session) {
         df <- filter_pseo() %>% 
         mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
                                         degree_level == "02" ~ "Certificate 1-2 years",
-                                        degree_level == "03" ~ "Associates",
+                                        degree_level == "03" ~ "Associate's",
                                         degree_level == "04" ~ "Certificate 2-4 years",
-                                        degree_level == "05" ~ "Baccalaureate")) %>% 
+                                        degree_level == "05" ~ "Bachelor's")) %>% 
             mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
                                                                   "Certificate 2-4 years", "Baccalaureate"),
                                          ordered = T))
@@ -703,7 +703,7 @@ shinyServer(function(input, output, session) {
            
             hc_tooltip(formatter = JS("function(){
                             return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
-            hc_title(text = "Median and quartile earnings for college graduates")
+            hc_title(text = "Median, 25th, and 75th percentile salary among area graduates by degree type")
     })
     
     output$edu_vb_state <- renderUI({

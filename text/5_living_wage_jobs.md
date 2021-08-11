@@ -1,1 +1,3 @@
 In order to build strong households, we need to prepare today’s workforce for the high-paying jobs of tomorrow. The table below shows the Top 10 jobs that are expected to be most in-demand in 2036 and currently pay a living wage (see methodology for definition).
+
+Since 2011, Texas has added over 2 million jobs, but many of those have been in mid-low and low-wage jobs. What’s more, Texas lags the U.S. as a whole in growth of higher-wage jobs, and outpaces the rest of the country in the growth of lower-wage jobs (see pages 6-7 [here](https://texas2036.org/wp-content/uploads/2021/04/AHT-Initial-Findings.pdf)).
