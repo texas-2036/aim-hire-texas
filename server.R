@@ -68,7 +68,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$home_map_shape_click$id)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
@@ -77,7 +77,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
@@ -90,7 +90,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = wda)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
         }
@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_shape_click$id)
     })
     
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_tx_shape_click$id)
     })
     
@@ -687,8 +687,8 @@ shinyServer(function(input, output, session) {
                                         degree_level == "03" ~ "Associate's",
                                         degree_level == "04" ~ "Certificate 2-4 years",
                                         degree_level == "05" ~ "Bachelor's")) %>% 
-            mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
-                                                                  "Certificate 2-4 years", "Baccalaureate"),
+            mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                                  "Certificate 2-4 years", "Bachelor's"),
                                          ordered = T))
         highchart() %>% 
             hc_add_series(data = df, "scatter", hcaes(x = degree_level, y = y10_p50_earnings, size = 100, opacity = 1)) %>%

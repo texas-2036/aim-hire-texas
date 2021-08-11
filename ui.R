@@ -86,7 +86,7 @@ shinyUI(
                                         class="well-panel-select",
                                         selectizeInput(inputId = "select_wda",
                                                    label = "",
-                                                   choices = c(unique(crosswalk$wda), "Texas"),
+                                                   choices = c(sort(unique(crosswalk$wda)), "Texas"),
                                                    selected = "Alamo"),
                                     ),
                                     br(),
@@ -187,10 +187,13 @@ shinyUI(
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                     br(),
                                     selectInput(inputId = "select_idj_type",
-                                                label = "select type",
+                                                label = "Select Metric",
                                                 choices = c("Highest Demand" = "top", 
                                                             "Lowest Demand" = "bottom", 
                                                             "Highest Growth" = "growth")),
+                                    conditionalPanel(condition = "input.select_idj_type == 'growth'",
+                                                     p(em("'Growth' refers to growth in the percentage of workers compared to current levels."))
+                                                     ),
                                     fluidRow(
                                         h3(htmlOutput("idj_title")),
                                         conditionalPanel(condition = "input.select_wda != 'Texas'",
@@ -282,7 +285,7 @@ shinyUI(
                    selectizeInput(
                        inputId = "comp_select_wda",
                        label = "",
-                       choices = c("Select up to five WDAs to compare" = "", unique(crosswalk$wda)),
+                       choices = c("Select up to five WDAs to compare" = "", sort(unique(crosswalk$wda))),
                        multiple = T, 
                        width = "1000px",
                        options = list(maxItems = 5)
