@@ -35,7 +35,7 @@ counties <- tigris::counties(state = "48") %>%
   st_transform(crs = wgs84) %>% 
   ms_simplify(0.05)
 
-###--- ggtheme ----------------------------------
+###--- ggtheme for pdfs ----------------------------------
 ggtheme <- function (base_size = 14,
                      base_family = "Montserrat",
                      title_size = 23,
@@ -153,7 +153,7 @@ leaflet(options = leafletOptions(zoomControl = FALSE, minZoom = 6, maxZoom = 6))
                map.dragging.disable();
                }")
 
-###--- plots ---------------
+###--- plots for pdfs ---------------
 # race-ethnicity pie chart
 people %>% 
   filter(wda == "Alamo") %>% 
@@ -165,7 +165,7 @@ people %>%
   theme_void() +
   theme(plot.background = element_rect(fill = "transparent")) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21'))
+  scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21')) 
 
 # indemand jobs that are living wage
 lwj_wages %>%
@@ -203,7 +203,7 @@ lwj_industry %>%
            width = 0.6) +
   ggtheme() +
   scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
-  labs(x = "# OF JOBS", y = NULL) +
+  labs(x = "NUMBER OF JOBS", y = NULL) +
   scale_x_continuous(labels = comma) 
 
 # median and quartile earnings for college grads
@@ -291,3 +291,163 @@ pdf_values <- left_join(alice, workforce) %>%
   left_join(education2)
 
 write_csv(pdf_values, here::here("clean-data", "pdf_values.csv"))
+
+###--- ggtheme for slides ----------------
+ggtheme_slides <- function (base_size = 18,
+                     base_family = "Montserrat",
+                     title_size = 23,
+                     subtitle_size = 12,
+                     caption_size = 10,
+                     ...)
+{
+  ggplot2::theme_minimal(base_size = base_size, base_family = base_family, ...) +
+    ggplot2::theme(
+      plot.title = ggtext::element_markdown(
+        size = title_size,
+        color = "#FFFFFF",
+        family = "Montserrat-ExtraBold"
+      ),
+      plot.subtitle = ggtext::element_markdown(size = subtitle_size,
+                                               family = "Montserrat"),
+      plot.caption = ggplot2::element_text(
+        family = "Montserrat-Regular",
+        color = "#FFFFFF",
+        size = caption_size,
+        lineheight = 1,
+        hjust = 0,
+        vjust = -5
+      ),
+      axis.title.x = ggplot2::element_text(
+        family = "Montserrat-Bold",
+        size = 14,
+        color = "#FFFFFF"
+      ),
+      axis.title.y = ggplot2::element_text(
+        family = "Montserrat-Bold",
+        size = 14,
+        color = "#FFFFFF"
+      ),
+      axis.text.x = ggplot2::element_text(
+        family = "Montserrat",
+        size = 12,
+        color = "#FFFFFF"
+      ),
+      axis.text.y = ggplot2::element_text(
+        family = "Montserrat",
+        size = 12,
+        color = "#FFFFFF"
+      ),
+      legend.position = "none",
+      plot.margin = ggplot2::unit(c(
+        t = 1,
+        r = 1.5,
+        b = 2,
+        l = 1
+      ), "lines")
+    ) +
+    ggplot2::theme(
+      axis.line.x = ggplot2::element_blank(),
+      plot.background = element_rect(fill = "#2a366c"), # bg of the panel
+      panel.grid.major.x = ggplot2::element_line(color = "#D3D3D3",
+                                                 size = 0.2),
+      panel.grid.minor.x = ggplot2::element_line(
+        linetype = 2,
+        size = 0,
+        color = "#D3D3D3"
+      ),
+      # panel.grid.major.x = ggplot2::element_blank(),
+      # panel.grid.minor.x = ggplot2::element_blank(),
+      panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.minor.y = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_text(hjust = 1),
+      axis.title.y = ggplot2::element_text(hjust = 1),
+      axis.ticks.x = ggplot2::element_line(size = 0.5, color = "#FFFFFF"),
+      axis.ticks.y = ggplot2::element_line(size = 0.5, color = "#FFFFFF")
+    )
+}
+
+###--- plots for slides -------------
+# race-ethnicity pie chart
+p1 <- people %>% 
+  filter(wda == "Alamo") %>% 
+  select(wda, waa_white:waa_other) %>% 
+  pivot_longer(waa_white:waa_other) %>%
+  ggplot(aes(x = "", y = value, fill = name)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  theme_void() +
+  #theme(plot.background = element_rect(fill = "transparent")) +
+  labs(x = NULL, y = NULL) +
+  scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21')) 
+p1
+ggsave(filename = "alamo_re_pie.png", path = here::here("figures"))
+
+# indemand jobs that are living wage
+p2 <- lwj_wages %>%
+  filter(wda == "Alamo") %>%
+  filter(wage_band == "High Wage" | wage_band == "Mid-High Wage") %>% 
+  ungroup() %>% 
+  slice_max(order_by = annual_average_employment_2036, n = 10) %>% 
+  select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
+  mutate(value = round(value)) %>% 
+  mutate(job = str_wrap(job, width = 40)) %>% 
+  ggplot(aes(x = value, y = reorder(job, value))) +
+  geom_bar(stat = "identity", 
+           fill = "#f26852", 
+           color = "white",
+           size = 0.5,
+           width = 0.6) +
+  ggtheme_slides() +
+  labs(x = NULL, y = NULL) +
+  scale_x_continuous(labels = comma)
+p2
+ggsave(filename = "alamo_lwj_bar.png", path = here::here("figures"))
+
+# share of living wage jobs by industry
+p3 <- lwj_industry %>%
+  ungroup() %>%
+  filter(wda == "Alamo") %>%
+  group_by(wda, industry_title) %>%
+  mutate(mid_high = case_when(wage_band %in% c("High Wage", "Mid-High Wage") ~ no_of_employed)) %>%
+  mutate(mid_high = sum(mid_high, na.rm = T)) %>%
+  mutate(industry_title = str_wrap(industry_title, width = 40)) %>%
+  ggplot(aes(x = no_of_employed, y = reorder(industry_title, mid_high), 
+             group = wage_band, fill = wage_band)) +
+  geom_bar(stat = "identity", 
+           position = "stack",
+           color = "white", 
+           size = 0.5,
+           width = 0.6) +
+  ggtheme_slides() +
+  scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
+  labs(x = "NUMBER OF JOBS", y = NULL) +
+  scale_x_continuous(labels = comma) 
+p3
+ggsave(filename = "alamo_lwindustries_bar.png", path = here::here("figures"))
+
+# median and quartile earnings for college grads
+p4 <- pseo_wda_df %>% 
+  filter(wda == "Alamo") %>% 
+  mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
+                                  degree_level == "02" ~ "Certificate 1-2 years",
+                                  degree_level == "03" ~ "Associate's",
+                                  degree_level == "04" ~ "Certificate 2-4 years",
+                                  degree_level == "05" ~ "Bachelor's")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                        "Certificate 2-4 years", "Bachelor's"),
+                               ordered = T)) %>% 
+  ggplot() +
+  geom_point(aes(x = degree_level, y = y10_p50_earnings),
+             size = 7, color = "#f26852") +
+  geom_errorbar(aes(x = degree_level, y = y10_p50_earnings, ymin = y10_p25_earnings, ymax = y10_p75_earnings),
+                color = "#f26852", width = 0.2, size = 2) +
+  ggtheme_slides() +
+  scale_y_continuous(labels = comma) +
+  labs(x = NULL, y = "Earnings") +
+  theme(panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
+                                                   size = 0.2),
+        panel.grid.major.x = ggplot2::element_blank(),
+        axis.line.x = ggplot2::element_line(size = 1, color = "#ffffff")
+  )
+p4 
+ggsave(filename = "alamo_earnings_point.png", path = here::here("figures"))
