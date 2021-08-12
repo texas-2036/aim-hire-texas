@@ -21,9 +21,17 @@ library(slickR)
 library(sparkline)
 library(DT)
 library(purrr)
+library(waiter)
 
 options(tigris_use_cache = TRUE)
 wgs84 <- st_crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+
+# js needed to open url from shiny server!
+js_code <- "
+shinyjs.browseURL = function(url) {
+  window.open(url,'_blank');
+}
+"
 
 # "#f26852" red
 # "#2a366c" dark blue
@@ -147,6 +155,8 @@ texas_sf <- readRDS(here::here("clean-data", "texas_shapefile.rds"))
 counties <- readRDS(here::here("clean-data", "county_shapefile.rds"))
 county_list <- readRDS(here::here("clean-data", "wda_county_list.RDS"))
 crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))
+pdf_urls <- read.csv(here::here("clean-data", "pdf_url.csv"))
+
 # lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))
 aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
@@ -174,5 +184,11 @@ disconnected <- sever_default(
   button = "Push to Wake", 
   button_class = "info"
 )
+
+waiting_screen <- tagList(
+  spin_solar(),
+  h4("Loading data - one moment!")
+) 
+
 
 

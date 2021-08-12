@@ -1,9 +1,18 @@
 source("read-data.R")
+#source("helper-functions.R")
 
 # Define UI for application that draws a histogram
 shinyUI(
+
     tagList(
         useShinyjs(),
+        extendShinyjs(text = js_code, functions = 'browseURL'),
+        use_sever(),
+        use_waiter(),
+        waiter_show_on_load(html = tagList(h3("Thanks for being patient while we get everything set up."),
+                                           spin_cube_grid()),
+                            color = "#2a366c",
+                            logo = "logo.png"),
         tags$head(
             HTML("<title>Aim Hire Texas</title>"),
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
@@ -12,11 +21,9 @@ shinyUI(
             tags$script(HTML("$('body').addClass('fixed');")),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap"),
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
-            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap")
+            tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
+            tags$style(HTML('#pdfs{background-color:#f26852; color:#ffffff}'))
             ),
-            tags$style(HTML("
-
-                            ")), # close tags$style
         navbarPage(
             id = "tab_being_displayed",
             selected = "Home",
@@ -79,7 +86,7 @@ shinyUI(
                                         class="well-panel-select",
                                         selectizeInput(inputId = "select_wda",
                                                    label = "",
-                                                   choices = c(unique(crosswalk$wda), "Texas"),
+                                                   choices = c(sort(unique(crosswalk$wda)), "Texas"),
                                                    selected = "Alamo"),
                                     ),
                                     br(),
@@ -113,7 +120,13 @@ shinyUI(
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
+                                    tags$hr(),
                                     ),
+                                    
+                                    actionButton(inputId = "pdfs",
+                                                 label = "download pdf one-pager",
+                                                 icon = icon("download")),
+                                                 
                                     width = "100%")), 
                          div(
                                 class='main-panel',
@@ -174,10 +187,13 @@ shinyUI(
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                     br(),
                                     selectInput(inputId = "select_idj_type",
-                                                label = "select type",
+                                                label = "Select Metric",
                                                 choices = c("Highest Demand" = "top", 
                                                             "Lowest Demand" = "bottom", 
                                                             "Highest Growth" = "growth")),
+                                    conditionalPanel(condition = "input.select_idj_type == 'growth'",
+                                                     p(em("'Growth' refers to growth in the percentage of workers compared to current levels."))
+                                                     ),
                                     fluidRow(
                                         h3(htmlOutput("idj_title")),
                                         conditionalPanel(condition = "input.select_wda != 'Texas'",
@@ -269,7 +285,7 @@ shinyUI(
                    selectizeInput(
                        inputId = "comp_select_wda",
                        label = "",
-                       choices = c("Select up to five WDAs to compare" = "", unique(crosswalk$wda)),
+                       choices = c("Select up to five WDAs to compare" = "", sort(unique(crosswalk$wda))),
                        multiple = T, 
                        width = "1000px",
                        options = list(maxItems = 5)
@@ -350,7 +366,14 @@ shinyUI(
                    #        )
                    )
                    ), # close comparison page
-            tabPanel(title = "Methodology"
+            tabPanel(title = "Methodology",
+                     tags$div(
+                         class="methodology-wrapper",
+                         fluidRow(
+                             class="methodology",
+                             includeMarkdown(here::here("text", "methodology.md")),
+                             img(src = "aht-regions-methodology.png", height = 450)
+                         )),
                      ) # close methodology tab
             ) # close navbarPage
         ) # close tagList

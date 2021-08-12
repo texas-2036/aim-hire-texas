@@ -1,1 +1,1 @@
-Aim Hire Texas (AHT) is a statwide consortium of advocates, employers, non-profit organizations, and education and training providers working to improve the Texas workforce system for the benefit of all Texans and their employers.
+Aim Hire Texas (AHT) is a statewide consortium of employers, education and training providers, nonprofits and advocates working to improve the Texas workforce system for the benefit of all Texans and their employers.

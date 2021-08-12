@@ -1,7 +1,7 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-    
+
     sever(html = disconnected, bg_color = "#3A4A9F", opacity = .92)
     ###--- REACTIVES -------------------------------
     selected_wda_sf <- reactive({
@@ -68,7 +68,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$home_map_shape_click$id)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
@@ -77,11 +77,11 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
     })
-    observe(print(input$county_search))
+    
     observeEvent(input$county_search, {
         if (input$county_search %in% unique(crosswalk$county)) {
         wda <- crosswalk %>% 
@@ -90,7 +90,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = c(unique(crosswalk$wda), "Texas"),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = wda)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
         }
@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_shape_click$id)
     })
     
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
                              label = "Choose a different WDA: ",
-                             choices = unique(crosswalk$wda),
+                             choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_tx_shape_click$id)
     })
     
@@ -116,10 +116,10 @@ shinyServer(function(input, output, session) {
     ## * Well panel --------
     
     # print wda name
-    output$wda_name <- renderUI({
-        text <- HTML(paste0(input$select_wda), "WDA")
-        return(text)
-        })
+    # output$wda_name <- renderUI({
+    #     text <- HTML(paste0(input$select_wda), "WDA")
+    #     return(text)
+    #     })
     
     # mini map
     output$mini_map <- renderLeaflet({
@@ -684,11 +684,11 @@ shinyServer(function(input, output, session) {
         df <- filter_pseo() %>% 
         mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
                                         degree_level == "02" ~ "Certificate 1-2 years",
-                                        degree_level == "03" ~ "Associates",
+                                        degree_level == "03" ~ "Associate's",
                                         degree_level == "04" ~ "Certificate 2-4 years",
-                                        degree_level == "05" ~ "Baccalaureate")) %>% 
-            mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
-                                                                  "Certificate 2-4 years", "Baccalaureate"),
+                                        degree_level == "05" ~ "Bachelor's")) %>% 
+            mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                                  "Certificate 2-4 years", "Bachelor's"),
                                          ordered = T))
         highchart() %>% 
             hc_add_series(data = df, "scatter", hcaes(x = degree_level, y = y10_p50_earnings, size = 100, opacity = 1)) %>%
@@ -703,7 +703,7 @@ shinyServer(function(input, output, session) {
            
             hc_tooltip(formatter = JS("function(){
                             return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
-            hc_title(text = "Median and quartile earnings for college graduates")
+            hc_title(text = "Median, 25th, and 75th percentile salary among area graduates by degree type")
     })
     
     output$edu_vb_state <- renderUI({
@@ -824,26 +824,15 @@ shinyServer(function(input, output, session) {
             hw_grid(rowheight = 300, ncol = 1) 
     })
     
-    # output$comparison_jobs_attractive <- renderUI({
-    #     purrr::map(unique(filter_comparison_jobs()$wda), function(x) {
-    #         filter_comparison_jobs() %>% 
-    #             filter(wda == x) %>% 
-    #             filter(type == "attractive") %>% 
-    #             hchart("bar", hcaes(y = value, x = job)) %>% 
-    #             hc_title(text=paste0(x)) %>% 
-    #             hc_yAxis(title = list(text = "Share of local jobs")) %>%
-    #             hc_xAxis(title = list(text = "")) %>%
-    #             hc_tooltip(formatter = JS("function(){
-    #                             return (this.point.job + 
-    #                                   ': ' + this.y )}")) %>% 
-    #             hc_add_theme(
-    #                 hc_theme_merge(
-    #                     tx2036_hc,
-    #                     hc_theme(chart = list(backgroundColor = "#201F50"))
-    #                 )
-    #             )
-    #     }) %>% 
-    #         hw_grid(rowheight = 300, ncol = 1) 
-    # })
+    # find and download pdf - need js for browseURL() to work in deployed app!
+    observeEvent(input$pdfs, {
+        url <- pdf_urls %>%
+            filter(wda == input$select_wda) %>%
+            pull(url)
+        js$browseURL(url)
+    })
+    
+    Sys.sleep(2) # do something that takes time
+    waiter_hide()
     
     }) # close whole app

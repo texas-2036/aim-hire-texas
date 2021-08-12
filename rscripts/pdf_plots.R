@@ -165,7 +165,7 @@ people %>%
   theme_void() +
   theme(plot.background = element_rect(fill = "transparent")) +
   labs(x = NULL, y = NULL) +
-  scale_fill_manual(values = c('#f26852', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21'))
+  scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21'))
 
 # indemand jobs that are living wage
 lwj_wages %>%
@@ -203,7 +203,7 @@ lwj_industry %>%
            width = 0.6) +
   ggtheme() +
   scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
-  labs(x = "NUMBER OF JOBS", y = NULL) +
+  labs(x = "# OF JOBS", y = NULL) +
   scale_x_continuous(labels = comma) 
 
 # median and quartile earnings for college grads
@@ -211,11 +211,11 @@ pseo_wda_df %>%
   filter(wda == "Alamo") %>% 
   mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
                                   degree_level == "02" ~ "Certificate 1-2 years",
-                                  degree_level == "03" ~ "Associates",
+                                  degree_level == "03" ~ "Associate's",
                                   degree_level == "04" ~ "Certificate 2-4 years",
-                                  degree_level == "05" ~ "Baccalaureate")) %>% 
-  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
-                                                        "Certificate 2-4 years", "Baccalaureate"),
+                                  degree_level == "05" ~ "Bachelor's")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                        "Certificate 2-4 years", "Bachelor's"),
                                ordered = T)) %>% 
   ggplot() +
   geom_point(aes(x = degree_level, y = y10_p50_earnings),
