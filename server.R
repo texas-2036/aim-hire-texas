@@ -695,9 +695,14 @@ shinyServer(function(input, output, session) {
                      categories = as.list(df$degree_level)) %>% 
             hc_yAxis(title = list(text = "")) %>% 
             hc_plotOptions(series = list(showInLegend = F)) %>%
-           
+            # hc_tooltip(formatter = JS("function(){
+            #                 return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
             hc_tooltip(formatter = JS("function(){
-                            return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
+                            return ('75% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p25_earnings, 0) +
+                            ' <br> 50% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) +
+                            ' <br> 25% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p75_earnings, 0)
+                            )
+                                      }")) %>%
             hc_title(text = "Median, 25th, and 75th percentile salary among area graduates by degree type")
     })
     
