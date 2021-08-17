@@ -323,9 +323,9 @@ shinyServer(function(input, output, session) {
             select(wda, wda_number, year,
                    total,
                    "Male" = total_male, "Female" = total_female,
-                   "White" = nh_white_total, "Black" = nh_black_total, "Hispanic" = hispanic_total, "Asian" = nh_asian_total, "Other" = nh_asian_total,
-                   "White women" = nh_white_female, "Black women" = nh_black_female, "Hispanic women" = hispanic_female, "Asian women" = nh_asian_female, "Other women" = nh_asian_female,
-                   "White men" = nh_white_male, "Black men" = nh_black_male, "Hispanic men" = hispanic_male, "Asian men" = nh_asian_male, "Other men" = nh_asian_male) %>% 
+                   "White" = nh_white_total, "Black" = nh_black_total, "Hispanic" = hispanic_total, "Asian" = nh_asian_total, "Other" = nh_other_total,
+                   "White women" = nh_white_female, "Black women" = nh_black_female, "Hispanic women" = hispanic_female, "Asian women" = nh_asian_female, "Other women" = nh_other_female,
+                   "White men" = nh_white_male, "Black men" = nh_black_male, "Hispanic men" = hispanic_male, "Asian men" = nh_asian_male, "Other men" = nh_other_male) %>% 
             pivot_longer(total:"Other men") %>% 
             mutate(name = factor(name, levels = c("total", "Male", "Female", 
                                                   "White", "Black", "Hispanic", "Asian", "Other",
@@ -358,12 +358,12 @@ shinyServer(function(input, output, session) {
     # line chart
     output$waa_plot <- renderHighchart({
         filter_waa() %>% 
-            hchart(type = "line", hcaes(x = year, y = value, group = name)) %>% 
+            hchart(type = "line", lineWidth = 4, hcaes(x = year, y = value, group = name)) %>% 
             hc_yAxis(title = list(text = "Number of working age adults")) %>% 
             hc_title(text = "Projected Number of Working Age Adults Through 2036") %>% 
             hc_add_theme(tx2036_hc) %>% 
-            hc_colors(c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21", 
-                        "#F9BCB3", "#8997D1", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
+            hc_colors(c("#f26852", "#8A4F7D", "#3ead92", "#5f6fc1", "#f9cd21", 
+                        "#F9BCB3", "#B57DA9", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.name + 
                                       ': ' + this.y )}"))
@@ -376,16 +376,11 @@ shinyServer(function(input, output, session) {
             hchart("pie", hcaes(name, value)) %>% 
             hc_plotOptions(series = list(showInLegend = F, dataLabels = F)) %>% 
             hc_add_theme(tx2036_hc) %>% 
-            hc_colors(c("#f26852", "#2a366c", "#3ead92", "#5f6fc1", "#f9cd21", 
-                        "#F9BCB3", "#8997D1", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
+            hc_colors(c("#f26852", "#8A4F7D", "#3ead92", "#5f6fc1", "#f9cd21", 
+                        "#F9BCB3", "#B57DA9", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.name + 
                                       ': ' + this.y )}"))
-            #     hc_theme_merge(
-            #         tx2036_hc,
-            #         hc_theme_null(chart = list(backgroundColor = "transparent"))
-            #     )
-            # )
         })
     
     ## Value boxes
@@ -644,19 +639,19 @@ shinyServer(function(input, output, session) {
     })
     
     # employment rate
-    output$edu_plot_rate <- renderHighchart({
-        filter_edu() %>%
-            mutate(pct_employed = round(pct_employed)) %>% 
-            hchart(type = "column", hcaes(x = education, y = pct_employed)) %>%
-            #hc_colors("#f26852") %>%
-            hc_xAxis(title = list(text = "")) %>%
-            hc_yAxis(title = list(text = "Employment Rate"),
-                     max = 100) %>%
-            hc_title(text = "Employment rate by education") %>%
-            hc_add_theme(tx2036_hc) %>% 
-            hc_tooltip(formatter = JS("function(){
-                            return (this.y + '%')}"))
-    })
+    # output$edu_plot_rate <- renderHighchart({
+    #     filter_edu() %>%
+    #         mutate(pct_employed = round(pct_employed)) %>% 
+    #         hchart(type = "column", hcaes(x = education, y = pct_employed)) %>%
+    #         #hc_colors("#f26852") %>%
+    #         hc_xAxis(title = list(text = "")) %>%
+    #         hc_yAxis(title = list(text = "Employment Rate"),
+    #                  max = 100) %>%
+    #         hc_title(text = "Employment rate by education") %>%
+    #         hc_add_theme(tx2036_hc) %>% 
+    #         hc_tooltip(formatter = JS("function(){
+    #                         return (this.y + '%')}"))
+    # })
     
     ## Value boxes
     output$edu_vb_income <- renderUI({
@@ -717,24 +712,24 @@ shinyServer(function(input, output, session) {
                             br()))
     })
     
-    output$edu_plot_pseo_state <- renderHighchart({
-        filter_pseo() %>%
-            #select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 
-            mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
-            #select(-y10_grads_emp) %>% 
-            group_by(wda) %>% 
-            summarize(`Employed in Texas` = sum(y10_grads_emp_instate),
-                      `Employed outside of Texas` = sum(y10_grads_emp_outstate),
-                      `Unemployed` = sum(y10_grads_nme)) %>% 
-            pivot_longer(`Employed in Texas`:`Unemployed`) %>% 
-            hchart("pie", hcaes(name, value)) %>% 
-            hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
-            hc_add_theme(tx2036_hc) %>% 
-            hc_tooltip(formatter = JS("function(){
-                                return (this.point.name + 
-                                      ': ' + this.y )}"))
-
-    })
+    # output$edu_plot_pseo_state <- renderHighchart({
+    #     filter_pseo() %>%
+    #         #select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 
+    #         mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
+    #         #select(-y10_grads_emp) %>% 
+    #         group_by(wda) %>% 
+    #         summarize(`Employed in Texas` = sum(y10_grads_emp_instate),
+    #                   `Employed outside of Texas` = sum(y10_grads_emp_outstate),
+    #                   `Unemployed` = sum(y10_grads_nme)) %>% 
+    #         pivot_longer(`Employed in Texas`:`Unemployed`) %>% 
+    #         hchart("pie", hcaes(name, value)) %>% 
+    #         hc_plotOptions(series = list(showInLegend = T, dataLabels = F)) %>% 
+    #         hc_add_theme(tx2036_hc) %>% 
+    #         hc_tooltip(formatter = JS("function(){
+    #                             return (this.point.name + 
+    #                                   ': ' + this.y )}"))
+    # 
+    # })
     
     ###--- COMPARISON PAGE ----------------------------
     

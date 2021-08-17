@@ -148,7 +148,7 @@ shinyUI(
                                            highchartOutput("lwh_plot_year", height = 500)),
                                     column(6,
                                            h3(htmlOutput("lwh_vb_demo", aligh = "center")),
-                                           h5("Families with kids above alice threshold"),
+                                           h5("Families with kids above alice threshold (2018)"),
                                            highchartOutput("lwh_plot_demo", height = 500))
                                 )
                                 ),
@@ -238,7 +238,7 @@ shinyUI(
                                     
                                     br(),
                                     br(),
-
+                                    includeMarkdown(here::here("text", "4_attractive_jobs2.md")),
                                     fluidRow(
                                     column(11,
                                     reactableOutput("aj_table")
@@ -260,7 +260,8 @@ shinyUI(
                                         column(4,
                                                h3(htmlOutput("edu_vb_state")),
                                                h5("of post-secondary grads employed in Texas"),
-                                               highchartOutput("edu_plot_pseo_state"))
+                                               #highchartOutput("edu_plot_pseo_state"))
+                                        )
                                         ),
                                     fluidRow(
                                         column(6,
@@ -270,7 +271,8 @@ shinyUI(
                                         column(6,
                                                h3(htmlOutput("edu_vb_rate")),
                                                h5("of high school graduates employed"),
-                                               highchartOutput("edu_plot_rate", height = 500))
+                                               #highchartOutput("edu_plot_rate", height = 500))
+                                        )
                                     )
                                     ),
                                 

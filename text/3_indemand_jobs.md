@@ -1,1 +1,1 @@
-Which jobs will be most in and least in-demand in 2036? The tables below show the jobs projected to be most and least in-demand in 2036, based on projection from Texas Workforce Commission (more info here). 
+Which jobs will be most in and least in-demand in 2036? The tables below show the jobs projected to be most and least in-demand in 2036. These projections are extrapolations from the Texas Workforce Commission (more info here). 
