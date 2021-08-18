@@ -135,7 +135,8 @@ shinyUI(
                                 ## 1. living wage households --------
                                 fluidRow(
                                     class="dark-bg wda-intro",
-                                    includeMarkdown(here::here("text", "wda_intro.md"))
+                                    p(strong(htmlOutput("wda_intro"))),
+                                    p("On the left side of the screen, you can choose a different WDA, navigate between content sections, or download a static PDF of the key data points for this WDA.")
                                     ),
                                 fluidRow(
                                     div(htmlOutput("header_lwh"), style="margin-top: -100px;"),

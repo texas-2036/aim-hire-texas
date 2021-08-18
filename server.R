@@ -239,6 +239,16 @@ shinyServer(function(input, output, session) {
 
 
     ## * Content -----
+    output$wda_intro <- renderUI({
+        text1 <- "The data below are customized to reflect workforce and education patterns in "
+        wda <- input$select_wda
+        text2 <- " WDA."
+        
+        text <- strong(HTML(paste0(text1, wda, text2)))
+        return(text)
+        
+    })
+    
     ## 1. living wage households --------
     # reactives
     filter_lwh <- reactive({
@@ -366,7 +376,7 @@ shinyServer(function(input, output, session) {
                         "#F9BCB3", "#B57DA9", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.name + 
-                                      ': ' + this.y )}"))
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}"))
     })
     
     # demographics pie
@@ -380,7 +390,7 @@ shinyServer(function(input, output, session) {
                         "#F9BCB3", "#B57DA9", "#87D4C1", "#C4CAE8", "#FCE99C")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.name + 
-                                      ': ' + this.y )}"))
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}"))
         })
     
     ## Value boxes
@@ -425,7 +435,7 @@ shinyServer(function(input, output, session) {
             hc_title(text = "Selected WDA") %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
-                                      ': ' + this.y )}"))
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}"))
     })
     
     output$idj_plot_texas <- renderHighchart({
@@ -437,7 +447,7 @@ shinyServer(function(input, output, session) {
             hc_title(text = "Texas overall") %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
-                                      ': ' + this.y )}"))
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}"))
     })
     
     ## 5. living wage jobs --------
@@ -459,7 +469,7 @@ shinyServer(function(input, output, session) {
             hc_xAxis(title = list(text = "")) %>%
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.job +
-                                      ': ' + this.y )}")) %>%
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}")) %>%
             hc_add_theme(tx2036_hc)
     })
     
@@ -488,7 +498,7 @@ shinyServer(function(input, output, session) {
             hc_title(text = "Share of living wage jobs across industries") %>%
             hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>%
             hc_tooltip(formatter = JS("function(){
-                                      return (this.point.wage_band + ': ' + this.y)}"))
+                                      return (this.point.wage_band + ': ' + Highcharts.numberFormat(this.y, 0))}"))
         })
     
     
@@ -635,7 +645,7 @@ shinyServer(function(input, output, session) {
             hc_title(text = "Median income by education") %>%
             hc_add_theme(tx2036_hc) %>% 
             hc_tooltip(formatter = JS("function(){
-                            return ('$' + this.y)}"))
+                            return ('$' + Highcharts.numberFormat(this.y, 0))}"))
     })
     
     # employment rate
@@ -698,9 +708,11 @@ shinyServer(function(input, output, session) {
             # hc_tooltip(formatter = JS("function(){
             #                 return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
             hc_tooltip(formatter = JS("function(){
-                            return ('75% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p25_earnings, 0) +
-                            ' <br> 50% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) +
-                            ' <br> 25% of people earn at least $' + Highcharts.numberFormat(this.point.y10_p75_earnings, 0)
+                            return ('Among graduates of institutions in ' + this.point.wda + ' WDA' +
+                            ' <br> with a ' + this.point.degree_level + ' degree:' +
+                            ' <br> 75% earn at least $' + Highcharts.numberFormat(this.point.y10_p25_earnings, 0) +
+                            ' <br> 50% earn at least $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) +
+                            ' <br> 25% earn at least $' + Highcharts.numberFormat(this.point.y10_p75_earnings, 0)
                             )
                                       }")) %>%
             hc_title(text = "Median, 25th, and 75th percentile salary among area graduates by degree type")
