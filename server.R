@@ -695,6 +695,9 @@ shinyServer(function(input, output, session) {
             mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
                                                                   "Certificate 2-4 years", "Bachelor's"),
                                          ordered = T))
+        hs_median <- filter_edu() %>% 
+            filter(education == "hs")
+        
         highchart() %>% 
             hc_add_series(data = df, "scatter", hcaes(x = degree_level, y = y10_p50_earnings, size = 100, opacity = 1)) %>%
             hc_add_series(data = df, "errorbar", hcaes(x = degree_level, low = y10_p25_earnings, high = y10_p75_earnings, width = 20),
@@ -703,7 +706,17 @@ shinyServer(function(input, output, session) {
             hc_xAxis(title = list(text = ""),
                      
                      categories = as.list(df$degree_level)) %>% 
-            hc_yAxis(title = list(text = "")) %>% 
+            hc_yAxis(title = list(text = ""),
+                     # why isn't this working. but works on the x axis???
+                     plotLines = list(list(
+                         value = hs_median$median_income,
+                         color = 'white',
+                         width = 3,
+                         zIndex = 4,
+                         label = list(text = "quality threshold",
+                                      style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
+                                                   fontSize='12px')
+                         )))) %>% 
             hc_plotOptions(series = list(showInLegend = F)) %>%
             # hc_tooltip(formatter = JS("function(){
             #                 return ('Median annual salary: $' + Highcharts.numberFormat(this.y, 0))}")) %>%
