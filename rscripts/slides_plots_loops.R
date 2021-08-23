@@ -30,6 +30,8 @@ lwj_wages <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds"))
 edu <- readRDS(here::here("clean-data", "wda_edu_employment.rds")) # census
 load(here::here("clean-data", "pseo-data.RData"))                  # pseo
 
+aj <- readRDS(here::here("clean-data", "brookings-data.rds"))
+
 # shapefiles
 wda_sf <- readRDS(here::here("clean-data", "wda_shapefile.rds"))
 counties <- tigris::counties(state = "48") %>% 
@@ -40,8 +42,8 @@ counties <- tigris::counties(state = "48") %>%
 ###--- ggtheme ----------------------------------
 ggtheme <- function (base_size = 18,
                             base_family = "Montserrat",
-                            title_size = 14,
-                            subtitle_size = 12,
+                            title_size = 12,
+                            subtitle_size = 9,
                             caption_size = 10,
                             ...)
 {
@@ -53,6 +55,7 @@ ggtheme <- function (base_size = 18,
         family = "Montserrat-ExtraBold"
       ),
       plot.subtitle = ggtext::element_markdown(size = subtitle_size,
+                                               color = "white",
                                                family = "Montserrat"),
       plot.caption = ggplot2::element_text(
         family = "Montserrat-Regular",
@@ -64,12 +67,12 @@ ggtheme <- function (base_size = 18,
       ),
       axis.title.x = ggplot2::element_text(
         family = "Montserrat-Bold",
-        size = 14,
+        size = 11,
         color = "#FFFFFF"
       ),
       axis.title.y = ggplot2::element_text(
         family = "Montserrat-Bold",
-        size = 14,
+        size = 11,
         color = "#FFFFFF"
       ),
       axis.text.x = ggplot2::element_text(
@@ -281,3 +284,42 @@ for (WDA_NAME in unique(people$wda)) {
     print("Done!")
   }
 }
+
+# attractive jobs -----------------
+
+for (WDA_NAME in unique(people$wda)) {
+  aj %>% 
+    filter(wda == WDA_NAME) %>% 
+    filter(!is.na(occupation)) %>% 
+    ggplot() +
+    geom_point(aes(x = demand_index, y = quality_index, color = quality_and_demand_quadrant, size = share_of_local_jobs_percent),
+               alpha = 0.5) +
+    labs(x = "Demand Index",
+         y = "Quality Index",
+         title = "QUALITY AND DEMAND INDICES",
+         subtitle = "Point size is proportional to the number of workers in the occupation. Thresholds<br>show the Quality Index and Demand Index of the average occupation.") +
+    geom_hline(aes(yintercept = 0),
+               color = "white", size = 1) +
+    geom_text(aes(x = -4, y = 0, label = "Quality threshold", 
+                  vjust = -1),
+              color = "white", size = 3) +
+    #geom_text()
+    geom_vline(aes(xintercept = 0),
+               color = "white", size = 1) +
+    geom_text(aes(x = 0, y = -5, label = "Demand threshold",
+                  hjust = -0.1), color = "white", size = 3) +
+    ggtheme() +
+    theme(plot.background = element_rect(fill="#3a4a9f", color=NA),
+      panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
+                                                     size = 0.1),
+          axis.text.x = element_text(size = 7.5),
+          axis.text.y = element_text(size = 7.5)) +
+    xlim(-5, 5) + 
+    ylim(-5, 5) +
+    scale_color_manual(values = c("#3ead92", "#8490cf", "#080a15", "#f26852"))
+  filename <- str_remove_all(WDA_NAME, " ")
+  ggsave(file=here::here("slides", "quality", paste0(filename, ".png")), width=6, height=4.5)
+  
+}
+
+
