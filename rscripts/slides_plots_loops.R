@@ -162,8 +162,14 @@ for (WDA_NAME in unique(people$wda)) {
           panel.grid.minor = element_blank(),
           panel.grid.major.x = element_blank(),
           panel.grid.minor.x = element_blank(),
-          legend.position = "none"
+          legend.position = "none",
+          plot.title = ggtext::element_markdown(
+            size = 12,
+            color = "#FFFFFF",
+            family = "Montserrat-ExtraBold",
+            hjust = 0.5)
     ) +
+    labs(title = "RACE-ETHNICITY IN 2036") +
     scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#1f214d', '#f9cd21'))
   
   filename <- str_remove_all(WDA_NAME, " ")
@@ -235,7 +241,8 @@ for (WDA_NAME in unique(people$wda)) {
       axis.text.x = element_text(size = 7.5)
     ) +
     scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
-    labs(x = NULL, y = NULL) +
+    labs(x = NULL, y = NULL,
+         title = "SHARE OF LIVING WAGE JOBS BY INDUSTRY") +
     scale_x_continuous(labels = comma) 
   
   filename <- str_remove_all(WDA_NAME, " ")
@@ -247,6 +254,7 @@ for (WDA_NAME in unique(people$wda)) {
 }
 
 # pseo education lines -----------------
+WDA_NAME == "Alamo"
 for (WDA_NAME in unique(people$wda)) {
   
   pseo_wda_df %>% 
@@ -266,7 +274,8 @@ for (WDA_NAME in unique(people$wda)) {
                   color = "#f26852", width = 0.2, size = 1) +
     ggtheme() +
     scale_y_continuous(labels = dollar) +
-    labs(x = NULL, y = NULL) +
+    labs(x = NULL, y = NULL,
+         title = "MEDIAN, 25TH, AND 75TH PERCENTILE SALARY <br> AMONG AREA GRADUATES BY DEGREE TYPE") +
     theme(
       plot.background = element_rect(fill="#3a4a9f", color=NA),
       panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
