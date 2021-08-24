@@ -635,18 +635,18 @@ shinyServer(function(input, output, session) {
     
     ## Plots
     # income
-    output$edu_plot_income <- renderHighchart({
-        filter_edu() %>% 
-            mutate(median_income = round(median_income)) %>% 
-            hchart(type = "column", hcaes(x = education, y = median_income)) %>% 
-            #hc_colors("#f26852") %>% 
-            hc_xAxis(title = list(text = "")) %>%
-            hc_yAxis(title = list(text = "Median Income")) %>%
-            hc_title(text = "Median income by education") %>%
-            hc_add_theme(tx2036_hc) %>% 
-            hc_tooltip(formatter = JS("function(){
-                            return ('$' + Highcharts.numberFormat(this.y, 0))}"))
-    })
+    # output$edu_plot_income <- renderHighchart({
+    #     filter_edu() %>% 
+    #         mutate(median_income = round(median_income)) %>% 
+    #         hchart(type = "column", hcaes(x = education, y = median_income)) %>% 
+    #         #hc_colors("#f26852") %>% 
+    #         hc_xAxis(title = list(text = "")) %>%
+    #         hc_yAxis(title = list(text = "Median Income")) %>%
+    #         hc_title(text = "Median income by education") %>%
+    #         hc_add_theme(tx2036_hc) %>% 
+    #         hc_tooltip(formatter = JS("function(){
+    #                         return ('$' + Highcharts.numberFormat(this.y, 0))}"))
+    # })
     
     # employment rate
     # output$edu_plot_rate <- renderHighchart({
@@ -663,22 +663,22 @@ shinyServer(function(input, output, session) {
     #                         return (this.y + '%')}"))
     # })
     
-    ## Value boxes
-    output$edu_vb_income <- renderUI({
-        value <- filter_edu() %>% 
-            filter(education == "High school diploma")
-        text <- HTML(paste0( "$", strong(formatC(signif(value$median_income, 3), format = "d", big.mark = ",")),
-                            br()))
-    })
-    
-    output$edu_vb_rate <- renderUI({
-        
-        value <- filter_edu() %>% 
-            filter(education == "High school diploma")
-        text <- HTML(paste0(round(value$pct_employed), "%",
-                            br()))
-    })
-    
+    # ## Value boxes
+    # output$edu_vb_income <- renderUI({
+    #     value <- filter_edu() %>% 
+    #         filter(education == "High school diploma")
+    #     text <- HTML(paste0( "$", strong(formatC(signif(value$median_income, 3), format = "d", big.mark = ",")),
+    #                         br()))
+    # })
+    # 
+    # output$edu_vb_rate <- renderUI({
+    #     
+    #     value <- filter_edu() %>% 
+    #         filter(education == "High school diploma")
+    #     text <- HTML(paste0(round(value$pct_employed), "%",
+    #                         br()))
+    # })
+    # 
     ### post high school
     filter_pseo <- reactive({
         df <- pseo_wda_df %>% 
@@ -696,7 +696,8 @@ shinyServer(function(input, output, session) {
                                                                   "Certificate 2-4 years", "Bachelor's"),
                                          ordered = T))
         hs_median <- filter_edu() %>% 
-            filter(education == "hs")
+            filter(education == "High school diploma") %>% 
+            pull(median_income)
         
         highchart() %>% 
             hc_add_series(data = df, "scatter", hcaes(x = degree_level, y = y10_p50_earnings, size = 100, opacity = 1)) %>%
@@ -707,13 +708,13 @@ shinyServer(function(input, output, session) {
                      
                      categories = as.list(df$degree_level)) %>% 
             hc_yAxis(title = list(text = ""),
-                     # why isn't this working. but works on the x axis???
+                     min = 20000,
                      plotLines = list(list(
-                         value = hs_median$median_income,
+                         value = hs_median,
                          color = 'white',
                          width = 3,
                          zIndex = 4,
-                         label = list(text = "quality threshold",
+                         label = list(text = "median high school earnings",align = "right", 
                                       style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
                                                    fontSize='12px')
                          )))) %>% 
@@ -729,6 +730,24 @@ shinyServer(function(input, output, session) {
                             )
                                       }")) %>%
             hc_title(text = "Median, 25th, and 75th percentile salary among area graduates by degree type")
+    })
+    
+    output$edu_vb_hs_income <- renderUI({
+        value <- filter_edu() %>% 
+            filter(education == "High school diploma") %>% 
+            pull(median_income)
+        
+        text <- HTML(paste0( "$", strong(formatC(signif(value, 3), format = "d", big.mark = ",")),
+                                                     br()))
+    })
+    
+    output$edu_vb_assoc_income <- renderUI({
+        value <- filter_pseo() %>% 
+            filter(degree_level == "03") %>% 
+            pull(y10_p50_earnings)
+        
+        text <- HTML(paste0( "$", strong(formatC(signif(value, 3), format = "d", big.mark = ",")),
+                             br()))
     })
     
     output$edu_vb_state <- renderUI({

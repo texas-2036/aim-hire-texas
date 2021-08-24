@@ -260,22 +260,32 @@ shinyUI(
                                         highchartOutput("edu_plot_pseo")
                                         ),
                                         column(4,
+                                               
+                                               h3(htmlOutput("edu_vb_hs_income")),
+                                               h5("Median income of high school graduates"),
+                                               
+                                               h3(htmlOutput("edu_vb_assoc_income")),
+                                               h5("Median income of people with an Associate's degree"),
+                                               
+                                               tags$hr(),
+                                               
                                                h3(htmlOutput("edu_vb_state")),
                                                h5("of post-secondary grads employed in Texas"),
                                                #highchartOutput("edu_plot_pseo_state"))
                                         )
                                         ),
-                                    fluidRow(
-                                        column(6,
-                                               h3(htmlOutput("edu_vb_income")),
-                                               h5("Median income of high school graduates"),
-                                               highchartOutput("edu_plot_income", height = 500)),
-                                        column(6,
-                                               h3(htmlOutput("edu_vb_rate")),
-                                               h5("of high school graduates employed"),
-                                               #highchartOutput("edu_plot_rate", height = 500))
-                                        )
-                                    )
+                                    
+                                    # fluidRow(
+                                    #     column(6,
+                                    #            h3(htmlOutput("edu_vb_income")),
+                                    #            h5("Median income of high school graduates"),
+                                    #            highchartOutput("edu_plot_income", height = 500)),
+                                    #     column(6,
+                                    #            h3(htmlOutput("edu_vb_rate")),
+                                    #            h5("of high school graduates employed"),
+                                    #            #highchartOutput("edu_plot_rate", height = 500))
+                                    #     )
+                                    # )
                                     ),
                                 
                                 )
