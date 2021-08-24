@@ -67,7 +67,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$home_map_shape_click$id, {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "Choose a different WDA: ",
+                             label = " ",
                              choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$home_map_shape_click$id)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
@@ -76,7 +76,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$statewide_select, {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "Choose a different WDA: ",
+                             label = " ",
                              choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = "Texas")
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
@@ -89,7 +89,7 @@ shinyServer(function(input, output, session) {
             pull(wda)
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "Choose a different WDA: ",
+                             label = " ",
                              choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = wda)
         updateNavbarPage(session = session, inputId = "tab_being_displayed", selected = "Workforce Development Areas")
@@ -99,7 +99,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$mini_map_shape_click$id, {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "Choose a different WDA: ",
+                             label = " ",
                              choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_shape_click$id)
     })
@@ -107,7 +107,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$mini_map_tx_shape_click$id, {
         updateSelectizeInput(session, 
                              inputId = "select_wda", 
-                             label = "Choose a different WDA: ",
+                             label = " ",
                              choices = c(sort(unique(crosswalk$wda)), "Texas"),
                              selected = input$mini_map_tx_shape_click$id)
     })

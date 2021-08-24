@@ -52,16 +52,17 @@ shinyUI(
 
                             leafletOutput("home_map", height = 700),
                             h4("Don't know which WDA? See statewide data, or search by county", align = "center", class="map-header"),
-                            column(width = 4, offset = 2,
-                                   actionButton(inputId = "statewide_select", 
+                            div(
+                                class="map-buttons",
+                                actionButton(inputId = "statewide_select", 
                                                 label = "Show statewide data",
-                                                align = "center")),
-                            column(width = 4,
-                            selectInput(inputId = "county_search",
+                                                align = "center"),
+                                selectInput(inputId = "county_search",
                                         label = NULL,
                                         selected = "",
                                         choices = c("Search for your county" = "", unique(crosswalk$county)),
-                                        )),
+                                        ),
+                            ),
                             br(),
                             br(),
                             br(),
@@ -300,7 +301,7 @@ shinyUI(
                             class="comp-table-and-legend",
                             DT::dataTableOutput("comparison_table"),
                             div(
-                                class="race-legend",
+                                class="race-legend-desktop",
                                 p("Race-ethnicity legend"),
                                 div(
                                     class="race-legend-row",
@@ -329,7 +330,34 @@ shinyUI(
                                 )
                             )
                        ),
-                        
+                        div(
+                            class="race-legend-mobile",
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle light-blue"),
+                                p("Asian")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle maroon"),
+                                p("Black")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle green"),
+                                p("Hispanic")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle red"),
+                                p("White")
+                            ),
+                            div(
+                                class="race-legend-row",
+                                div(class="race-legend-circle yellow"),
+                                p("Other")
+                            )
+                        ),
                         conditionalPanel(
                             condition = "(typeof input.comp_select_wda == 'undefined' || input.comp_select_wda.length < 1)",
                             fluidRow(
@@ -375,7 +403,7 @@ shinyUI(
                          fluidRow(
                              class="methodology",
                              includeMarkdown(here::here("text", "methodology.md")),
-                             img(src = "aht-regions-methodology.png", height = 450)
+                             img(src = "aht-regions-methodology.png")
                          )),
                      ) # close methodology tab
             ) # close navbarPage
