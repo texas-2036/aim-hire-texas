@@ -854,7 +854,8 @@ shinyServer(function(input, output, session) {
                 hc_xAxis(title = list(text = "")) %>%
                 hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
-                                      ': ' + this.y )}")) %>% 
+                                      ': ' + Highcharts.numberFormat(this.y, 0) )}")) %>% 
+                
                 hc_caption(text = paste0("<b>All top in-demand jobs: </b><br><em>", 
                                          filter_comparison_jobs()$indemand_jobs[1],
                                          "</em>")) %>% 
