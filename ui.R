@@ -51,7 +51,7 @@ shinyUI(
                             h4("Click a Workforce Development Area to learn more", align = "center", class="map-header"),
 
                             leafletOutput("home_map", height = 700),
-                            h4("Don't know which WDA? See statewide data, or search by county", align = "center", class="map-header"),
+                            h4("Not sure which WDA to select? See statewide data, or search by county", align = "center", class="map-header"),
                             div(
                                 class="map-buttons",
                                 actionButton(inputId = "statewide_select", 
@@ -262,10 +262,10 @@ shinyUI(
                                         column(4,
                                                
                                                h3(htmlOutput("edu_vb_hs_income")),
-                                               h5("Median income of high school graduates"),
+                                               h5("Median salary of residents with a high school diploma"),
                                                
                                                h3(htmlOutput("edu_vb_assoc_income")),
-                                               h5("Median income of people with an Associate's degree"),
+                                               h5("Median salary of people with an Associate's degree from this WDA"),
                                                
                                                tags$hr(),
                                                

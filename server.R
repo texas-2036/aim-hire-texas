@@ -317,9 +317,9 @@ shinyServer(function(input, output, session) {
             
             hc_add_theme(tx2036_hc) %>% 
             hc_title(text = "Share of households in income tiers by family type") %>% 
-            # hc_legend(align = "left", 
+            # hc_legend(align = "left",
             #           verticalAlign = "bottom",
-            #           layout = "horizontal") %>% 
+            #           layout = "horizontal") %>%
             hc_colors(c("#3ead92", "#2a366c", "#f26852")) %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.name + ' ' + this.y + '%')}"))
@@ -539,7 +539,7 @@ shinyServer(function(input, output, session) {
                          )))) %>% 
             hc_colors(c("#3ead92", "#5f6fc1", "#2a366c", "#f26852")) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
-            hc_subtitle(text = "Point size is proportional to the number of workers in the occupation in the selected workforce development area. Thresholds show the Quality Index and Demand Index of the average occupation.") %>% 
+            hc_subtitle(text = "Dot size represents the current share of the local job market. Thresholds show the Quality Index and Demand Index of the average occupation.") %>% 
             hc_tooltip(formatter = JS("function(){
                                 return (this.point.occupation + 
                                       ' <br> Quality Index: ' + this.y + 
@@ -714,7 +714,7 @@ shinyServer(function(input, output, session) {
                          color = 'white',
                          width = 3,
                          zIndex = 4,
-                         label = list(text = "median high school earnings",align = "right", 
+                         label = list(text = "median salary of residents with a high school diploma", align = "right", 
                                       style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
                                                    fontSize='12px')
                          )))) %>% 
