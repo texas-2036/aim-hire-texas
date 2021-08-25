@@ -307,22 +307,22 @@ shinyServer(function(input, output, session) {
             mutate(category = case_when(category == "fam_kids" ~ "Families with Children",
                                         category == "over_65" ~ "65 and Over",
                                         category == "single_cohab" ~ "Single or Cohabiting")) %>% 
-            pivot_longer("Below poverty":"Above ALICE") %>% 
+            pivot_longer("Below poverty":"Above ALICE", names_to = "income_level", values_to = "value") %>% 
             mutate(value = round(value, 1)) %>% 
-            hchart(type = "column", hcaes(x = category, y = value, group = name)) %>% 
+            hchart(type = "column", hcaes(x = category, y = value, group = income_level)) %>% 
             hc_yAxis(min = 0, max = 100, title = list(text = "")) %>%
             hc_xAxis(title = list(text = "")) %>%
             hc_plotOptions(column = list(stacking = "normal"),
-                           series = list(showInLegend = F)) %>% 
+                           series = list(showInLegend = T)) %>% 
             
             hc_add_theme(tx2036_hc) %>% 
             hc_title(text = "Share of households in income tiers by family type") %>% 
-            # hc_legend(align = "left",
-            #           verticalAlign = "bottom",
-            #           layout = "horizontal") %>%
+            hc_legend(align = "left",
+                      verticalAlign = "bottom",
+                      layout = "horizontal") %>%
             hc_colors(c("#3ead92", "#2a366c", "#f26852")) %>% 
             hc_tooltip(formatter = JS("function(){
-                                return (this.point.name + ' ' + this.y + '%')}"))
+                                return (this.point.income_level + ' ' + this.y + '%')}"))
     })
     
     ## 2. trends in working age adults --------
@@ -584,7 +584,9 @@ shinyServer(function(input, output, session) {
                            highlight = T,
                            
                            columns = list(
-                               `Quality` = colDef(style = function(value) {
+                               `Occupation` = colDef(minWidth = 200) ,
+                               `Quality` = colDef(
+                                   style = function(value) {
                                    # to normalize, do (value - min) / (max - min) : reduces to this
                                    normalized <- ((value + 5) / 10)
                                    color <- redgreen_pal(normalized)

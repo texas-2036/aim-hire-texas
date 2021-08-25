@@ -242,7 +242,7 @@ shinyUI(
                                     br(),
                                     includeMarkdown(here::here("text", "4_attractive_jobs2.md")),
                                     fluidRow(
-                                    column(11,
+                                    column(12,
                                     reactableOutput("aj_table")
                                     )
                                     )
