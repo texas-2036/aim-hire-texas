@@ -713,11 +713,11 @@ shinyServer(function(input, output, session) {
                      min = 20000,
                      plotLines = list(list(
                          value = hs_median,
-                         color = 'white',
+                         color = '#f9cd21',
                          width = 3,
                          zIndex = 4,
                          label = list(text = "median salary of residents with a high school diploma", align = "right", 
-                                      style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
+                                      style = list(color = "white", fontWeight = '600',
                                                    fontSize='12px')
                          )))) %>% 
             hc_plotOptions(series = list(showInLegend = F)) %>%
