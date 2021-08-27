@@ -493,7 +493,9 @@ shinyServer(function(input, output, session) {
                      categories = as.list(names)) %>%
             hc_yAxis(title = list(text = "Number of jobs")) %>%
             hc_plotOptions(bar = list(stacking = "normal")) %>%
-            hc_legend(reversed = T) %>%
+            hc_legend(reversed = T,
+                      align = "left",
+                      backgroundColor = "#7f8bd0") %>%
             hc_add_theme(tx2036_hc) %>%
             hc_title(text = "Share of living wage jobs across industries") %>%
             hc_colors(c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) %>%
@@ -537,7 +539,7 @@ shinyServer(function(input, output, session) {
                                       style = list(color = "rgba(255,255,255, 0.5)", fontWeight = '400',
                                                    fontSize='12px')
                          )))) %>% 
-            hc_colors(c("#3ead92", "#5f6fc1", "#2a366c", "#f26852")) %>% 
+            hc_colors(c("#3ead92", "#8793D1", "#3F4B89", "#f26852")) %>% 
             hc_title(text = "Quality and Demand Indices") %>% 
             hc_subtitle(text = "Dot size represents the current share of the local job market. Thresholds show the Quality Index and Demand Index of the average occupation.") %>% 
             hc_tooltip(formatter = JS("function(){

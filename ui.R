@@ -114,11 +114,11 @@ shinyUI(
                                     br(),
                                     strong(a("Future workforce", type = "link", href = "#header_waa")),
                                     br(),
-                                    strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
-                                    br(),
                                     strong(a("Living wage jobs", type = "link", href = "#header_lwj")),
                                     br(),
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
+                                    br(),
+                                    strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
                                     br(),
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
                                     tags$hr(),
@@ -181,41 +181,10 @@ shinyUI(
                                                         )
                                        )
                                 ),
-                                ## 3. trends in in-demand jobs --------
-                                fluidRow(
-                                    br(),
-                                    div(htmlOutput("header_idj"), style="margin-top: -100px;"),
-                                    h2("Trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
-                                    includeMarkdown(here::here("text", "3_indemand_jobs.md")),
-                                    br(),
-                                    selectInput(inputId = "select_idj_type",
-                                                label = "Select Metric",
-                                                choices = c("Highest Demand" = "top", 
-                                                            "Lowest Demand" = "bottom", 
-                                                            "Highest Growth" = "growth")),
-                                    conditionalPanel(condition = "input.select_idj_type == 'growth'",
-                                                     p(em("'Growth' refers to growth in the percentage of workers compared to current levels."))
-                                                     ),
-                                    fluidRow(
-                                        h3(htmlOutput("idj_title")),
-                                        conditionalPanel(condition = "input.select_wda != 'Texas'",
-                                        column(6,
-                                               highchartOutput("idj_plot", height = 500))
-                                        ),
-                                        column(6,
-                                               highchartOutput("idj_plot_texas", height = 500))
-                                    )
-                                    # reactableOutput("idj_top_table"),
-                                    # tags$hr(),
-                                    # h4("Bottom 10 least in-demand jobs"),
-                                    # reactableOutput("idj_bot_table"),
-                                    # tags$hr(),
-                                    # h4("Top 10 highest growth jobs"),
-                                    # reactableOutput("idj_growth_table"),
-                                ),
+                              
                                 ## 5. living wage jobs --------
                                 fluidRow(
-                                    class="dark-bg",
+                                    #class="dark-bg",
                                     br(),
                                     div(htmlOutput("header_lwj"), style="margin-top: -100px;"),
                                     h2("Living wage jobs", align = "center", height = 4, style="padding-top: 130px;"),
@@ -226,6 +195,7 @@ shinyUI(
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(
+                                    class="dark-bg",
                                     br(),
                                     div(htmlOutput("header_aj"), style="margin-top: -100px;"),
                                     h2("Attractive jobs", align = "center", height = 4, style="padding-top: 130px;"),
@@ -246,6 +216,39 @@ shinyUI(
                                     reactableOutput("aj_table")
                                     )
                                     )
+                                ),
+                                
+                                ## 3. trends in in-demand jobs --------
+                                fluidRow(
+                                    br(),
+                                    div(htmlOutput("header_idj"), style="margin-top: -100px;"),
+                                    h2("Trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
+                                    includeMarkdown(here::here("text", "3_indemand_jobs.md")),
+                                    br(),
+                                    selectInput(inputId = "select_idj_type",
+                                                label = "Select Metric",
+                                                choices = c("Highest Demand" = "top", 
+                                                            "Lowest Demand" = "bottom", 
+                                                            "Highest Growth" = "growth")),
+                                    conditionalPanel(condition = "input.select_idj_type == 'growth'",
+                                                     p(em("'Growth' refers to growth in the percentage of workers compared to current levels."))
+                                    ),
+                                    fluidRow(
+                                        h3(htmlOutput("idj_title")),
+                                        conditionalPanel(condition = "input.select_wda != 'Texas'",
+                                                         column(6,
+                                                                highchartOutput("idj_plot", height = 500))
+                                        ),
+                                        column(6,
+                                               highchartOutput("idj_plot_texas", height = 500))
+                                    )
+                                    # reactableOutput("idj_top_table"),
+                                    # tags$hr(),
+                                    # h4("Bottom 10 least in-demand jobs"),
+                                    # reactableOutput("idj_bot_table"),
+                                    # tags$hr(),
+                                    # h4("Top 10 highest growth jobs"),
+                                    # reactableOutput("idj_growth_table"),
                                 ),
 
                                 ## 6. employment by education --------
