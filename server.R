@@ -765,6 +765,29 @@ shinyServer(function(input, output, session) {
                             br()))
     })
     
+    filter_pseo_fos <- reactive({
+        df <- pseo_wda_fos %>% 
+            filter(wda == input$select_wda)
+    })
+    
+    output$edu_plot_pseo_fos <- renderHighchart({
+        highchart() %>%
+            hc_add_series(filter_pseo_fos(), type = "scatter", hcaes(x = degree_level, y = y10_p50_earnings)) %>%
+            hc_xAxis(title = list(text = ""), 
+                     type = "category",
+                     categories = as.list(unique(filter_pseo_fos()$degree_level))) %>%
+            hc_yAxis(title = list(text = "")) %>%
+            hc_plotOptions(series = list(jitter = list(x = 0.15, y = 0))) %>% 
+            hc_add_theme(tx2036_hc) %>% 
+            hc_colors(c("#f26852", "#3ead92")) %>% 
+            hc_tooltip(formatter = JS("function(){
+                            return ('Field of Study: ' + this.point.label +
+                            ' <br> Median Income: $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) 
+                            )
+                                      }")) %>%
+            hc_title(text = "Median salaries fo r")
+    })
+    
     # output$edu_plot_pseo_state <- renderHighchart({
     #     filter_pseo() %>%
     #         #select(wda_name, y10_grads_emp, y10_grads_emp_instate) %>% 

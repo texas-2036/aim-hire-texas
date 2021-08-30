@@ -66,6 +66,8 @@ earnings <- pseoe %>%
   #separate(measure, into=c("years_out", "measure"), sep="0_") %>% 
   #mutate(years_out = "10", topic = "earnings")
 
+
+
 #Also filter for ALL industries, national
 employment <- pseof %>% 
   filter(grad_cohort=="0000") %>% 
@@ -109,9 +111,47 @@ pseo_tx_df <- pseo_wda_df %>%
 
 pseo_wda_df <- rbind(pseo_wda_df, pseo_tx_df)
 
-save(pseo_inst_df, pseo_wda_df, file=here::here("clean-data", "pseo-data.RData"))
+#Field of study specific --------------------------------
+earnings2 <- pseoe %>% 
+  filter(grad_cohort=="0000") %>% 
+  filter(cipcode!="00") %>% 
+  filter(degree_level %in% c("01", "02", "03", "04", "05")) %>% 
+  filter(status_y10_earnings==1) %>% 
+  dplyr::select(institution, degree_level, cipcode, cip_level, starts_with("y10")) %>% 
+  filter(cip_level == 2)
+
+#Combined and aggregate data ----------------
+pseo_inst_df2 <- left_join(earnings2, pseo_inst) %>% 
+  left_join(., geo_crosswalk, by=c("label" = "label_institution_earnings")) 
+
+cip <- read_csv(here::here("raw-data", "cipcode_crosswalk.csv")) %>% 
+  clean_names() %>% 
+  select(cipcode, label)
+
+pseo_wda_df2 <- pseo_inst_df2 %>% 
+  group_by(wda, wda_number, degree_level, cipcode) %>% 
+  summarise(
+    y10_p50_earnings = weighted.mean(y10_p50_earnings, y10_grads_earn, na.rm = T)
+  ) 
 
 
+pseo_tx_df2 <- pseo_inst_df2 %>% 
+  group_by(degree_level, cipcode) %>% 
+  summarise(y10_p50_earnings = weighted.mean(y10_p50_earnings, y10_grads_earn, na.rm = T)) %>% 
+  mutate(wda = "Texas",
+         wda_number = 0) 
 
+pseo_wda_fos <- rbind(pseo_wda_df2, pseo_tx_df2) %>% 
+  left_join(cip) %>% 
+  ungroup() %>% 
+  mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
+                                  degree_level == "02" ~ "Certificate 1-2 years",
+                                  degree_level == "03" ~ "Associate's",
+                                  degree_level == "04" ~ "Certificate 2-4 years",
+                                  degree_level == "05" ~ "Bachelor's")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                        "Certificate 2-4 years", "Bachelor's"),
+                               ordered = T)) %>% 
+  filter(!is.na(label))
 
-
+save(pseo_inst_df, pseo_wda_df, pseo_wda_fos, file=here::here("clean-data", "pseo-data.RData"))

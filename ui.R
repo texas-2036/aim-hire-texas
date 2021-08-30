@@ -278,17 +278,18 @@ shinyUI(
                                         )
                                         ),
                                     
-                                    # fluidRow(
-                                    #     column(6,
-                                    #            h3(htmlOutput("edu_vb_income")),
-                                    #            h5("Median income of high school graduates"),
-                                    #            highchartOutput("edu_plot_income", height = 500)),
-                                    #     column(6,
-                                    #            h3(htmlOutput("edu_vb_rate")),
-                                    #            h5("of high school graduates employed"),
-                                    #            #highchartOutput("edu_plot_rate", height = 500))
-                                    #     )
-                                    # )
+                                    fluidRow(
+                                        highchartOutput("edu_plot_pseo_fos", height = 500)
+                                        # column(6,
+                                        #        h3(htmlOutput("edu_vb_income")),
+                                        #        h5("Median income of high school graduates"),
+                                        #        highchartOutput("edu_plot_income", height = 500)),
+                                        # column(6,
+                                        #        h3(htmlOutput("edu_vb_rate")),
+                                        #        h5("of high school graduates employed"),
+                                        #        #highchartOutput("edu_plot_rate", height = 500))
+                                        # )
+                                    )
                                     ),
                                 
                                 )
