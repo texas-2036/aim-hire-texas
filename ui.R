@@ -277,8 +277,11 @@ shinyUI(
                                                #highchartOutput("edu_plot_pseo_state"))
                                         )
                                         ),
+                                    br(),
+                                    br(),
                                     
                                     fluidRow(
+                                        includeMarkdown(here::here("text", "6_employment_by_education2.md")),
                                         highchartOutput("edu_plot_pseo_fos", height = 500)
                                         # column(6,
                                         #        h3(htmlOutput("edu_vb_income")),

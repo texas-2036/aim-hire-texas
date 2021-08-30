@@ -777,7 +777,7 @@ shinyServer(function(input, output, session) {
                      type = "category",
                      categories = as.list(unique(filter_pseo_fos()$degree_level))) %>%
             hc_yAxis(title = list(text = "")) %>%
-            hc_plotOptions(series = list(jitter = list(x = 0.15, y = 0))) %>% 
+            hc_plotOptions(series = list(jitter = list(x = 0.15, y = 0), showInLegend = F)) %>%
             hc_add_theme(tx2036_hc) %>% 
             hc_colors(c("#f26852", "#3ead92")) %>% 
             hc_tooltip(formatter = JS("function(){
@@ -785,7 +785,8 @@ shinyServer(function(input, output, session) {
                             ' <br> Median Income: $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) 
                             )
                                       }")) %>%
-            hc_title(text = "Median salaries fo r")
+            hc_title(text = "Median salaries by degree type for different fields of study") %>% 
+            hc_subtitle(text = "Hover over a point to show the field of study and corresponding median salary")
     })
     
     # output$edu_plot_pseo_state <- renderHighchart({
