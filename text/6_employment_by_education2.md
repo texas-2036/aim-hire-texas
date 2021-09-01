@@ -1,3 +1,5 @@
 Degree type isn't the only thing that matters, though. For any given degree, there is considerable variation in salary, based on the field of study. Chosen field of study is equally or more important than degree type for determining earnings. Across most of Texas, a person with a certificate degree in a high earning field on average has a higher salary than a person with a Bachelor's degree in a low earning field.
 
 The chart below shows median salaries of graduates from institutions in the selected WDA divided by degree type and field of study.
+
+This data also comes from the Census Bureau's Post-Secondary Employment Outcomes (PSEO) dataset- it represents all graduates ten years after graduation for cohorts graduating in 2001, 2004, 2006, 2007, 2010, and 2011. Not all WDAs will have all degree types and/or fields of study represented (e.g., if no local universities awarded degrees in a given field in this time period).

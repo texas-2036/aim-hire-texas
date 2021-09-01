@@ -813,6 +813,7 @@ shinyServer(function(input, output, session) {
     ## 1. People table --------
     filter_comparison_people <- reactive({
         comparison_people %>%
+            select(-`Employment rate of high school graduates`) %>% 
             filter(Area == "Texas" | Area %in% input$comp_select_wda)
     })
 
@@ -836,8 +837,8 @@ shinyServer(function(input, output, session) {
                       "Predicted race-ethnicity breakdown of working age adults, 2036",
                       "Number of households above ALICE threshold",
                       "Share of households above ALICE threshold",
-                      "Median income of high school graduates",
-                      "Employment rate of high school graduates"), 
+                      "Median income of high school graduates"),
+                      #"Employment rate of high school graduates"), 
                     'vertical-align'='middle') 
     return(table)
     })
