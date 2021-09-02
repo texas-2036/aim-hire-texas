@@ -290,11 +290,14 @@ shinyUI(
                                                br(),
                                                br(),
                                                br(),
+                                               h4("Highlight a field of study"),
+                                               p(em("Not all fields of study are available for all degree types or WDAs")),
                                         selectInput(inputId = "pseo_select_fos",
-                                                       label = "Highlight a field of study",
-                                                       choices = c("", sort(unique(pseo_wda_fos$label))),
+                                                       label = "",
+                                                       choices = c("Select a field to highlight" = "", sort(unique(pseo_wda_fos$label))),
                                                        selected = "",
-                                                       multiple = F))
+                                                       multiple = F)
+                                        )
                                         # column(6,
                                         #        h3(htmlOutput("edu_vb_income")),
                                         #        h5("Median income of high school graduates"),
