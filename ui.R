@@ -282,7 +282,19 @@ shinyUI(
                                     
                                     fluidRow(
                                         includeMarkdown(here::here("text", "6_employment_by_education2.md")),
+                                        column(9,
                                         highchartOutput("edu_plot_pseo_fos", height = 500)
+                                        ),
+                                        column(3,
+                                               br(),
+                                               br(),
+                                               br(),
+                                               br(),
+                                        selectInput(inputId = "pseo_select_fos",
+                                                       label = "Highlight a field of study",
+                                                       choices = c("", sort(unique(pseo_wda_fos$label))),
+                                                       selected = "",
+                                                       multiple = F))
                                         # column(6,
                                         #        h3(htmlOutput("edu_vb_income")),
                                         #        h5("Median income of high school graduates"),
