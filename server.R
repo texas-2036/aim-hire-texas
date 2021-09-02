@@ -768,6 +768,16 @@ shinyServer(function(input, output, session) {
     filter_pseo_fos <- reactive({
         df <- pseo_wda_fos %>% 
             filter(wda == input$select_wda)
+        return(df)
+    })
+    
+    filter_pseo_fos_highlight <- reactive({
+        
+        
+        df <- filter_pseo_fos() %>% 
+                filter(label == input$pseo_select_fos)
+        
+        return(df)
     })
     
     output$edu_plot_pseo_fos <- renderHighchart({
@@ -779,14 +789,15 @@ shinyServer(function(input, output, session) {
             hc_yAxis(title = list(text = "")) %>%
             hc_plotOptions(series = list(jitter = list(x = 0.15, y = 0), showInLegend = F)) %>%
             hc_add_theme(tx2036_hc) %>% 
-            hc_colors(c("#f26852", "#3ead92")) %>% 
+            hc_colors(c("#f26852", "#f9cd21")) %>% 
             hc_tooltip(formatter = JS("function(){
                             return ('Field of Study: ' + this.point.label +
                             ' <br> Median Income: $' + Highcharts.numberFormat(this.point.y10_p50_earnings, 0) 
                             )
                                       }")) %>%
             hc_title(text = "Median salaries by degree type for different fields of study") %>% 
-            hc_subtitle(text = "Hover over a point to show the field of study and corresponding median salary")
+            hc_subtitle(text = "Hover over a point to show the field of study and corresponding median salary") %>% 
+            hc_add_series(filter_pseo_fos_highlight(), type = "scatter", hcaes(x = degree_level, y = y10_p50_earnings,size = 50))
     })
     
     # output$edu_plot_pseo_state <- renderHighchart({
