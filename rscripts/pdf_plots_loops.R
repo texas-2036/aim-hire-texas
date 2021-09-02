@@ -115,7 +115,7 @@ ggtheme <- function (base_size = 14,
 ###--- plots ---------------
 
 # MAP ------------------------
-WDA_NAME <- "Alamo"
+WDA_NAME <- "South Texas"
 
 for (WDA_NAME in unique(wda_sf$wda)) {
   
@@ -163,7 +163,8 @@ for (WDA_NAME in unique(people$wda)) {
       legend.position = "none"
     ) +
     labs(x = NULL, y = NULL) +
-    scale_fill_manual(values = c('#f26852', '#981E0B', '#3ead92', '#1f214d', '#f9cd21'))
+    scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#1f214d', '#f9cd21'))
+  #scale_fill_manual(values = c('#F58B7A', '#981E0B', '#3ead92', '#5f6fc1', '#f9cd21')) 
   
   filename <- str_remove_all(WDA_NAME, " ")
   ggsave(file=here::here("pdfs", "race-pie", paste0(filename, ".png")), width=1.5, height=1.5)
@@ -243,34 +244,42 @@ if (WDA_NAME == unique(people$wda)[25]) {
 
 
 
-#pseo education lines
+#pseo education lines --------
 for (WDA_NAME in unique(people$wda)) {
   
-pseo_wda_df %>% 
+pseo <- pseo_wda_df %>% 
+  mutate(wda = ifelse(is.na(wda), "Texas", wda)) %>% 
   filter(wda == WDA_NAME) %>% 
   mutate(degree_level = case_when(degree_level == "01" ~ "Certificate < 1 year",
                                   degree_level == "02" ~ "Certificate 1-2 years",
-                                  degree_level == "03" ~ "Associates",
+                                  degree_level == "03" ~ "Associate's",
                                   degree_level == "04" ~ "Certificate 2-4 years",
-                                  degree_level == "05" ~ "Baccalaureate")) %>% 
-  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associates",
-                                                        "Certificate 2-4 years", "Baccalaureate"),
-                               ordered = T)) %>% 
-  ggplot() +
-  geom_point(aes(x = degree_level, y = y10_p50_earnings),
+                                  degree_level == "05" ~ "Bachelor's")) %>% 
+  mutate(degree_level = factor(degree_level, levels = c("Certificate < 1 year", "Certificate 1-2 years", "Associate's",
+                                                        "Certificate 2-4 years", "Bachelor's"),
+                               ordered = T))
+
+hs_ed <- filter(edu, wda == WDA_NAME & education=="hs")
+
+ggplot() +
+  geom_hline(yintercept = hs_ed$median_income, color = "#F3CD4D", linetype="dotted", size = 1) +
+  geom_point(data = pseo, aes(x = degree_level, y = y10_p50_earnings),
              size = 4, color = "#f26852") +
-  geom_errorbar(aes(x = degree_level, y = y10_p50_earnings, ymin = y10_p25_earnings, ymax = y10_p75_earnings),
+  geom_errorbar(data = pseo, aes(x = degree_level, y = y10_p50_earnings, ymin = y10_p25_earnings, ymax = y10_p75_earnings),
                 color = "#f26852", width = 0.2, size = 1) +
+  geom_text(aes(1.5, hs_ed$median_income,label = "Median salary of residents\nwith high school diploma", vjust = 1.5),
+            color = "#F3CD4D", size = 3, fontface = "italic", family = "Montserrat"
+            ) +
   ggtheme() +
-  scale_y_continuous(labels = dollar) +
+  scale_y_continuous(labels = dollar, limits = c(0, 105000)) +
   labs(x = NULL, y = "Earnings") +
   theme(
     plot.background = element_rect(fill="#3a4a9f", color=NA),
     axis.title.y = element_blank(),
     panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
                                                    size = 0.2),
-        panel.grid.major.x = ggplot2::element_blank(),
-        axis.line.x = ggplot2::element_line(size = 1, color = "#ffffff"),
+    panel.grid.major.x = ggplot2::element_blank(),
+    axis.line.x = ggplot2::element_line(size = 1, color = "#ffffff"),
     axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)
   )
 

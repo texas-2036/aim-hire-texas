@@ -125,7 +125,7 @@ saveRDS(twc_2019, file=here::here("clean-data", "twc_living_wage_bands.rds"))
 
 texas <- readxl::read_excel(here::here("raw-data/twc-lmi-occ-ind/Wages Report.xlsx"))
 
-pull_data <- lapply(1:26, function(x){
+pull_data <- lapply(1:28, function(x){
   readxl::read_excel(here::here("raw-data", "twc-lmi-occ-ind", paste0("Wages Report (", x, ").xlsx")))
 })
 
