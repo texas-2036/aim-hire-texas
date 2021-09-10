@@ -29,7 +29,7 @@ shinyUI(
             selected = "Home",
             collapsible = T,
             position = c("fixed-top"),
-            title = a(img(src="AHT-FINAL-LOGO.png", class="aht-logo", height = 70, width = 78), type="link", href="/"),
+            title = a(img(src="AHT-FINAL-LOGO.png", class="aht-logo", height = 70, width = 78), type="link", href="https://www.aimhiretexas.org/"),
             
             ###--- LANDING PAGE ----------------------------
             tabPanel(title = "Home",

@@ -553,6 +553,7 @@ shinyServer(function(input, output, session) {
     
     aj_table_data <- reactive ({
         aj %>% 
+            ungroup() %>% 
             filter(wda == input$select_wda) %>% 
             mutate(quality_index = round(quality_index, 1),
                    demand_index = round(demand_index, 1),
@@ -566,7 +567,7 @@ shinyServer(function(input, output, session) {
                    `Share of Local Jobs` = share_of_local_jobs_percent) %>%
             arrange(desc(Quality + Demand))
     })
-
+observe(print(aj_table_data()))
     output$aj_table <- renderReactable({
         options(reactable.theme = reactableTheme(
             color = "black",
