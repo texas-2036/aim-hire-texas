@@ -26,13 +26,14 @@ shinyUI(
             ),
         navbarPage(
             id = "tab_being_displayed",
-            selected = "Home",
+            selected = "Intro",
             collapsible = T,
             position = c("fixed-top"),
             title = a(img(src="AHT-FINAL-LOGO.png", class="aht-logo", height = 70, width = 78), type="link", href="https://www.aimhiretexas.org/"),
             
             ###--- LANDING PAGE ----------------------------
-            tabPanel(title = "Home",
+            tabPanel(HTML("<li><a href=\"https://www.aimhiretexas.org\">Home")),
+            tabPanel(title = "Intro",
                     fluidRow(
                         class="slides-wrapper",
                         tags$div(
@@ -438,6 +439,7 @@ shinyUI(
                              img(src = "aht-regions-methodology.png")
                          )),
                      ) # close methodology tab
+            
             ) # close navbarPage
         ) # close tagList
     ) # close ui
