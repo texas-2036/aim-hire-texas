@@ -1,0 +1,14 @@
+name: aim-hire-texas
+title: aim-hire-texas
+username:
+account: januaryadvisors
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4286022
+bundleId: 5020904
+url: https://januaryadvisors.shinyapps.io/aim-hire-texas/
+when: 1631301498.53138
+lastSyncTime: 1631301498.5314
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: README.md|raw-data|rscripts

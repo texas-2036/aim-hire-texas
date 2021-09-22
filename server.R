@@ -432,22 +432,45 @@ shinyServer(function(input, output, session) {
             hc_add_theme(tx2036_hc) %>% 
             hc_yAxis(title = list(text = "")) %>% 
             hc_xAxis(title = list(text = "")) %>% 
-            hc_title(text = "Selected WDA") %>% 
-            hc_tooltip(formatter = JS("function(){
+            hc_title(text = "Selected WDA") 
+       
+       if (input$select_idj_type == "growth") {
+            plot <- plot %>% 
+                hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + 
+                                Highcharts.numberFormat(this.y, 0) 
+                                + '%')}"))
+       } else {
+           plot <- plot %>% 
+               hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
                                       ': ' + Highcharts.numberFormat(this.y, 0) )}"))
+       }
+       return(plot)
     })
     
     output$idj_plot_texas <- renderHighchart({
-        idj_filter_texas() %>% 
+        plot <- idj_filter_texas() %>% 
             hchart("bar", hcaes(y = value, x = job)) %>% 
             hc_add_theme(tx2036_hc) %>% 
             hc_yAxis(title = list(text = "")) %>% 
             hc_xAxis(title = list(text = "")) %>% 
-            hc_title(text = "Texas overall") %>% 
-            hc_tooltip(formatter = JS("function(){
+            hc_title(text = "Texas overall") 
+        
+        if (input$select_idj_type == "growth") {
+            plot <- plot %>% 
+                hc_tooltip(formatter = JS("function(){
+                                return (this.point.job + 
+                                      ': ' + Highcharts.numberFormat(this.y, 0) +
+                                '%')}"))
+        } else {
+            plot <- plot %>% 
+                hc_tooltip(formatter = JS("function(){
                                 return (this.point.job + 
                                       ': ' + Highcharts.numberFormat(this.y, 0) )}"))
+        }
+        return(plot)
     })
     
     ## 5. living wage jobs --------

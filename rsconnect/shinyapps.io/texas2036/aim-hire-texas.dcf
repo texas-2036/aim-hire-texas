@@ -1,0 +1,14 @@
+name: aim-hire-texas
+title: aim-hire-texas
+username:
+account: texas2036
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4460276
+bundleId: 5060640
+url: https://texas2036.shinyapps.io/aim-hire-texas/
+when: 1632324358.48975
+lastSyncTime: 1632324358.48978
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: raw-data|rscripts
