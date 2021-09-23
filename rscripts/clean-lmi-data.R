@@ -115,7 +115,7 @@ wda_jobs_projection <- wda28_jobs_2028 %>%
     emp_2034 = emp_2033 + (emp_2033 * annualized_growth_rate),
     emp_2035 = emp_2034 + (emp_2034 * annualized_growth_rate),
     emp_2036 = emp_2035 + (emp_2035 * annualized_growth_rate),
-    annual_average_employment_2036 = emp_2036
+    annual_average_employment_2036 = annual_average_employment_2028 #emp_2036 #They wanted to switch back to 2028
   ) %>% 
   #Summarize by WDA
   group_by(wda, wda_number, oes_2019_estimates_code, oes_2019_estimates_title) %>% 
@@ -156,7 +156,11 @@ bot_summary <- idj_raw %>%
   slice_min(order_by = annual_average_employment_2036, n = 10) %>% 
   select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
   mutate(type = "bottom",
-         value = round(value))
+         value = round(value),
+         row_num = row_number()
+         ) %>% 
+  filter(row_num<=10) %>% 
+  dplyr::select(-row_num)
 
 growth_summary <- idj_raw %>% 
   ungroup() %>% 
