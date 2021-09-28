@@ -178,4 +178,25 @@ idj_summary <- rbind(top_summary, bot_summary) %>%
   mutate(rank = 1:10) %>% 
   ungroup()
 
+pct_lw_summary <- idj_raw %>% 
+  filter(!is.na(wage_band)) %>% 
+  select(wda, wda_number, oes_2019_estimates_code, 
+         annual_average_employment_2028, wage_band)
+
+not_lw <- pct_lw_summary %>% 
+  filter(wage_band == "Low Wage" | wage_band == "Mid-Low Wage") %>% 
+  group_by(wda) %>% 
+  summarize(below_living_wage = sum(annual_average_employment_2028, na.rm = T)) %>% 
+  ungroup()
+
+lw <- pct_lw_summary %>% 
+  filter(wage_band == "High Wage" | wage_band == "Mid-High Wage") %>% 
+  group_by(wda) %>% 
+  summarize(living_wage = sum(annual_average_employment_2028, na.rm = T)) %>% 
+  ungroup() %>% 
+  left_join(not_lw) %>% 
+  mutate(total_jobs = living_wage + below_living_wage) %>% 
+  mutate(pct_lw = round(100 * (living_wage / total_jobs)))
+
 saveRDS(idj_summary, here::here("clean-data", "in-demand-jobs-summary.rds"))
+saveRDS(lw, here::here("clean-data", "pct-living-wage-jobs.rds"))

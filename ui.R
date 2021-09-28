@@ -192,6 +192,10 @@ shinyUI(
                                     includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
                                     highchartOutput("lwj_plot", height = 400),
                                     includeMarkdown(here::here("text", "5_living_wage_jobs2.md")),
+                                    
+                                    fluidRow(
+                                        h5(strong(htmlOutput("idj_pct_livingwage_text")))
+                                    ),
                                     highchartOutput("lwj_plot_industry", height = 700)
                                 ),
                                 ## 4. attractive jobs --------

@@ -156,6 +156,7 @@ counties <- readRDS(here::here("clean-data", "county_shapefile.rds"))
 county_list <- readRDS(here::here("clean-data", "wda_county_list.RDS"))
 crosswalk <- read.csv(here::here("clean-data", "county_wda_crosswalk.csv"))
 pdf_urls <- readRDS(here::here("clean-data", "pdf_url.rds"))
+lw_pct <- readRDS(here::here("clean-data", "pct-living-wage-jobs.rds"))
 
 # lmi <- readRDS(here::here("clean-data", "lmi-wda-jobs-2028.rds"))
 waa <- readRDS(here::here("clean-data", "working-age-pop-2036.rds"))

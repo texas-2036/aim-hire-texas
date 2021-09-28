@@ -506,6 +506,24 @@ shinyServer(function(input, output, session) {
             arrange(desc(mid_high))
         })
     
+    filter_lwj_pct <- reactive({
+        df <- lw_pct %>% 
+            ungroup() %>% 
+            filter(wda == input$select_wda)
+    })
+    
+    output$idj_pct_livingwage_text <- renderUI({
+        req(filter_lwj_pct())
+        wda <- filter_lwj_pct()$wda
+        number_living_wage <- filter_lwj_pct()$living_wage
+        number_total <- filter_lwj_pct()$total_jobs
+        pct_lw <- filter_lwj_pct()$pct_lw
+        
+        text <- HTML(paste0("In ", wda, "WDA, ", number_living_wage, " jobs earn a living wage out of ", 
+                            number_total, " total jobs. That means ", pct_lw, "% of jobs earn a living wage"))
+        return(text)
+    })
+    
     output$lwj_plot_industry <- renderHighchart({
         df <- filter_lwj_industry() 
         names <- unique(df$industry_title)
