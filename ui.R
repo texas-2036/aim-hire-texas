@@ -119,7 +119,7 @@ shinyUI(
                                     br(),
                                     strong(a("Attractive jobs", type = "link", href = "#header_aj")), 
                                     br(),
-                                    strong(a("Trends in in-demand jobs", type = "link", href = "#header_idj")), 
+                                    strong(a("Projected trends in in-demand jobs", type = "link", href = "#header_idj")), 
                                     br(),
                                     strong(a("Education pipeline", type = "link", href = "#header_edu")),
                                     tags$hr(),
@@ -223,7 +223,7 @@ shinyUI(
                                 fluidRow(
                                     br(),
                                     div(htmlOutput("header_idj"), style="margin-top: -100px;"),
-                                    h2("Trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
+                                    h2("Projected trends in in-demand jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "3_indemand_jobs.md")),
                                     br(),
                                     selectInput(inputId = "select_idj_type",
