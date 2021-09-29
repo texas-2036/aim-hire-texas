@@ -190,14 +190,14 @@ shinyUI(
                                     div(htmlOutput("header_lwj"), style="margin-top: -100px;"),
                                     h2("Living wage jobs", align = "center", height = 4, style="padding-top: 130px;"),
                                     includeMarkdown(here::here("text", "5_living_wage_jobs.md")),
-                                    highchartOutput("lwj_plot", height = 400),
-                                    includeMarkdown(here::here("text", "5_living_wage_jobs2.md")),
-                                    highchartOutput("lwj_plot_industry", height = 700),
                                     fluidRow(
                                         column(10, offset = 1, align = "center",
-                                        h4(htmlOutput("idj_pct_livingwage_text"))
+                                               h3(htmlOutput("idj_pct_livingwage_text"))
                                         )
-                                    )
+                                    ),
+                                    highchartOutput("lwj_plot", height = 400),
+                                    includeMarkdown(here::here("text", "5_living_wage_jobs2.md")),
+                                    highchartOutput("lwj_plot_industry", height = 700)
                                 ),
                                 ## 4. attractive jobs --------
                                 fluidRow(

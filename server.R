@@ -517,12 +517,12 @@ shinyServer(function(input, output, session) {
         wda <- filter_lwj_pct()$wda
         number_living_wage <- prettyNum(filter_lwj_pct()$living_wage, big.mark = ",")
         number_total <- prettyNum(filter_lwj_pct()$total_jobs, big.mark = ",")
-        pct_lw <- filter_lwj_pct()$pct_lw
+        pct_lw <- paste0(filter_lwj_pct()$pct_lw, "%")
         
         text <- HTML(paste0("In ", wda, " WDA, ", 
-                            strong(number_living_wage), " out of a projected ", 
-                            strong(number_total), " jobs will be living wage jobs in 2028, which is ", 
-                            strong(pct_lw), "% of jobs."))
+                            strong(number_living_wage, style = "color:#f26852"), " out of a projected ", 
+                            strong(number_total, style = "color:#f26852"), " jobs will be living wage jobs in 2028, which is ", 
+                            strong(pct_lw, style = "color:#f26852"), " of jobs."))
         
         return(text)
     })
