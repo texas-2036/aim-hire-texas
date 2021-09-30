@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
     output$lwh_vb_year <- renderUI({
         df <- filter_lwh() %>% 
             filter(year == 2018)
-        text <- HTML(paste0(strong(formatC(signif(df$alice_household, 3), format = "d", big.mark = ",")),
+        text <- HTML(paste0(strong(formatC(signif(df$above_alice_household, 3), format = "d", big.mark = ",")),
                             br()))
     })
     

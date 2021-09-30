@@ -156,16 +156,16 @@ table <- left_join(people, race_spark) %>%
   mutate(`Predicted number of working age adults, 2036` = prettyNum(`Predicted number of working age adults, 2036`, big.mark = ","),
          `Number of households above ALICE threshold` = prettyNum(`Number of households above ALICE threshold`, big.mark = ","),
          `Median income of high school graduates` = paste0("$", prettyNum(round(`Median income of high school graduates`, -1), big.mark = ","))) #%>%
-  datatable(., escape = F, filter = "top", 
-          options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
-            '
-            function () {
-              HTMLWidgets.staticRender();
-            }
-            '
-          )
-          )) %>% 
-  spk_add_deps()
+  # datatable(., escape = F, filter = "top", 
+  #         options = list(paging = F, fnDrawCallback = htmlwidgets::JS(
+  #           '
+  #           function () {
+  #             HTMLWidgets.staticRender();
+  #           }
+  #           '
+  #         )
+  #         )) %>% 
+  # spk_add_deps()
 table
 saveRDS(table, here::here("clean-data", "comparison_table_people_sparkline.rds"))
 
@@ -220,4 +220,6 @@ wage <- readRDS(here::here("clean-data", "wda-jobs-proj-with-wages.rds")) %>%
   select(wda, job = oes_2019_estimates_title, value = annual_average_employment_2036) %>% 
   mutate(value = round(value)) %>% 
   left_join(demand)
+
+
 saveRDS(wage, here::here("clean-data", "comparison_table_jobs.rds"))
