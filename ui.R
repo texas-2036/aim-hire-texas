@@ -170,7 +170,7 @@ shinyUI(
                                 radioButtons(inputId = "waa_plot_selects",
                                              label = "Show demographic breakdowns?",
                                              choices = c("total", "race-ethnicity", "gender", "race-ethnicity and gender"),
-                                             selected = "total",
+                                             selected = "race-ethnicity",
                                              inline = T)
                                 ),
                                 column(4,
