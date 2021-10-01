@@ -3,7 +3,7 @@
 
 Projections of the **size and characteristics of the future workforce** come from the Texas Demographic Center’s Population Projections, 2010-2050 (https://demographics.texas.gov/data/tpepp/projections/). 
 
-**In-demand jobs in 2036** are based on 2018-2028 projections by the Texas Workforce Commission, which were downloaded from https://texaslmi.com/. To get estimates for 2029 through 2036, we calculated the annualized growth rate from the 2018-2028 projections and applied it to future years by workforce board area and occupation.
+**In-demand jobs in 2028** are based on 2018-2028 projections by the Texas Workforce Commission, which were downloaded from https://texaslmi.com/.
 
 Data on **living wage jobs** were calculated based on data from multiple sources. First, data on median wages in 2018 by occupation and WDA were downloaded from https://texaslmi.com/. We then categorized jobs as paying a living wage based on whether the median wage was above or below the ALICE Project’s cost-of-living-adjusted threshold for a two adult, two child household (for a full county breakdown see https://www.unitedforalice.org/household-budgets/texas). WDA thresholds were calculated by taking the population-weighted average across counties in each WDA.
 
