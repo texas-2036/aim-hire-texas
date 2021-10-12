@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
     output$home_slides <- renderSlickR({
         imgs <- list.files(here::here("www", "slickr"), pattern=".png", full.names = TRUE)
         slickR(imgs, height = 300, width = "95%") +
-            settings(dots = T, autoplay = T, autoplaySpeed = 3000)
+            settings(dots = T, autoplay = T, autoplaySpeed = 12000)
         
     })
     ## map --------
