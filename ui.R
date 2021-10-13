@@ -14,6 +14,13 @@ shinyUI(
                             color = "#2a366c",
                             logo = "logo.png"),
         tags$head(
+            HTML(
+                "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','G-37W7M5205X');</script>"
+            ),
             HTML("<title>Aim Hire Texas</title>"),
             tags$script(src="https://kit.fontawesome.com/8abb217f2e.js", crossorigin="anonymous"),
             tags$link(rel="shortcut icon", href="favicon.png"),
@@ -24,6 +31,8 @@ shinyUI(
             tags$link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"),
             tags$style(HTML('#pdfs{background-color:#f26852; color:#ffffff}'))
             ),
+        tags$body(HTML('<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-37W7M5205X"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>')),
         navbarPage(
             id = "tab_being_displayed",
             selected = "Intro",
