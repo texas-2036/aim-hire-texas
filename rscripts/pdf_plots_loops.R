@@ -122,7 +122,7 @@ for (WDA_NAME in unique(wda_sf$wda)) {
 selected_wda <- filter(wda_sf, wda==WDA_NAME)
 
 ggplot() +
-  geom_sf(data = wda_sf, fill="#3a4a9f", color = "#1f214d", size=0.75) +
+  geom_sf(data = wda_sf, fill="#374d98", color = "#1f214d", size=0.75) +
   geom_sf(data = selected_wda, fill="#f26852", color = "#1f214d", size=0.75) +
   geom_sf(data = counties, fill="transparent", color = "#1f214d", size=0.15) +
   theme_void()
@@ -138,7 +138,7 @@ if (WDA_NAME == unique(people$wda)[24]) {
 
 #Texas map
 ggplot() +
-  geom_sf(data = st_union(wda_sf), fill="#3a4a9f", color = "transparent", size=0.75) +
+  geom_sf(data = st_union(wda_sf), fill="#374d98", color = "transparent", size=0.75) +
   theme_void()
 
 ggsave(file=here::here("pdfs", "maps", paste0("Texas", ".png")), width=3, height=3)
@@ -155,7 +155,7 @@ for (WDA_NAME in unique(people$wda)) {
     coord_polar("y", start = 0) +
     theme_void() +
     theme(#plot.background = element_rect(fill = "transparent"),
-      plot.background = element_rect(fill="#3a4a9f", color=NA),
+      plot.background = element_rect(fill="#374d98", color=NA),
       panel.grid.major = element_blank(), # get rid of major grid
       panel.grid.minor = element_blank(),
       panel.grid.major.x = element_blank(),
@@ -191,7 +191,7 @@ lwj_wages %>%
            width = 0.6) +
   ggtheme() +
   theme(
-    plot.background = element_rect(fill="#3a4a9f", color=NA),
+    plot.background = element_rect(fill="#374d98", color=NA),
     axis.text.y = element_text(size = 6.5)
   ) +
   labs(x = NULL, y = NULL) +
@@ -226,7 +226,7 @@ lwj_industry %>%
            width = 0.6) +
   ggtheme() +
   theme(
-    plot.background = element_rect(fill="#3a4a9f", color=NA),
+    plot.background = element_rect(fill="#374d98", color=NA),
     axis.text.y = element_text(size = 6.5)
   ) +
   scale_fill_manual(values = c("#f26852", "#EDB4AB", "#5f6fc1","#2a366c")) +
@@ -274,7 +274,7 @@ ggplot() +
   scale_y_continuous(labels = dollar, limits = c(0, 105000)) +
   labs(x = NULL, y = "Earnings") +
   theme(
-    plot.background = element_rect(fill="#3a4a9f", color=NA),
+    plot.background = element_rect(fill="#374d98", color=NA),
     axis.title.y = element_blank(),
     panel.grid.major.y = ggplot2::element_line(color = "#D3D3D3",
                                                    size = 0.2),
@@ -322,6 +322,12 @@ workforce <- waa %>%
          total = comma(round(total, -3))) %>% 
   select(-(total_female:nh_other_total))
 
+#living wage
+lw_pct <- readRDS(here::here("clean-data", "pct-living-wage-jobs.rds")) %>% 
+  mutate(
+    living_wage = str_trim(format(living_wage, big.mark=",")),
+    total_jobs = str_trim(format(total_jobs, big.mark=","))
+  )
 
 # education - census
 education1 <- edu %>% 
@@ -342,18 +348,37 @@ education2 <- pseo_wda_df %>%
                                 T ~ wda_number)) %>% 
   group_by(wda) %>% 
   slice_max(order_by = degree_level_numeric, n = 1) %>% 
-  mutate(emp_rate_wda_ps_grads = paste0(round(100 * y10_grads_emp / (y10_grads_emp + y10_grads_nme)), "%"),
+  mutate(#emp_rate_wda_ps_grads = paste0(round(100 * y10_grads_emp_instate / (y10_grads_emp + y10_grads_nme),1), "%"),
          y10_p50_earnings = paste0(comma(round(y10_p50_earnings, -2)))) %>% 
   mutate(wda_ps_grads_degree = case_when(degree_level == "03" ~ "Associates",
                                          degree_level == "05" ~ "Baccalaureate")) %>% 
   ungroup() %>% 
-  select(wda, wda_number, wda_ps_grads_degree, median_income_wda_ps_grads = y10_p50_earnings, emp_rate_wda_ps_grads)
+  select(wda, wda_number, wda_ps_grads_degree, median_income_wda_ps_grads = y10_p50_earnings)
+
+education3 <- pseo_wda_df %>% 
+  mutate(degree_level_numeric = as.numeric(gsub("0", "", degree_level))) %>%
+  mutate(wda = case_when(is.na(wda) ~ "Texas",
+                         T ~ wda),
+         wda_number = case_when(is.na(wda_number) ~ 0,
+                                T ~ wda_number)) %>% 
+  group_by(wda) %>%
+  mutate(y10_grads_emp_outstate = y10_grads_emp - y10_grads_emp_instate) %>% 
+  summarize(instate = sum(y10_grads_emp_instate),
+            outstate = sum(y10_grads_emp_outstate),
+            unemp = sum(y10_grads_nme)) %>% 
+  mutate(
+    emp_rate_wda_ps_grads = 100 * instate / (instate + outstate + unemp),
+    emp_rate_wda_ps_grads = paste0(round(emp_rate_wda_ps_grads), "%")
+  ) %>% 
+  dplyr::select(wda, emp_rate_wda_ps_grads)
 
 img_root = "Macintosh HD:Users:davidmcclendon:Documents:January_Advisors:Projects:aim-hire-texas:pdfs:"
 
 pdf_values <- left_join(alice, workforce) %>% 
   left_join(education1) %>% 
   left_join(education2) %>% 
+  left_join(education3) %>% 
+  left_join(., lw_pct) %>% 
   mutate(
     wda_no_space = str_remove_all(wda, " "),
     `'@map_path` =  paste0(img_root, "maps:", paste0(wda_no_space, ".png")),
